@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "KbzvDlzKFvWSxfJ0TDqopdKKMhvvItnRW3a1eUW8B5Q=",
+  "Source": "beneficiarios_dif_api",
+  "BasePath": "_content/beneficiarios_dif_api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
