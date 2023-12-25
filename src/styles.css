@@ -1,1 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+.btn-add-dif {
+    background-color: #422b7d !important;
+    color: white !important;
+}

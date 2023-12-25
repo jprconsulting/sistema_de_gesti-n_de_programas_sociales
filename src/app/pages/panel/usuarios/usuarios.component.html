@@ -1,0 +1,158 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body border-bottom py-3">
+        <div class="d-flex">
+          <button
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#modal-report"
+          >
+            <i class="ti ti-plus me-1"></i>Agregar
+          </button>
+          <div class="ms-auto">
+            <div class="input-icon">
+              <input
+                #busquedaInput
+                type="text"
+                class="form-control form-control-rounded"
+                placeholder="Buscar"
+              />
+              <span class="input-icon-addon">
+                <i class="ti ti-search"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-vcenter card-table table-striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Title</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th class="w-1"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Maryjo Lebarree</td>
+              <td class="text-muted">Civil Engineer, Product Management</td>
+              <td class="text-muted">
+                <a href="#" class="text-reset">mlebarree5@unc.edu</a>
+              </td>
+              <td class="text-muted">User</td>
+              <td>
+                <a href="#">Edit</a>
+              </td>
+            </tr>
+            <tr>
+              <td>Egan Poetz</td>
+              <td class="text-muted">Research Nurse, Engineering</td>
+              <td class="text-muted">
+                <a href="#" class="text-reset">epoetz6@free.fr</a>
+              </td>
+              <td class="text-muted">Admin</td>
+              <td>
+                <a href="#">Edit</a>
+              </td>
+            </tr>
+            <tr>
+              <td>Kellie Skingley</td>
+              <td class="text-muted">Teacher, Services</td>
+              <td class="text-muted">
+                <a href="#" class="text-reset">kskingley7@columbia.edu</a>
+              </td>
+              <td class="text-muted">User</td>
+              <td>
+                <a href="#">Edit</a>
+              </td>
+            </tr>
+            <tr>
+              <td>Christabel Charlwood</td>
+              <td class="text-muted">Tax Accountant, Engineering</td>
+              <td class="text-muted">
+                <a href="#" class="text-reset">ccharlwood8@nifty.com</a>
+              </td>
+              <td class="text-muted">Owner</td>
+              <td>
+                <a href="#">Edit</a>
+              </td>
+            </tr>
+            <tr>
+              <td>Haskel Shelper</td>
+              <td class="text-muted">Staff Scientist, Legal</td>
+              <td class="text-muted">
+                <a href="#" class="text-reset">hshelper9@woothemes.com</a>
+              </td>
+              <td class="text-muted">Admin</td>
+              <td>
+                <a href="#">Edit</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <app-no-results></app-no-results>
+
+      <div class="card-footer d-flex align-items-center">
+        <p class="m-0 text-muted">
+          Showing <span>1</span> to <span>8</span> of <span>16</span> entries
+        </p>
+        <ul class="pagination m-0 ms-auto">
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+              <!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="icon"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M15 6l-6 6l6 6" />
+              </svg>
+              prev
+            </a>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item active"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="#">4</a></li>
+          <li class="page-item"><a class="page-link" href="#">5</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#">
+              next
+              <!-- Download SVG icon from http://tabler-icons.io/i/chevron-right -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="icon"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M9 6l6 6l-6 6" />
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
