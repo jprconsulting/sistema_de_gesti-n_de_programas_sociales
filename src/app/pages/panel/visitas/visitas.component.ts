@@ -30,6 +30,8 @@ export class VisitasComponent {
   beneficiarioSelect!: Beneficiario | undefined;
   beneficiarios: Beneficiario[] = [];
   isModalAdd = true;
+  imagenAmpliada: string | null = null;
+  mostrarModal = false;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -63,7 +65,8 @@ export class VisitasComponent {
     this.visitaForm = this.formBuilder.group({
       id: [null],
       descripcion: ['', Validators.required],
-      beneficiarioId: [null, Validators.required]
+      beneficiarioId: [null, Validators.required],
+      imagenBase64: ['',Validators.required]
     });
   }
 
@@ -91,12 +94,14 @@ export class VisitasComponent {
   }
 
   handleChangeSearch(event: any) {
-    const inputValue = event.target.value;
-    this.visitasFilter = this.visitas.filter(i => i.descripcion
-      .toLowerCase().includes(inputValue.toLowerCase())
+    const inputValue = event.target.value.toLowerCase();
+    this.visitasFilter = this.visitas.filter(visita =>
+      visita.descripcion.toLowerCase().includes(inputValue) ||
+      visita.beneficiario.nombreCompleto.toLowerCase().includes(inputValue)
     );
     this.configPaginator.currentPage = 1;
   }
+
   setDataModalUpdate(dto: Visita) {
     console.log(dto);
   }
@@ -124,24 +129,30 @@ export class VisitasComponent {
 
   submit() {
     this.visita = this.visitaForm.value as Visita;
-
     const beneficiarioId = this.visitaForm.get('beneficiarioId')?.value;
-
     this.visita.beneficiario = { id: beneficiarioId } as Beneficiario;
 
-    this.spinnerService.show();
-    this.visitasService.post(this.visita).subscribe({
-      next: () => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Visita guardada correctamente');
-        this.resetForm();
-        this.configPaginator.currentPage = 1;
-      },
-      error: (error) => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeError(error);
-      }
-    });
+    const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
+
+    if (imagenBase64) {
+      const formData = { ...this.visita, imagenBase64 };
+
+      this.spinnerService.show();
+      this.visitasService.post(formData).subscribe({
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito('Visita guardada correctamente');
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeError(error);
+        }
+      });
+    } else {
+      console.error('Error: No se encontró una representación válida en base64 de la imagen.');
+    }
   }
 
   handleChangeAdd() {
@@ -156,5 +167,71 @@ export class VisitasComponent {
     }
   }
 
+  onFileChange(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+
+    if (inputElement.files && inputElement.files.length > 0) {
+      const file = inputElement.files[0];
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        const base64WithoutPrefix = base64String.split(';base64,').pop() || '';
+
+        this.visitaForm.patchValue({
+          imagenBase64: base64WithoutPrefix // Contiene solo la representación en base64
+        });
+      };
+
+      reader.readAsDataURL(file);
+    }
+  }
+
+
+  readFileAsDataURL(filePath: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          resolve(reader.result);
+        } else {
+          reject(new Error('Error al leer el archivo como URL de datos.'));
+        }
+      };
+
+      reader.onerror = () => {
+        reject(new Error('Error al leer el archivo.'));
+      };
+
+      reader.readAsDataURL(new Blob([filePath]));
+    });
+  }
+
+  obtenerRutaImagen(nombreArchivo: string): string {
+    const rutaBaseAPI = 'https://localhost:7224/';
+    if (nombreArchivo) {
+      return `${rutaBaseAPI}images/${nombreArchivo}`;
+    }
+    return ''; // O una URL predeterminada si no hay nombre de archivo
+  }
+
+  mostrarImagenAmpliada(rutaImagen: string) {
+    this.imagenAmpliada = rutaImagen;
+    const modal = document.getElementById('modal-imagen-ampliada');
+    if (modal) {
+      modal.classList.add('show');
+      modal.style.display = 'block';
+    }
+  }
+
+  cerrarModal() {
+    this.imagenAmpliada = null;
+    const modal = document.getElementById('modal-imagen-ampliada');
+    if (modal) {
+      modal.classList.remove('show');
+      modal.style.display = 'none';
+    }
+  }
 
 }
