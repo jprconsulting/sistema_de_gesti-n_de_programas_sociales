@@ -49,6 +49,11 @@ export class BeneficiariosComponent implements OnInit {
     componentRestrictions: { country: 'MX' }
   };
   maps!: google.maps.Map;
+  estatusBtn = true;
+  verdadero = "Activo";
+  falso = "Inactivo";
+  estatusTag = this.verdadero;
+
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -79,7 +84,7 @@ export class BeneficiariosComponent implements OnInit {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
     }
-
+    
     if (place.formatted_address) {
       this.beneficiarioForm.patchValue({
         domicilio: place.formatted_address
@@ -121,6 +126,9 @@ export class BeneficiariosComponent implements OnInit {
     });
 
 
+  }
+  setEstatus() {
+    this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
   }
 
   ngAfterViewInit() {
@@ -208,9 +216,9 @@ export class BeneficiariosComponent implements OnInit {
   creteForm() {
     this.beneficiarioForm = this.formBuilder.group({
       id: [null],
-      nombres: ['', Validators.required],
-      apellidoPaterno: ['', Validators.required],
-      apellidoMaterno: ['', Validators.required],
+      nombres: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
+      apellidoPaterno: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
+      apellidoMaterno:['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
       fechaNacimiento: ['', Validators.required],
       sexo: [null, Validators.required],
       curp: ['', Validators.required],
@@ -302,10 +310,15 @@ export class BeneficiariosComponent implements OnInit {
   }
 
   handleChangeAdd() {
-    this.beneficiarioForm.reset();
-    this.isModalAdd = true;
+    if (this.beneficiarioForm) {
+      this.beneficiarioForm.reset();
+      const estatusControl = this.beneficiarioForm.get('estatus');
+      if (estatusControl) {
+        estatusControl.setValue(true);
+      }
+      this.isModalAdd = true;
+    }
   }
-
-
+  
 
 }

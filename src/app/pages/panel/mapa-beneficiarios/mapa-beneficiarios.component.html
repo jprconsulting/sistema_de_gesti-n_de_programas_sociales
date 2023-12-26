@@ -1,1 +1,57 @@
-<p>mapa-beneficiarios works!</p>
+<div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
+  <div class="rounded-t mb-0 px-4 py-3 border-0">
+    <div>
+      <label class="label" for="programaSocialSelect1">Selecciona un programa social:</label>
+      <select class="select" id="programaSocialSelect1" (change)="filtrarPorPrograma($event)">
+        <option>{{ select }}</option>
+        <option *ngFor="let programaSocial of prograsmasocial" [value]="programaSocial.id">{{programaSocial.nombre}}</option>
+      </select>
+      </div>
+      <br>
+      <button class="bg-green-500 text-white font-bold py-2 px-4 rounded float-right" style="margin-right: 50px;" (click)="mapa();dato()" style="cursor: pointer; background-color: #34D399; border: none; border-radius: 4px;">
+        Todos los Beneficiarios
+      </button>
+
+      <br>
+      <br>
+      <br>
+
+      <label class="label" style="text-align: center; display: block; font-size: 1.5em; margin: 0 auto;">Beneficiarios del programa social: {{ select }}</label>
+      <br>
+            
+      <div class="flex flex-wrap">
+        <div class="w-full px-4 map-container">
+          <div
+            class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded"
+          >
+            <div
+              id="map-canvas"
+              class="relative w-full rounded h-400-px md:h-600-px lg:h-800-px"
+              data-lat="19.34889526616767"
+              data-lng="-98.19011296839722"
+            ></div>
+          </div>
+        </div>
+        <div class="container my-4">
+          <div *ngFor="let programa of prograsmasocial;" class="card mx-auto" style="width: 300px; height: 80px;">
+            <div class="card-body">
+              <div class="d-flex align-items-center justify-content-center mb-2">
+                <!-- Utiliza clases de Bootstrap para hacer un círculo -->
+                <div class="color-circle h-6 w-6 mr-3 rounded-circle" [style.backgroundColor]="programa.color"></div>
+                <div>
+                  <div class="h4">{{ programa.nombre }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+        
+
+
+  </div>
+</div>
+
+    
+    

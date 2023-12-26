@@ -177,6 +177,17 @@
                   class="form-control"
                   formControlName="nombres"
                 />
+                <div *ngIf="beneficiarioForm.get('nombres')?.touched" class="error-message">
+                  <div *ngIf="beneficiarioForm.get('nombres')?.hasError('required')">
+                      El Nombre es obligatorio
+                  </div>
+                  <div *ngIf="beneficiarioForm.get('nombres')?.hasError('minlength')">
+                      El Nombre debe tener al menos 3 caracteres
+                  </div>
+                  <div *ngIf="beneficiarioForm.get('nombres')?.hasError('pattern')">
+                    El Nombre no puede tener números ni signos
+                  </div>
+              </div>
               </div>
             </div>
             <div class="col-lg-4">
@@ -187,6 +198,17 @@
                   class="form-control"
                   formControlName="apellidoPaterno"
                 />
+                <div *ngIf="beneficiarioForm.get('apellidoPaterno')?.touched" class="error-message">
+                  <div *ngIf="beneficiarioForm.get('apellidoPaterno')?.hasError('required')">
+                      El apellido paterno es obligatorio
+                  </div>
+                  <div *ngIf="beneficiarioForm.get('apellidoPaterno')?.hasError('minlength')">
+                      El apellido paterno debe tener al menos 3 caracteres
+                  </div>
+                  <div *ngIf="beneficiarioForm.get('apellidoPaterno')?.hasError('pattern')">
+                    El apellido paterno no puede tener números ni signos
+                  </div>
+              </div>
               </div>
             </div>
             <div class="col-lg-4">
@@ -197,6 +219,17 @@
                   class="form-control"
                   formControlName="apellidoMaterno"
                 />
+                <div *ngIf="beneficiarioForm.get('apellidoMaterno')?.touched" class="error-message">
+                  <div *ngIf="beneficiarioForm.get('apellidoMaterno')?.hasError('required')">
+                      El apellido materno es obligatorio
+                  </div>
+                  <div *ngIf="beneficiarioForm.get('apellidoMaterno')?.hasError('minlength')">
+                      El apellido materno debe tener al menos 3 caracteres
+                  </div>
+                  <div *ngIf="beneficiarioForm.get('apellidoMaterno')?.hasError('pattern')">
+                    El apellido materno no puede tener números ni signos
+                  </div>
+              </div>
               </div>
             </div>
           </div>
@@ -209,6 +242,11 @@
                   class="form-control"
                   formControlName="fechaNacimiento"
                 />
+                <div *ngIf="beneficiarioForm.get('fechaNacimiento')?.touched" class="error-message">
+                  <div *ngIf="beneficiarioForm.get('fechaNacimiento')?.hasError('required')">
+                      la fecha de nacimiento es obligatorio
+                  </div>
+              </div>
               </div>
             </div>
             <div class="col-lg-4">
@@ -219,6 +257,17 @@
                   class="form-control"
                   formControlName="curp"
                 />
+                <div *ngIf="beneficiarioForm.get('curp')?.touched" class="error-message">
+                  <div *ngIf="beneficiarioForm.get('curp')?.hasError('required')">
+                      El Nombre es obligatorio
+                  </div>
+                  <div *ngIf="beneficiarioForm.get('curp')?.hasError('minlength')">
+                      El Nombre debe tener al menos 3 caracteres
+                  </div>
+                  <div *ngIf="beneficiarioForm.get('curp')?.hasError('pattern')">
+                    El Nombre no puede tener números ni signos
+                  </div>
+              </div>
               </div>
             </div>
             <div class="col-lg-4">
@@ -237,6 +286,11 @@
                     {{ item.name }}
                   </ng-template>
                 </ng-select>
+                <div *ngIf="beneficiarioForm.get('sexo')?.touched" class="error-message">
+                  <div *ngIf="beneficiarioForm.get('sexo')?.hasError('required')">
+                      El genero es obligatorio
+                  </div>
+              </div>
               </div>
             </div>
           </div>
@@ -267,6 +321,11 @@
                     {{ item.nombre }}
                   </ng-template>
                 </ng-select>
+                <div *ngIf="beneficiarioForm.get('programaSocialId')?.touched" class="error-message">
+                  <div *ngIf="beneficiarioForm.get('programaSocialId')?.hasError('required')">
+                      El programa social es obligatorio
+                  </div>
+              </div>
               </div>
             </div>
             <div class="col-lg-6">
@@ -295,35 +354,28 @@
                     {{ item.nombre }}
                   </ng-template>
                 </ng-select>
+                <div *ngIf="beneficiarioForm.get('municipioId')?.touched" class="error-message">
+                  <div *ngIf="beneficiarioForm.get('municipioId')?.hasError('required')">
+                      El municipio es obligatorio
+                  </div>
+              </div>
               </div>
             </div>
 
-            <div class="col-lg-12">
-              <div class="mb-3">
-                <label for="estadoActivo" class="form-label">Estatus</label>
-                <label class="form-check form-switch checkbox-verde">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    formControlName="estatus"
-                    [value]="beneficiarioForm.get('estatus')?.value"
-                  />
-                  <span
-                    class="form-check-label"
-                    [ngClass]="
-                      beneficiarioForm.get('estatus')?.value
-                        ? 'text-success'
-                        : 'text-danger'
-                    "
-                  >
-                    {{
-                      beneficiarioForm.get("estatus")?.value
-                        ? "Activo"
-                        : "Inactivo"
-                    }}
-                  </span>
-                </label>
-              </div>
+            <div class="col">
+              <label>Estatus: </label><br />
+              <div class="form-group">
+                <div class="form-check form-switch mt-1 ml-2 custom-green-switch">
+                  <input class="form-check-input" type="checkbox" (change)="setEstatus()" [(ngModel)]="estatusBtn"
+                    name="estatusBtn" formControlName="estatus" checked required>
+                  <div *ngIf="beneficiarioForm.get('estatus')?.touched" class="error-message">
+                    <div *ngIf="beneficiarioForm.get('estatus')?.hasError('required')">
+                      El estatus es obligatorio
+                    </div>
+                  </div>
+                  <label class="form-check-label"> {{estatusTag}} </label>
+                </div>
+            </div>
             </div>
 
             <div class="col-lg-12">

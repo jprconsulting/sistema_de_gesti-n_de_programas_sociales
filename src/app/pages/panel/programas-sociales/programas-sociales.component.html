@@ -102,8 +102,9 @@
                     <button
                       class="btn btn-warning btn-icon btn-sm"
                       data-bs-toggle="modal"
-                      data-bs-target="#modal-report"
-                      (click)="setDataModalUpdate(programa)"
+                      data-bs-target="#modal-programa-social"
+                      (click)="setDataModalUpdate(programa);"
+
                     >
                       <i class="ti ti-edit"></i>
                     </button>
@@ -174,6 +175,17 @@
                   class="form-control"
                   formControlName="nombre"
                 />
+                <div *ngIf="programaSocialForm.get('nombre')?.touched" class="error-message">
+                  <div *ngIf="programaSocialForm.get('nombre')?.hasError('required')">
+                      El Nombre es obligatorio
+                  </div>
+                  <div *ngIf="programaSocialForm.get('nombre')?.hasError('minlength')">
+                      El Nombre debe tener al menos 3 caracteres
+                  </div>
+                  <div *ngIf="programaSocialForm.get('nombre')?.hasError('pattern')">
+                    El Nombre no puede tener números ni signos
+                  </div>
+              </div>
               </div>
             </div>
             <div class="col-lg-12">
@@ -192,6 +204,11 @@
                     {{ item.nombre }}
                   </ng-template>
                 </ng-select>
+                <div *ngIf="programaSocialForm.get('areaAdscripcionId')?.touched" class="error-message">
+                  <div *ngIf="programaSocialForm.get('areaAdscripcionId')?.hasError('required')">
+                      El area de adscripcion es obligatorio
+                  </div>
+              </div>
               </div>
             </div>
             <div class="col-lg-12">
@@ -202,12 +219,22 @@
                   class="form-control"
                   formControlName="acronimo"
                 />
+                <div *ngIf="programaSocialForm.get('acronimo')?.touched" class="error-message">
+                  <div *ngIf="programaSocialForm.get('acronimo')?.hasError('required')">
+                      El acronimo es obligatorio
+                  </div>
+                  <div *ngIf="programaSocialForm.get('acronimo')?.hasError('minlength')">
+                      El acronimo debe tener al menos 3 caracteres
+                  </div>
+                  <div *ngIf="programaSocialForm.get('acronimo')?.hasError('pattern')">
+                    El acronimo no puede tener números ni signos
+                  </div>
+              </div>
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-lg-6">
-              <div class="mb-3">
+<div class="row">
+              <div class="col">
                 <label class="form-label">Color</label>
                 <input
                   type="color"
@@ -216,36 +243,31 @@
                   formControlName="color"
                   value="#206bc4"
                 />
+                <div *ngIf="programaSocialForm.get('color')?.touched" class="error-message">
+                  <div *ngIf="programaSocialForm.get('color')?.hasError('required')">
+                    El color es obligatorio
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="col-lg-6">
-              <div class="mb-3">
-                <label for="estadoActivo" class="form-label">Estatus</label>
-                <label class="form-check form-switch checkbox-verde">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    formControlName="estatus"
-                    checked
-                  />
-                  <span
-                    class="form-check-label"
-                    [ngClass]="
-                      programaSocialForm.get('estatus')?.value
-                        ? 'text-success'
-                        : 'text-danger'
-                    "
-                  >
-                    {{
-                      programaSocialForm.get("estatus")?.value
-                        ? "Activo"
-                        : "Inactivo"
-                    }}
-                  </span>
-                </label>
+              <div class="col">
+                <label>Estatus: </label><br />
+                <div class="form-group">
+                  <div class="form-check form-switch mt-1 ml-2 custom-green-switch">
+                    <input class="form-check-input" type="checkbox" (change)="setEstatus()" [(ngModel)]="estatusBtn"
+                      name="estatusBtn" formControlName="estatus" checked required>
+                    <div *ngIf="programaSocialForm.get('estatus')?.touched" class="error-message">
+                      <div *ngIf="programaSocialForm.get('estatus')?.hasError('required')">
+                        El estatus es obligatorio
+                      </div>
+                    </div>
+                    <label class="form-check-label"> {{estatusTag}} </label>
+                  </div>
               </div>
             </div>
           </div>
+          
+            
+          
           <div class="row">
             <div class="col-lg-12">
               <div class="mb-3">
@@ -266,7 +288,7 @@
             class="btn btn-success"
             [disabled]="!programaSocialForm.valid"
           >
-            {{ isModalAdd ? "Agregar" : "Actualizar" }}
+          {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
         </div>
       </form>
