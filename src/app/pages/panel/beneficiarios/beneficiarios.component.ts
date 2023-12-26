@@ -53,10 +53,7 @@ export class BeneficiariosComponent implements OnInit {
     componentRestrictions: { country: 'MX' }
   };
   maps!: google.maps.Map;
-  estatusBtn = true;
-  verdadero = "Activo";
-  falso = "Inactivo";
-  estatusTag = this.verdadero;
+
 
 
   constructor(
