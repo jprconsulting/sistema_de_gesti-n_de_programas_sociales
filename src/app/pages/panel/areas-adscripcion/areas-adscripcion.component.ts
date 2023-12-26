@@ -23,7 +23,7 @@ export class AreasAdscripcionComponent {
   areasAdscripcion: AreaAdscripcion[] = [];
   areasAdscripcionFilter: AreaAdscripcion[] = [];
   isLoading = LoadingStates.neutro;
-  isModalAdd = true;
+  isModalAdd: boolean = true;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -37,6 +37,14 @@ export class AreasAdscripcionComponent {
     this.getAreasAdscripcion();
     this.creteForm();
     this.headerTitleService.updateHeaderTitle('Áreas de Adscripción');
+  }
+
+  estatusBtn = true;
+  verdadero = "Activo";
+  falso = "Inactivo";
+  estatusTag = this.verdadero;
+ setEstatus() {
+    this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
   }
 
   creteForm() {
@@ -75,9 +83,41 @@ export class AreasAdscripcionComponent {
     );
     this.configPaginator.currentPage = 1;
   }
+
+  idToUpdate2!: number;
+  formData: any;
+
   setDataModalUpdate(dto: AreaAdscripcion) {
     console.log(dto);
+    this.isUpdating = true;
+    this.idToUpdate2 = dto.id;
+    this.areaAdscripcionForm.patchValue({
+      id: dto.id,
+      nombre: dto.nombre,
+      descripcion: dto.descripcion,
+      estatus: dto.estatus,
+    });
+    this.formData = this.areaAdscripcionForm.value;
+    console.log(this.areaAdscripcionForm.value);
   }
+
+
+  editarArea() {
+    const areaFormValue = { ...this.areaAdscripcionForm.value };
+    this.areasAdscripcionService.put(this.idToUpdate2,areaFormValue).subscribe({
+      next: () => {
+        this.mensajeService.mensajeExito("Área actualizada con éxito");
+        this.resetForm();
+        console.log(areaFormValue);
+      },
+      error: (error) => {
+        this.mensajeService.mensajeError("Error al actualizar Area");
+        console.error(error);
+        console.log(areaFormValue);
+      }
+    });
+  }
+
 
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
@@ -101,28 +141,39 @@ export class AreasAdscripcionComponent {
     this.areaAdscripcionForm.reset();
   }
 
-  submit() {
+  agregar(){
     this.areaAdscripcion = this.areaAdscripcionForm.value as AreaAdscripcion;
-    this.spinnerService.show();
-    this.areasAdscripcionService.post(this.areaAdscripcion).subscribe({
-      next: () => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Área de adscripción guardada correctamente');
-        this.resetForm();
-        this.configPaginator.currentPage = 1;
-      },
-      error: (error) => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeError(error);
-      }
-    });
+      this.spinnerService.show();
+      this.areasAdscripcionService.post(this.areaAdscripcion).subscribe({
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito('Área de adscripción guardada correctamente');
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeError(error);
+        }
+      });
+  }
+
+  isUpdating: boolean = false;
+
+  submit() {
+    if (this.isUpdating) {
+      this.editarArea();
+    } else {
+      this.agregar();
+    }
+
   }
 
   handleChangeAdd() {
     this.areaAdscripcionForm.reset();
     this.isModalAdd = true;
+    this.isUpdating = false;
   }
-
 
 
 }

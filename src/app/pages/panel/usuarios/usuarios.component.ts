@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, Inject, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -17,7 +17,7 @@ import { Usuario } from 'src/app/models/usuario';
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.css']
 })
-export class UsuariosComponent {
+export class UsuariosComponent implements OnInit{
 
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
@@ -51,6 +51,9 @@ export class UsuariosComponent {
     this.subscribeRolId();
     this.headerTitleService.updateHeaderTitle('Usuarios');
   }
+  ngOnInit(): void {
+    this.isModalAdd = false;
+  }
 
   getRols() {
     this.rolsService.getAll().subscribe({ next: (dataFromAPI) => this.rols = dataFromAPI });
@@ -66,7 +69,7 @@ export class UsuariosComponent {
       nombre: ['', Validators.required],
       apellidoPaterno: ['', Validators.required],
       apellidoMaterno: ['', Validators.required],
-      correo: ['', [Validators.required, Validators.email]],
+      correo: ['', [Validators.required, Validators.email, Validators.pattern('^[a-zA-Z0-9.%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$')]],
       password: [
         '',
         [
@@ -131,8 +134,43 @@ export class UsuariosComponent {
     );
     this.configPaginator.currentPage = 1;
   }
+
+  idToUpdate2!: number;
+  formData: any;
+
   setDataModalUpdate(dto: Usuario) {
     console.log(dto);
+    this.isUpdating = true;
+    this.idToUpdate2 = dto.id;
+    this.usuarioForm.patchValue({
+      id: dto.id,
+      nombre: dto.nombre,
+      apellidoPaterno: dto.apellidoPaterno,
+      apellidoMaterno: dto.apellidoMaterno,
+      correo: dto.correo,
+      password: dto.password,
+      estatus: dto.estatus,
+      rolId: dto.rol,
+    });
+    this.formData = this.usuarioForm.value;
+    console.log(this.usuarioForm.value);
+  }
+
+  editarUsuario() {
+    const usuarioFormValue = { ...this.usuarioForm.value };
+    this.usuarioService.put(this.idToUpdate2, usuarioFormValue).subscribe({
+
+      next: () => {
+        this.mensajeService.mensajeExito("Usuario actualizado con éxito");
+        this.resetForm();
+        console.log(usuarioFormValue);
+      },
+      error: (error) => {
+        this.mensajeService.mensajeError("Error al actualizar usuario");
+        console.error(error);
+        console.log(usuarioFormValue);
+      }
+    });
   }
 
   deleteItem(id: number, nameItem: string) {
@@ -151,13 +189,7 @@ export class UsuariosComponent {
     );
   }
 
-
-  resetForm() {
-    this.closebutton.nativeElement.click();
-    this.usuarioForm.reset();
-  }
-
-  submit() {
+  agregar(){
     this.usuario = this.usuarioForm.value as Usuario;
 
     const rolId = this.usuarioForm.get('rolId')?.value;
@@ -181,9 +213,26 @@ export class UsuariosComponent {
     });
   }
 
+
+  resetForm() {
+    this.closebutton.nativeElement.click();
+    this.usuarioForm.reset();
+  }
+
+  isUpdating: boolean = false;
+
+  submit() {
+    if (this.isUpdating) {
+      this.editarUsuario();
+    } else {
+      this.agregar();
+    }
+  }
+
   handleChangeAdd() {
     this.usuarioForm.reset();
     this.isModalAdd = true;
+    this.isUpdating = false;
   }
 
 
