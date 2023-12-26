@@ -1,3 +1,13 @@
+<ngx-spinner
+  bdColor="rgba(0,0,0,0.41)"
+  size="large"
+  color="#ffffff"
+  type="ball-scale-multiple"
+  [fullScreen]="true"
+>
+  <p style="color: white">Guardando...</p>
+</ngx-spinner>
+
 <div class="row">
   <div class="col-12">
     <div class="card">
@@ -6,17 +16,19 @@
           <button
             class="btn btn-primary"
             data-bs-toggle="modal"
-            data-bs-target="#modal-report"
+            data-bs-target="#modal-usuario"
+            (click)="handleChangeAdd()"
           >
             <i class="ti ti-plus me-1"></i>Agregar
           </button>
           <div class="ms-auto">
             <div class="input-icon">
               <input
-                #busquedaInput
+                #searchItem
                 type="text"
                 class="form-control form-control-rounded"
                 placeholder="Buscar"
+                (input)="handleChangeSearch($event)"
               />
               <span class="input-icon-addon">
                 <i class="ti ti-search"></i>
@@ -26,133 +38,250 @@
         </div>
       </div>
 
-      <div class="table-responsive">
-        <table class="table table-vcenter card-table table-striped">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Title</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th class="w-1"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Maryjo Lebarree</td>
-              <td class="text-muted">Civil Engineer, Product Management</td>
-              <td class="text-muted">
-                <a href="#" class="text-reset">mlebarree5@unc.edu</a>
-              </td>
-              <td class="text-muted">User</td>
-              <td>
-                <a href="#">Edit</a>
-              </td>
-            </tr>
-            <tr>
-              <td>Egan Poetz</td>
-              <td class="text-muted">Research Nurse, Engineering</td>
-              <td class="text-muted">
-                <a href="#" class="text-reset">epoetz6@free.fr</a>
-              </td>
-              <td class="text-muted">Admin</td>
-              <td>
-                <a href="#">Edit</a>
-              </td>
-            </tr>
-            <tr>
-              <td>Kellie Skingley</td>
-              <td class="text-muted">Teacher, Services</td>
-              <td class="text-muted">
-                <a href="#" class="text-reset">kskingley7@columbia.edu</a>
-              </td>
-              <td class="text-muted">User</td>
-              <td>
-                <a href="#">Edit</a>
-              </td>
-            </tr>
-            <tr>
-              <td>Christabel Charlwood</td>
-              <td class="text-muted">Tax Accountant, Engineering</td>
-              <td class="text-muted">
-                <a href="#" class="text-reset">ccharlwood8@nifty.com</a>
-              </td>
-              <td class="text-muted">Owner</td>
-              <td>
-                <a href="#">Edit</a>
-              </td>
-            </tr>
-            <tr>
-              <td>Haskel Shelper</td>
-              <td class="text-muted">Staff Scientist, Legal</td>
-              <td class="text-muted">
-                <a href="#" class="text-reset">hshelper9@woothemes.com</a>
-              </td>
-              <td class="text-muted">Admin</td>
-              <td>
-                <a href="#">Edit</a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <ng-container [ngSwitch]="isLoading">
+        <div style="height: 300px" *ngSwitchCase="2">
+          <div class="progress">
+            <div class="progress-bar progress-bar-indeterminate bg-green"></div>
+          </div>
+        </div>
 
-      <app-no-results></app-no-results>
+        <div *ngSwitchCase="3" class="table-responsive">
+          <table class="table table-vcenter card-table table-striped">
+            <thead>
+              <tr>
+                <th class="text-center">#</th>
+                <th>Nombre Completo</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Área Adscripción</th>
+                <th class="text-center">Estatus</th>
+                <th class="w-1">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let usuario of usuariosFilter | paginate : configPaginator;
+                  let pointIndex = index
+                "
+              >
+                <td class="text-center">
+                  {{
+                    configPaginator.itemsPerPage *
+                      (configPaginator.currentPage - 1) +
+                      pointIndex +
+                      1
+                  }}
+                </td>
+                <td>{{ usuario.nombreCompleto }}</td>
+                <td class="text-muted">{{ usuario.correo }}</td>
+                <td class="text-muted">{{ usuario.rol.nombreRol }}</td>
+                <td class="text-muted">
+                  {{ usuario?.areaAdscripcion?.nombre }}
+                </td>
+                <td class="text-center">
+                  <ng-container *ngIf="usuario.estatus; else elseEstatus">
+                    <span class="badge bg-success me-1"> </span> Activo
+                  </ng-container>
+                  <ng-template #elseEstatus>
+                    <span class="badge bg-warning me-1"></span> Inactivo
+                  </ng-template>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-between">
+                    <button
+                      class="btn btn-warning btn-icon btn-sm"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modal-report"
+                      (click)="setDataModalUpdate(usuario)"
+                    >
+                      <i class="ti ti-edit"></i>
+                    </button>
+                    <button
+                      class="btn btn-danger btn-icon btn-sm"
+                      (click)="deleteItem(usuario.id, usuario.nombre)"
+                    >
+                      <i class="ti ti-eraser"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <app-no-results *ngSwitchCase="4"></app-no-results>
+      </ng-container>
+      <!-- Fin *ngSwitchCase-->
 
       <div class="card-footer d-flex align-items-center">
         <p class="m-0 text-muted">
-          Showing <span>1</span> to <span>8</span> of <span>16</span> entries
+          Total de registros: <b>{{ usuariosFilter.length }}</b>
         </p>
-        <ul class="pagination m-0 ms-auto">
-          <li class="page-item disabled">
-            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
-              <!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="icon"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                stroke-width="2"
-                stroke="currentColor"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M15 6l-6 6l6 6" />
-              </svg>
-              prev
-            </a>
-          </li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item active"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link" href="#">4</a></li>
-          <li class="page-item"><a class="page-link" href="#">5</a></li>
-          <li class="page-item">
-            <a class="page-link" href="#">
-              next
-              <!-- Download SVG icon from http://tabler-icons.io/i/chevron-right -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="icon"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                stroke-width="2"
-                stroke="currentColor"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M9 6l6 6l-6 6" />
-              </svg>
-            </a>
-          </li>
-        </ul>
+        <div class="m-0 ms-auto">
+          <pagination-controls
+            (pageChange)="onPageChange($event)"
+            previousLabel=""
+            nextLabel=""
+          >
+          </pagination-controls>
+        </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal modal-blur fade"
+  id="modal-usuario"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ isModalAdd ? "Agregar" : "Actualizar" }} Usuario
+        </h5>
+        <button
+          #closebutton
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <form [formGroup]="usuarioForm" (ngSubmit)="submit()">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="nombre"
+                />
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Apellido Paterno</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="apellidoPaterno"
+                />
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Apellido Materno</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="apellidoMaterno"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Correo</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="correo"
+                />
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Contraseña</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="password"
+                />
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label for="estadoActivo" class="form-label">Estatus</label>
+                <label class="form-check form-switch checkbox-verde">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    formControlName="estatus"
+                  />
+                  <span
+                    class="form-check-label"
+                    [ngClass]="
+                      usuarioForm.get('estatus')?.value
+                        ? 'text-success'
+                        : 'text-danger'
+                    "
+                  >
+                    {{
+                      usuarioForm.get("estatus")?.value ? "Activo" : "Inactivo"
+                    }}
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Rol</label>
+                <ng-select
+                  placeholder="Elegir"
+                  [items]="rols"
+                  bindLabel="nombreRol"
+                  bindValue="id"
+                  [searchable]="false"
+                  [clearable]="false"
+                  formControlName="rolId"
+                >
+                  <ng-template ng-option-tmp let-item="item">
+                    {{ item.nombreRol }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="mb-3">
+                <label class="form-label">Área de Adscripción</label>
+                <ng-select
+                  placeholder="Elegir"
+                  [items]="areasAdscripcion"
+                  bindLabel="nombre"
+                  bindValue="id"
+                  [searchable]="false"
+                  [clearable]="false"
+                  formControlName="areaAdscripcionId"
+                >
+                  <ng-template ng-option-tmp let-item="item">
+                    {{ item.nombre }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="!usuarioForm.valid"
+          >
+            {{ isModalAdd ? "Agregar" : "Actualizar" }}
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

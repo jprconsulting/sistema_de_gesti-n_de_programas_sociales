@@ -1,5 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
 .btn-add-dif {
     background-color: #422b7d !important;
     color: white !important;
+}
+
+.pac-container {
+    z-index: 9999 !important;
 }

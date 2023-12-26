@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { PanelModule } from './pages/panel/panel.module';
+import { Loader } from '@googlemaps/js-api-loader';
 
 @NgModule({
   declarations: [
@@ -16,9 +17,17 @@ import { PanelModule } from './pages/panel/panel.module';
     BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
-    PanelModule
+    PanelModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: Loader,
+      useValue: new Loader({
+        apiKey: 'AIzaSyCTbsKH9uUqCHtlW3HDdhgOCcD0_dlvR18',
+        libraries: ['places']
+      })
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

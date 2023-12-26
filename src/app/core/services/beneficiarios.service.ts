@@ -2,9 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HandleErrorService } from './handle-error.service';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { Beneficiario } from 'src/app/models/beneficiario';
+import { Beneficiario, DataMapa, TotalBeneficiariosMunicipio } from 'src/app/models/beneficiario';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +13,18 @@ export class BeneficiariosService {
   route = `${environment.apiUrl}/beneficiarios`;
   private _refreshListBeneficiarios$ = new Subject<Beneficiario | null>();
 
+  private dataMapaSubject = new BehaviorSubject<DataMapa[]>([]);
+  dataMapa$ = this.dataMapaSubject.asObservable();
+
   constructor(
     private http: HttpClient,
     private handleErrorService: HandleErrorService
   ) { }
+
+  updateDataMapa(newData: DataMapa[]): void {
+    this.dataMapaSubject.next(newData);
+  }
+
 
   get refreshListBeneficiarios() {
     return this._refreshListBeneficiarios$;
@@ -59,4 +67,9 @@ export class BeneficiariosService {
         catchError(this.handleErrorService.handleError)
       );
   }
+
+  getTotalBeneficiariosPorMunicipio() {
+    return this.http.get<TotalBeneficiariosMunicipio[]>(`${this.route}/total-beneficiarios-por-municipio`);
+  }
+
 }

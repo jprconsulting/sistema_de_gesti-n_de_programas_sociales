@@ -5,6 +5,11 @@ import { AreasAdscripcionRoutingModule } from './areas-adscripcion-routing.modul
 import { AreasAdscripcionComponent } from './areas-adscripcion.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { SharedModule } from 'src/app/shared/shared.module';
+
 
 @NgModule({
   declarations: [
@@ -14,7 +19,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     AreasAdscripcionRoutingModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    SharedModule,
+    NgxSpinnerModule,
+    NgxPaginationModule,
+    NgSelectModule,
   ]
 })
 export class AreasAdscripcionModule { }
