@@ -48,13 +48,6 @@ export class AreasAdscripcionComponent {
     this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
   }
 
-  estatusBtn = true;
-  verdadero = "Activo";
-  falso = "Inactivo";
-  estatusTag = this.verdadero;
- setEstatus() {
-    this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
-  }
 
   createForm() {
     this.areaAdscripcionForm = this.formBuilder.group({
