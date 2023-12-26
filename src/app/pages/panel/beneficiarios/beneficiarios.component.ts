@@ -40,6 +40,10 @@ export class BeneficiariosComponent implements OnInit {
   isModalAdd = true;
   rolId = 0;
   generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
+  estatusBtn = true;
+  verdadero = "Activo";
+  falso = "Inactivo";
+  estatusTag = this.verdadero;
 
   // MAPS
   latitude: number = 19.316818295403003;
@@ -214,7 +218,7 @@ export class BeneficiariosComponent implements OnInit {
       fechaNacimiento: ['', Validators.required],
       sexo: [null, Validators.required],
       curp: ['', Validators.required],
-      estatus: [true],
+      estatus: [this.estatusBtn],
       programaSocialId: [null, Validators.required],
       municipioId: [null, Validators.required],
       domicilio: [null, Validators.required],
@@ -305,7 +309,5 @@ export class BeneficiariosComponent implements OnInit {
     this.beneficiarioForm.reset();
     this.isModalAdd = true;
   }
-
-
 
 }

@@ -94,12 +94,14 @@ export class VisitasComponent {
   }
 
   handleChangeSearch(event: any) {
-    const inputValue = event.target.value;
-    this.visitasFilter = this.visitas.filter(i => i.descripcion
-      .toLowerCase().includes(inputValue.toLowerCase())
+    const inputValue = event.target.value.toLowerCase();
+    this.visitasFilter = this.visitas.filter(visita =>
+      visita.descripcion.toLowerCase().includes(inputValue) ||
+      visita.beneficiario.nombreCompleto.toLowerCase().includes(inputValue)
     );
     this.configPaginator.currentPage = 1;
   }
+
   setDataModalUpdate(dto: Visita) {
     console.log(dto);
   }
