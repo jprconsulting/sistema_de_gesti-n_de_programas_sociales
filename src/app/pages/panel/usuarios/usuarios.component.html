@@ -100,8 +100,8 @@
                     <button
                       class="btn btn-warning btn-icon btn-sm"
                       data-bs-toggle="modal"
-                      data-bs-target="#modal-report"
-                      (click)="setDataModalUpdate(usuario)"
+                      data-bs-target="#modal-usuario"
+                      (click)="handleChangeAdd(); setDataModalUpdate(usuario)"
                     >
                       <i class="ti ti-edit"></i>
                     </button>
@@ -172,6 +172,11 @@
                   class="form-control"
                   formControlName="nombre"
                 />
+                <div *ngIf="usuarioForm.get('nombre')?.touched" class="error-message">
+                  <div *ngIf="usuarioForm.get('nombre')?.hasError('required')">
+                      <p style="color: red;">El nombre es obligatorio</p>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-lg-4">
@@ -182,6 +187,11 @@
                   class="form-control"
                   formControlName="apellidoPaterno"
                 />
+                <div *ngIf="usuarioForm.get('apellidoPaterno')?.touched" class="error-message">
+                  <div *ngIf="usuarioForm.get('apellidoPaterno')?.hasError('required')">
+                      <p style="color: red;">El apellido paterno es obligatorio</p>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-lg-4">
@@ -192,6 +202,11 @@
                   class="form-control"
                   formControlName="apellidoMaterno"
                 />
+                <div *ngIf="usuarioForm.get('apellidoMaterno')?.touched" class="error-message">
+                  <div *ngIf="usuarioForm.get('apellidoMaterno')?.hasError('required')">
+                      <p style="color: red;">El apellido materno es obligatorio</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -204,16 +219,32 @@
                   class="form-control"
                   formControlName="correo"
                 />
+                <div *ngIf="usuarioForm.get('correo')?.touched" class="error-message">
+                  <div *ngIf="usuarioForm.get('correo')?.hasError('required')">
+                      <p style="color: red;">El correo es obligatorio</p>
+                  </div>
+                  <div *ngIf="usuarioForm.get('correo')?.hasError('email')">
+                    <p style="color: red;">El correo no es válido</p>
+                </div>
+                </div>
               </div>
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label">Contraseña</label>
                 <input
-                  type="text"
+                  type="password"
                   class="form-control"
                   formControlName="password"
                 />
+                <div *ngIf="usuarioForm.get('password')?.touched" class="error-message">
+                  <div *ngIf="usuarioForm.get('password')?.hasError('required')">
+                     <p style="color: red;">La contraseña es obligatoria</p>
+                  </div>
+                  <div *ngIf="usuarioForm.get('password')?.hasError('minlength')">
+                    <p style="color: red;">La contraseña debe tener al menos 8 caracteres</p>
+                  </div>
+              </div>
               </div>
             </div>
             <div class="col-lg-4">
@@ -284,7 +315,7 @@
           <button
             type="submit"
             class="btn btn-success"
-            [disabled]="!usuarioForm.valid"
+            [disabled]="usuarioForm.valid"
           >
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>

@@ -41,6 +41,10 @@ export class BeneficiariosComponent implements OnInit {
   isModalAdd = true;
   rolId = 0;
   generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
+  estatusBtn = true;
+  verdadero = "Activo";
+  falso = "Inactivo";
+  estatusTag = this.verdadero;
 
   // MAPS
   latitude: number = 19.316818295403003;
@@ -81,7 +85,7 @@ export class BeneficiariosComponent implements OnInit {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
     }
-
+    
     if (place.formatted_address) {
       this.beneficiarioForm.patchValue({
         domicilio: place.formatted_address
@@ -123,6 +127,9 @@ export class BeneficiariosComponent implements OnInit {
     });
 
 
+  }
+  setEstatus() {
+    this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
   }
 
   ngAfterViewInit() {
@@ -210,13 +217,13 @@ export class BeneficiariosComponent implements OnInit {
   creteForm() {
     this.beneficiarioForm = this.formBuilder.group({
       id: [null],
-      nombres: ['', Validators.required],
-      apellidoPaterno: ['', Validators.required],
-      apellidoMaterno: ['', Validators.required],
+      nombres: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
+      apellidoPaterno: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
+      apellidoMaterno:['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
       fechaNacimiento: ['', Validators.required],
       sexo: [null, Validators.required],
       curp: ['', Validators.required],
-      estatus: [true],
+      estatus: [this.estatusBtn],
       programaSocialId: [null, Validators.required],
       municipioId: [null, Validators.required],
       domicilio: [null, Validators.required],
@@ -304,8 +311,14 @@ export class BeneficiariosComponent implements OnInit {
   }
 
   handleChangeAdd() {
-    this.beneficiarioForm.reset();
-    this.isModalAdd = true;
+    if (this.beneficiarioForm) {
+      this.beneficiarioForm.reset();
+      const estatusControl = this.beneficiarioForm.get('estatus');
+      if (estatusControl) {
+        estatusControl.setValue(true);
+      }
+      this.isModalAdd = true;
+    }
   }
   exportarDatosAExcel() {
     if (this.beneficiarios.length === 0) {

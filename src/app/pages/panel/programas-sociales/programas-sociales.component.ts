@@ -27,10 +27,15 @@ export class ProgramasSocialesComponent {
   isLoading = LoadingStates.neutro;
 
   areasAdscripcion: AreaAdscripcion[] = [];
-  isModalAdd = true;
+  isModalAdd: boolean = true; 
+  formData: any;
   rolId = 0;
   defaultColor = '#206bc4';
-
+  id!: number;
+  estatusBtn = true;
+  verdadero = "Activo";
+  falso = "Inactivo";
+  estatusTag = this.verdadero;
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     private spinnerService: NgxSpinnerService,
@@ -55,9 +60,9 @@ export class ProgramasSocialesComponent {
     this.programaSocialForm = this.formBuilder.group({
       id: [null],
       nombre: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
-      descripcion: ['', Validators.required],
+      descripcion: [''],
       color: ['', Validators.required],
-      estatus: [false],
+      estatus: [true],
       acronimo: ['', [Validators.required, Validators.minLength(4), Validators.pattern('^[a-zA-Z ]+$')]],
       areaAdscripcionId: [null, Validators.required],
     });
@@ -91,10 +96,45 @@ export class ProgramasSocialesComponent {
     );
     this.configPaginator.currentPage = 1;
   }
-  setDataModalUpdate(dto: ProgramaSocial) {
-    console.log(dto);
-  }
 
+  
+  actualizar() {
+    const socialFormValue = { ...this.programaSocialForm.value };
+    socialFormValue.areaAdscripcionId = +socialFormValue.areaAdscripcionId;
+  
+    const selectedArea = this.areasAdscripcion.find(area => area.id === socialFormValue.areaAdscripcionId);
+    if (selectedArea) {
+      socialFormValue.areaAdscripcion = selectedArea; // Utiliza el objeto completo
+    }
+    this.programasSocialesService.put(this.id, socialFormValue).subscribe({
+      next: () => {
+        this.mensajeService.mensajeExito("Programa social actualizado con éxito");
+        this.resetForm();
+        this.configPaginator.currentPage = 1;
+      },
+      error: (error) => {
+        this.mensajeService.mensajeError("Error al actualizar programa social");
+        console.error(error);
+      }
+    });
+  }
+  
+
+    setDataModalUpdate(dto: ProgramaSocial) {
+      this.isModalAdd = false;
+      this.id = dto.id;
+      this.programaSocialForm.patchValue({
+        id: dto.id,
+        nombre: dto.nombre,
+        descripcion: dto.descripcion,
+        color: dto.color,
+        estatus: dto.estatus,
+        acronimo: dto.acronimo,
+        areaAdscripcionId: dto.areaAdscripcion.id  // Aquí asigna el ID de areaAdscripcion
+      });
+      this.formData = this.programaSocialForm.value;
+
+    }
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
       `¿Estás seguro de eliminar el programa social: ${nameItem}?`,
@@ -116,13 +156,22 @@ export class ProgramasSocialesComponent {
     this.closebutton.nativeElement.click();
     this.programaSocialForm.reset();
   }
-
   submit() {
-    this.programaSocial = this.programaSocialForm.value as ProgramaSocial;
+    if (this.isModalAdd === false) {
 
+      this.actualizar();
+    } else {
+      this.agregar();
+
+    }
+  }
+
+  
+  agregar() {
+    this.programaSocial = this.programaSocialForm.value as ProgramaSocial;
+    
     const areaAdscripcionId = this.programaSocialForm.get('areaAdscripcionId')?.value;
     this.programaSocial.areaAdscripcion = { id: areaAdscripcionId } as AreaAdscripcion;
-    console.log(this.programaSocial);
 
     this.spinnerService.show();
     this.programasSocialesService.post(this.programaSocial).subscribe({
@@ -140,9 +189,18 @@ export class ProgramasSocialesComponent {
   }
 
   handleChangeAdd() {
-    this.programaSocialForm.reset();
-    this.isModalAdd = true;
+    if (this.programaSocialForm) {
+      this.programaSocialForm.reset();
+      const estatusControl = this.programaSocialForm.get('estatus');
+      if (estatusControl) {
+        estatusControl.setValue(true);
+      }
+      this.isModalAdd = true;
+    }
   }
+  
 
-
+ setEstatus() {
+    this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
+  }
 }
