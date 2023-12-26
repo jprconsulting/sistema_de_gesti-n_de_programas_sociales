@@ -11,6 +11,7 @@ import { LoadingStates } from 'src/app/global/global';
 import { AreaAdscripcion } from 'src/app/models/area-adscripcion';
 import { Rol } from 'src/app/models/rol';
 import { Usuario } from 'src/app/models/usuario';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-usuarios',
@@ -185,7 +186,57 @@ export class UsuariosComponent {
     this.usuarioForm.reset();
     this.isModalAdd = true;
   }
+  exportarDatosAExcel() {
+    if (this.usuarios.length === 0) {
+      console.warn('La lista de usuarios está vacía. No se puede exportar.');
+      return;
+    }
 
+    const datosParaExportar = this.usuarios.map(usuario => {
+      return {
+        'ID': usuario.id,
+        'Nombre': usuario.nombre,
+        'Apellido Paterno': usuario.apellidoPaterno,
+        'Apellido Materno': usuario.apellidoMaterno,
+        'Correo': usuario.correo,
+        'Estatus': usuario.estatus,
+      };
+    });
 
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
+    this.guardarArchivoExcel(excelBuffer, 'usuarios.xlsx');
+  }
+
+  guardarArchivoExcel(buffer: any, nombreArchivo: string) {
+    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url: string = window.URL.createObjectURL(data);
+    const a: HTMLAnchorElement = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+  buscar: string = '';
+  usuarioFiltrado: any [] = [];
+
+  filtrarUsuarios():  any {
+    return this.usuarios.filter(usuario =>
+      usuario.nombre.toLowerCase().includes(this.buscar.toLowerCase(),) ||
+      usuario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),)||
+      usuario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),)||
+      usuario.correo.toLowerCase().includes(this.buscar.toLowerCase(),)
+    );
+
+  }
+  actualizarFiltro(event: any): void {
+    this.buscar = event.target.value;
+    this.usuarioFiltrado = this.filtrarUsuarios();
+  }
 }
+
+
+
+

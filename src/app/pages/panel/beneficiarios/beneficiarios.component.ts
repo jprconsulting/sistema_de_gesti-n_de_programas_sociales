@@ -12,6 +12,7 @@ import { ProgramasSocialesService } from 'src/app/core/services/programas-social
 import { MunicipiosService } from 'src/app/core/services/municipios.service';
 import { NgxGpAutocompleteDirective } from '@angular-magic/ngx-gp-autocomplete';
 import { HeaderTitleService } from 'src/app/core/services/header-title.service';
+import * as XLSX from 'xlsx';
 
 
 @Component({
@@ -49,6 +50,7 @@ export class BeneficiariosComponent implements OnInit {
     componentRestrictions: { country: 'MX' }
   };
   maps!: google.maps.Map;
+  SocialForm: any;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -305,7 +307,70 @@ export class BeneficiariosComponent implements OnInit {
     this.beneficiarioForm.reset();
     this.isModalAdd = true;
   }
+  exportarDatosAExcel() {
+    if (this.beneficiarios.length === 0) {
+      console.warn('La lista de usuarios está vacía. No se puede exportar.');
+      return;
+    }
+  
+    const datosParaExportar = this.beneficiarios.map(beneficiarios => {
+      return {
+        'ID': beneficiarios.nombres,
+        'ApellidoPaterno': beneficiarios.apellidoPaterno,
+        'Apellido Materno': beneficiarios.apellidoMaterno,
+        'FechaNacimiento': beneficiarios.fechaNacimiento,
+        'Curp': beneficiarios.curp,
+        'Sexo': beneficiarios.sexo,
+        'Domicilio': beneficiarios.domicilio,
+        'Estatus': beneficiarios.estatus,
+      };
+    });
+  
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  
+    this.guardarArchivoExcel(excelBuffer, 'beneficiarios.xlsx');
+  }
+  
+  guardarArchivoExcel(buffer: any, nombreArchivo: string) {
+    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url: string = window.URL.createObjectURL(data);
+    const a: HTMLAnchorElement = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+  
+  toggleEstatus() {
+    const estatusControl = this.SocialForm.get('Estatus');
+  
+    if (estatusControl) {
+      estatusControl.setValue(estatusControl.value === 1 ? 0 : 1);
+    }
+  }
+  
+  buscar: string = '';
+  beneficiarioFiltrado: any [] = [];
+  
+  filtrarBeneficiario():  any {
+      return this.beneficiarios.filter(beneficioario =>
+        beneficioario.nombres.toLowerCase().includes(this.buscar.toLowerCase(),) ||
+        beneficioario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),)||
+        beneficioario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),)||
+        beneficioario.curp.toLowerCase().includes(this.buscar.toLowerCase(),)
+      );
+  
+    }
+    actualizarFiltro(event: any): void {
+      this.buscar = event.target.value;
+      this.beneficiarioFiltrado = this.filtrarBeneficiario();
+    }
+  
+  
+  }
 
 
 
-}
+
