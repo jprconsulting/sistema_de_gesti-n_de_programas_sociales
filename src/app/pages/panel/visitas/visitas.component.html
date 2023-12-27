@@ -26,8 +26,8 @@
                     <div class="mb-3">
                         <label class="form-label" for="selectProgramaSocial">Filtrar por programa social:</label>
                         <select class="form-select" id="selectProgramaSocial" [(ngModel)]="selectedProgramaSocial" (change)="filterByProgram()">
-                            <option value="0" [attr.selected]="selectedProgramaSocial === -1 ? true : null">Selecciona un programa social</option>
-                            <option value="">Todos los Programas Sociales</option>
+                            <option value="0" [attr.selected]="selectedProgramaSocial === -1 ? true : null" disabled selected>Selecciona un programa social</option>
+                            <option value="">Todos los programas sociales</option>
                             <option *ngFor="let programa of programasSociales" [ngValue]="programa.id">{{ programa.nombre }}</option>
                         </select>
                     </div>
