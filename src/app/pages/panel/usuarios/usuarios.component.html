@@ -296,7 +296,7 @@
               </div>
             </div>
             <div class="col-lg-4">
-              <div class="mb-3">
+              <div class="mb-3 custom-green-switch">
                 <label for="estadoActivo" class="form-label">Estatus</label>
                 <label class="form-check form-switch checkbox-verde">
                   <input
@@ -337,6 +337,11 @@
                     {{ item.nombreRol }}
                   </ng-template>
                 </ng-select>
+                <div
+                    *ngIf="usuarioForm.get('rolId')?.hasError('required')"
+                  >
+                    <p style="color: red">La rol es obligatorio</p>
+                  </div>
               </div>
             </div>
             <div class="col-lg-4">
@@ -363,7 +368,7 @@
           <button
             type="submit"
             class="btn btn-success"
-            [disabled]="!usuarioForm.valid"
+            [disabled]="usuarioForm.valid"
           >
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
