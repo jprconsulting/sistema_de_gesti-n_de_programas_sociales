@@ -8,6 +8,8 @@ import { Visita } from 'src/app/models/visita';
 import { Beneficiario } from 'src/app/models/beneficiario';
 import { BeneficiariosService } from 'src/app/core/services/beneficiarios.service';
 import { VisitasService } from 'src/app/core/services/visitas.service';
+import { ProgramasSocialesService } from 'src/app/core/services/programas-sociales.service';
+import { ProgramaSocial } from 'src/app/models/programa-social';
 
 @Component({
   selector: 'app-visitas',
@@ -24,12 +26,14 @@ export class VisitasComponent {
   visitas: Visita[] = [];
   visitasFilter: Visita[] = [];
   isLoading = LoadingStates.neutro;
+  programasSociales: ProgramaSocial[] = [];
 
   beneficiarioSelect!: Beneficiario | undefined;
   beneficiarios: Beneficiario[] = [];
   isModalAdd = true;
   imagenAmpliada: string | null = null;
   mostrarModal = false;
+  selectedProgramaSocial: number = 0;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -38,11 +42,13 @@ export class VisitasComponent {
     private beneficiariosService: BeneficiariosService,
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
+    private programasSocialesService: ProgramasSocialesService,
   ) {
     this.visitasService.refreshListVisitas.subscribe(() => this.getVisitas());
     this.getVisitas();
     this.creteForm();
     this.getBeneficiarios();
+    this.getProgramasSociales();
   }
 
   getBeneficiarios() {
@@ -62,7 +68,7 @@ export class VisitasComponent {
       id: [null],
       descripcion: ['', Validators.required],
       beneficiarioId: [null, Validators.required],
-      imagenBase64: ['',Validators.required]
+      imagenBase64: ['']
     });
   }
 
@@ -98,9 +104,29 @@ export class VisitasComponent {
     this.configPaginator.currentPage = 1;
   }
 
+  id!: number;
+  formData: any;
+
   setDataModalUpdate(dto: Visita) {
+    this.isModalAdd = false;
+    this.id = dto.id;
+
+    // Asegúrate de asignar solo el ID del beneficiario si beneficiarioId es un campo de ID
+    const beneficiarioId = dto.beneficiario?.id || null;
+
+    this.visitaForm.patchValue({
+      id: dto.id,
+      descripcion: dto.descripcion,
+      beneficiarioId: beneficiarioId,
+      imagenBase64: dto.imagenBase64
+    });
+
+    // El objeto que se enviará al editar la visita será directamente this.visitaForm.value
+    console.log(this.visitaForm.value);
     console.log(dto);
   }
+
+
 
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
@@ -122,8 +148,20 @@ export class VisitasComponent {
     this.closebutton.nativeElement.click();
     this.visitaForm.reset();
   }
+  isUpdating: boolean = false;
 
   submit() {
+    if (this.isModalAdd === false) {
+
+      this.actualizarVisita();
+    } else {
+      this.agregar();
+
+    }
+
+  }
+
+  agregar() {
     this.visita = this.visitaForm.value as Visita;
     const beneficiarioId = this.visitaForm.get('beneficiarioId')?.value;
     this.visita.beneficiario = { id: beneficiarioId } as Beneficiario;
@@ -149,6 +187,33 @@ export class VisitasComponent {
     } else {
       console.error('Error: No se encontró una representación válida en base64 de la imagen.');
     }
+  }
+
+  actualizarVisita() {
+    const visitaFormValue = this.visitaForm.value;
+
+    const visitaData: Visita = {
+      id: visitaFormValue.id,
+      descripcion: visitaFormValue.descripcion,
+      imagenBase64: visitaFormValue.imagenBase64,
+      foto: '', // Valor vacío o lo que corresponda
+      strFechaHoraVisita: '', // Valor vacío o lo que corresponda
+      beneficiario: this.visita?.beneficiario // Asegúrate de mantener el beneficiario actual
+    };
+
+    this.spinnerService.show();
+    this.visitasService.put(visitaData.id, visitaData).subscribe({
+      next: () => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeExito('Visita actualizada correctamente');
+        this.resetForm();
+        this.configPaginator.currentPage = 1;
+      },
+      error: (error) => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeError(error);
+      }
+    });
   }
 
   handleChangeAdd() {
@@ -230,4 +295,26 @@ export class VisitasComponent {
     }
   }
 
+  getProgramasSociales() {
+    this.isLoading = LoadingStates.trueLoading;
+    this.programasSocialesService.getAll().subscribe(
+      {
+        next: (dataFromAPI) => {
+          this.programasSociales = dataFromAPI;
+          this.isLoading = LoadingStates.falseLoading;
+        },
+        error: () => {
+          this.isLoading = LoadingStates.errorLoading
+        }
+      }
+    );
+  }
+
+  filterByProgram() {
+    if (this.selectedProgramaSocial) {
+        this.visitasFilter = this.visitas.filter(visita => visita.beneficiario.programaSocial.id === this.selectedProgramaSocial);
+    } else {
+        this.visitasFilter = this.visitas; // Si no se selecciona ningún programa, mostrar todos
+    }
+}
 }
