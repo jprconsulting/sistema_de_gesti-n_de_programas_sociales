@@ -52,8 +52,14 @@ export class MapaProgramasSocialesComponent {
   }
 
   handleChangeSearch(event: any) {
-    console.log(event);
+    const searchTerm = event.target.value.toLowerCase();
+  
+    // Filtrar totalesPorMunicipioFilter basado en el nombre del municipio
+    this.totalesPorMunicipioFilter = this.totalesPorMunicipio.filter(municipio =>
+      municipio.nombre.toLowerCase().includes(searchTerm)
+    );
   }
+  
 
   setSettingsMapa() {
     this.beneficiariosService.dataMapa$.subscribe((newData) => {

@@ -8,6 +8,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ProgramasSocialesService } from 'src/app/core/services/programas-sociales.service';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-programas-sociales',
@@ -200,4 +201,64 @@ export class ProgramasSocialesComponent {
  setEstatus() {
     this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
   }
+  exportarDatosAExcel() {
+    if (this.programasSociales.length === 0) {
+      console.warn('La lista de usuarios está vacía. No se puede exportar.');
+      return;
+    }
+
+    const datosParaExportar = this.programasSociales.map(programasSociales => {
+      return {
+        'ID': programasSociales.nombre,
+        'descripcion': programasSociales.descripcion,
+        'color': programasSociales.color,
+        'estatus': programasSociales.estatus,
+        'acronimo': programasSociales.acronimo,
+      };
+    });
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+    this.guardarArchivoExcel(excelBuffer, 'Programas sociales.xlsx');
+  }
+
+  guardarArchivoExcel(buffer: any, nombreArchivo: string) {
+    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url: string = window.URL.createObjectURL(data);
+    const a: HTMLAnchorElement = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  toggleEstatus() {
+    const estatusControl = this.programaSocialForm.get('Estatus');
+
+    if (estatusControl) {
+      estatusControl.setValue(estatusControl.value === 1 ? 0 : 1);
+    }
+  }
+
+  buscar: string = '';
+  beneficiarioFiltrado: any[] = [];
+
+  filtrarBeneficiario(): any {
+    return this.programasSociales.filter(programasSociales =>
+      programasSociales.nombre.toLowerCase().includes(this.buscar.toLowerCase(),) ||
+      programasSociales.descripcion.toLowerCase().includes(this.buscar.toLowerCase(),) ||
+      programasSociales.acronimo.toLowerCase().includes(this.buscar.toLowerCase(),) ||
+      programasSociales.areaAdscripcion.nombre.toLowerCase().includes(this.buscar.toLowerCase(),)
+    );
+
+  }
+  actualizarFiltro(event: any): void {
+    this.buscar = event.target.value;
+    this.beneficiarioFiltrado = this.filtrarBeneficiario();
+  }
+
+
 }
+
