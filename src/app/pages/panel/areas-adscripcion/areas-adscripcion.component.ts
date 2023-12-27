@@ -6,7 +6,6 @@ import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
-import { HeaderTitleService } from 'src/app/core/services/header-title.service';
 import * as XLSX from 'xlsx';
 
 @Component({
@@ -32,19 +31,17 @@ export class AreasAdscripcionComponent {
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
     private areasAdscripcionService: AreasAdscripcionService,
-    private headerTitleService: HeaderTitleService
   ) {
     this.areasAdscripcionService.refreshListAreasAdscripcion.subscribe(() => this.getAreasAdscripcion());
     this.getAreasAdscripcion();
     this.createForm();
-    this.headerTitleService.updateHeaderTitle('Áreas de Adscripción');
   }
 
   estatusBtn = true;
   verdadero = "Activo";
   falso = "Inactivo";
   estatusTag = this.verdadero;
- setEstatus() {
+  setEstatus() {
     this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
   }
 
@@ -106,7 +103,7 @@ export class AreasAdscripcionComponent {
 
   editarArea() {
     const areaFormValue = { ...this.areaAdscripcionForm.value };
-    this.areasAdscripcionService.put(this.idToUpdate2,areaFormValue).subscribe({
+    this.areasAdscripcionService.put(this.idToUpdate2, areaFormValue).subscribe({
       next: () => {
         this.mensajeService.mensajeExito("Área actualizada con éxito");
         this.resetForm();
@@ -142,21 +139,21 @@ export class AreasAdscripcionComponent {
     this.areaAdscripcionForm.reset();
   }
 
-  agregar(){
+  agregar() {
     this.areaAdscripcion = this.areaAdscripcionForm.value as AreaAdscripcion;
-      this.spinnerService.show();
-      this.areasAdscripcionService.post(this.areaAdscripcion).subscribe({
-        next: () => {
-          this.spinnerService.hide();
-          this.mensajeService.mensajeExito('Área de adscripción guardada correctamente');
-          this.resetForm();
-          this.configPaginator.currentPage = 1;
-        },
-        error: (error) => {
-          this.spinnerService.hide();
-          this.mensajeService.mensajeError(error);
-        }
-      });
+    this.spinnerService.show();
+    this.areasAdscripcionService.post(this.areaAdscripcion).subscribe({
+      next: () => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeExito('Área de adscripción guardada correctamente');
+        this.resetForm();
+        this.configPaginator.currentPage = 1;
+      },
+      error: (error) => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeError(error);
+      }
+    });
   }
 
   isUpdating: boolean = false;

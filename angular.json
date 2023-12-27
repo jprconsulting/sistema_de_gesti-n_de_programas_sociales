@@ -24,7 +24,8 @@
               "node_modules/@tabler/core/dist/css/tabler.min.css",
               "node_modules/@tabler/core/dist/css/demo.min.css",
               "node_modules/@tabler/icons-webfont/tabler-icons.min.css",
-              "node_modules/ngx-spinner/animations/ball-scale-multiple.css"
+              "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
+              "node_modules/ngx-spinner/animations/ball-clip-rotate.css"
             ],
             "scripts": [
               "node_modules/@tabler/core/dist/js/tabler.min.js",

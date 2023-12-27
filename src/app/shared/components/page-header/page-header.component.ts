@@ -1,6 +1,4 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { HeaderTitleService } from 'src/app/core/services/header-title.service';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-page-header',
@@ -8,11 +6,7 @@ import { HeaderTitleService } from 'src/app/core/services/header-title.service';
   styleUrls: ['./page-header.component.css']
 })
 export class PageHeaderComponent {
-  headerTitle = '';
 
-  constructor(private headerTitleService: HeaderTitleService) {
-    this.headerTitleService.headerTitle$.subscribe((newTitle) => {
-      this.headerTitle = newTitle;
-    });
-  }
+  @Input() headerTitle: string = '';
+
 }

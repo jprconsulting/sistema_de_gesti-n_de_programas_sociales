@@ -8,6 +8,8 @@
   <p style="color: white">Guardando...</p>
 </ngx-spinner>
 
+<app-page-header headerTitle="Áreas de Adscripción"></app-page-header>
+
 <div class="row">
   <div class="col-12">
     <div class="card">
@@ -21,14 +23,31 @@
           >
             <i class="ti ti-plus me-1"></i>Agregar
           </button>
-        <button title="Descargar base de datos de las areas de adscripción" class="mr-5" (click)="exportarDatosAExcel()">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-cloud-download" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path d="M19 18a3.5 3.5 0 0 0 0 -7h-1a5 4.5 0 0 0 -11 -2a4.6 4.4 0 0 0 -2.1 8.4" />
-            <path d="M12 13l0 9" />
-            <path d="M9 19l3 3l3 -3" />
-          </svg>
-        </button>
+          <button
+            title="Descargar base de datos de las areas de adscripción"
+            class="mr-5"
+            (click)="exportarDatosAExcel()"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="icon icon-tabler icon-tabler-cloud-download"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path
+                d="M19 18a3.5 3.5 0 0 0 0 -7h-1a5 4.5 0 0 0 -11 -2a4.6 4.4 0 0 0 -2.1 8.4"
+              />
+              <path d="M12 13l0 9" />
+              <path d="M9 19l3 3l3 -3" />
+            </svg>
+          </button>
           <div class="ms-auto">
             <div class="input-icon">
               <input
@@ -145,7 +164,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-          {{ isModalAdd ?  "Actualizar" : "Agregar"}} Área de Adscripción
+          {{ isModalAdd ? "Actualizar" : "Agregar" }} Área de Adscripción
         </h5>
         <button
           #closebutton
@@ -167,11 +186,18 @@
                   class="form-control"
                   formControlName="nombre"
                 />
-                <div *ngIf="areaAdscripcionForm.get('nombre')?.touched" class="error-message">
-                  <div *ngIf="areaAdscripcionForm.get('nombre')?.hasError('required')">
-                      <p style="color: red;">El nombre es obligatorio</p>
+                <div
+                  *ngIf="areaAdscripcionForm.get('nombre')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
+                      areaAdscripcionForm.get('nombre')?.hasError('required')
+                    "
+                  >
+                    <p style="color: red">El nombre es obligatorio</p>
                   </div>
-              </div>
+                </div>
               </div>
             </div>
             <div class="col-lg-12">
@@ -237,9 +263,7 @@
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">
-          Actualizar área de adscripción
-        </h5>
+        <h5 class="modal-title">Actualizar área de adscripción</h5>
         <button
           #closebutton
           type="button"
@@ -260,11 +284,18 @@
                   class="form-control"
                   formControlName="nombre"
                 />
-                <div *ngIf="areaAdscripcionForm.get('nombre')?.touched" class="error-message">
-                  <div *ngIf="areaAdscripcionForm.get('nombre')?.hasError('required')">
-                      <p style="color: red;">El nombre es obligatorio</p>
+                <div
+                  *ngIf="areaAdscripcionForm.get('nombre')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
+                      areaAdscripcionForm.get('nombre')?.hasError('required')
+                    "
+                  >
+                    <p style="color: red">El nombre es obligatorio</p>
                   </div>
-              </div>
+                </div>
               </div>
             </div>
             <div class="col-lg-12">

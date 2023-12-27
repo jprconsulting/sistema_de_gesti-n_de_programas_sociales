@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { PanelModule } from './pages/panel/panel.module';
 import { Loader } from '@googlemaps/js-api-loader';
+import { LoginModule } from './pages/login/login.module';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { Loader } from '@googlemaps/js-api-loader';
     AppRoutingModule,
     HttpClientModule,
     PanelModule,
+    LoginModule
   ],
   providers: [
     {

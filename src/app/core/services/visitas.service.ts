@@ -5,6 +5,7 @@ import { HandleErrorService } from './handle-error.service';
 import { Subject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Visita } from 'src/app/models/visita';
+import { WordCloud } from 'src/app/models/word-cloud';
 
 @Injectable({
   providedIn: 'root'
@@ -58,6 +59,10 @@ export class VisitasService {
         }),
         catchError(this.handleErrorService.handleError)
       );
+  }
+
+  getWordCloud() {
+    return this.http.get<WordCloud[]>(`${this.route}/obtener-nube-palabras`);
   }
 
 }

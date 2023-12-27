@@ -4,12 +4,10 @@ import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { LoadingStates } from 'src/app/global/global';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Visita } from 'src/app/models/visita';
 import { Beneficiario } from 'src/app/models/beneficiario';
 import { BeneficiariosService } from 'src/app/core/services/beneficiarios.service';
 import { VisitasService } from 'src/app/core/services/visitas.service';
-import { HeaderTitleService } from 'src/app/core/services/header-title.service';
 
 @Component({
   selector: 'app-visitas',
@@ -40,13 +38,11 @@ export class VisitasComponent {
     private beneficiariosService: BeneficiariosService,
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
-    private headerTitleService: HeaderTitleService
   ) {
     this.visitasService.refreshListVisitas.subscribe(() => this.getVisitas());
     this.getVisitas();
     this.creteForm();
     this.getBeneficiarios();
-    this.headerTitleService.updateHeaderTitle('Visitas');
   }
 
   getBeneficiarios() {

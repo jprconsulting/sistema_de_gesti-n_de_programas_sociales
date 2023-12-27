@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { NubePalabrasRoutingModule } from './nube-palabras-routing.module';
 import { NubePalabrasComponent } from './nube-palabras.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 @NgModule({
@@ -11,7 +12,8 @@ import { NubePalabrasComponent } from './nube-palabras.component';
   ],
   imports: [
     CommonModule,
-    NubePalabrasRoutingModule
+    NubePalabrasRoutingModule,
+    SharedModule
   ]
 })
 export class NubePalabrasModule { }

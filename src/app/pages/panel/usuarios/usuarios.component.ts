@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
-import { HeaderTitleService } from 'src/app/core/services/header-title.service';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { RolsService } from 'src/app/core/services/rols.service';
 import { UsuariosService } from 'src/app/core/services/usuarios.service';
@@ -18,7 +17,7 @@ import * as XLSX from 'xlsx';
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.css']
 })
-export class UsuariosComponent implements OnInit{
+export class UsuariosComponent implements OnInit {
 
   @ViewChild('closebutton') closebutton!: ElementRef;
   @ViewChild('searchItem') searchItem!: ElementRef;
@@ -42,7 +41,6 @@ export class UsuariosComponent implements OnInit{
     private formBuilder: FormBuilder,
     private areasAdscripcionService: AreasAdscripcionService,
     private rolsService: RolsService,
-    private headerTitleService: HeaderTitleService
   ) {
     this.usuarioService.refreshListUsuarios.subscribe(() => this.getUsuarios());
     this.getUsuarios();
@@ -50,7 +48,6 @@ export class UsuariosComponent implements OnInit{
     this.getAreasAdscripcion();
     this.creteForm();
     this.subscribeRolId();
-    this.headerTitleService.updateHeaderTitle('Usuarios');
   }
   ngOnInit(): void {
     this.isModalAdd = false;
@@ -190,7 +187,7 @@ export class UsuariosComponent implements OnInit{
     );
   }
 
-  agregar(){
+  agregar() {
     this.usuario = this.usuarioForm.value as Usuario;
 
     const rolId = this.usuarioForm.get('rolId')?.value;
@@ -269,13 +266,13 @@ export class UsuariosComponent implements OnInit{
     window.URL.revokeObjectURL(url);
   }
   buscar: string = '';
-  usuarioFiltrado: any [] = [];
+  usuarioFiltrado: any[] = [];
 
-  filtrarUsuarios():  any {
+  filtrarUsuarios(): any {
     return this.usuarios.filter(usuario =>
       usuario.nombre.toLowerCase().includes(this.buscar.toLowerCase(),) ||
-      usuario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),)||
-      usuario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),)||
+      usuario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),) ||
+      usuario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),) ||
       usuario.correo.toLowerCase().includes(this.buscar.toLowerCase(),)
     );
 

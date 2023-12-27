@@ -8,7 +8,6 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ProgramasSocialesService } from 'src/app/core/services/programas-sociales.service';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
-import { HeaderTitleService } from 'src/app/core/services/header-title.service';
 
 @Component({
   selector: 'app-programas-sociales',
@@ -43,13 +42,11 @@ export class ProgramasSocialesComponent {
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
     private areasAdscripcionService: AreasAdscripcionService,
-    private headerTitleService: HeaderTitleService
   ) {
     this.programasSocialesService.refreshListProgramasSociales.subscribe(() => this.getProgramasSociales());
     this.getProgramasSociales();
     this.getAreasAdscripcion();
     this.creteForm();
-    this.headerTitleService.updateHeaderTitle('Programas Sociales');
   }
 
   getAreasAdscripcion() {

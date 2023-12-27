@@ -11,7 +11,6 @@ import { BeneficiariosService } from 'src/app/core/services/beneficiarios.servic
 import { ProgramasSocialesService } from 'src/app/core/services/programas-sociales.service';
 import { MunicipiosService } from 'src/app/core/services/municipios.service';
 import { NgxGpAutocompleteDirective } from '@angular-magic/ngx-gp-autocomplete';
-import { HeaderTitleService } from 'src/app/core/services/header-title.service';
 import * as XLSX from 'xlsx';
 
 
@@ -65,14 +64,12 @@ export class BeneficiariosComponent implements OnInit {
     private formBuilder: FormBuilder,
     private programasSocialesService: ProgramasSocialesService,
     private municipiosService: MunicipiosService,
-    private headerTitleService: HeaderTitleService
   ) {
     this.beneficiariosService.refreshListBeneficiarios.subscribe(() => this.getBeneficiarios());
     this.getBeneficiarios();
     this.getMunicipios();
     this.getProgramasSociales();
     this.creteForm();
-    this.headerTitleService.updateHeaderTitle('Beneficiarios');
   }
 
 
@@ -85,7 +82,7 @@ export class BeneficiariosComponent implements OnInit {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
     }
-    
+
     if (place.formatted_address) {
       this.beneficiarioForm.patchValue({
         domicilio: place.formatted_address
@@ -219,7 +216,7 @@ export class BeneficiariosComponent implements OnInit {
       id: [null],
       nombres: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
-      apellidoMaterno:['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
+      apellidoMaterno: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
       fechaNacimiento: ['', Validators.required],
       sexo: [null, Validators.required],
       curp: ['', Validators.required],
@@ -325,7 +322,7 @@ export class BeneficiariosComponent implements OnInit {
       console.warn('La lista de usuarios está vacía. No se puede exportar.');
       return;
     }
-  
+
     const datosParaExportar = this.beneficiarios.map(beneficiarios => {
       return {
         'ID': beneficiarios.nombres,
@@ -338,14 +335,14 @@ export class BeneficiariosComponent implements OnInit {
         'Estatus': beneficiarios.estatus,
       };
     });
-  
+
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
     const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
     const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  
+
     this.guardarArchivoExcel(excelBuffer, 'beneficiarios.xlsx');
   }
-  
+
   guardarArchivoExcel(buffer: any, nombreArchivo: string) {
     const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     const url: string = window.URL.createObjectURL(data);
@@ -355,34 +352,34 @@ export class BeneficiariosComponent implements OnInit {
     a.click();
     window.URL.revokeObjectURL(url);
   }
-  
+
   toggleEstatus() {
     const estatusControl = this.SocialForm.get('Estatus');
-  
+
     if (estatusControl) {
       estatusControl.setValue(estatusControl.value === 1 ? 0 : 1);
     }
   }
-  
+
   buscar: string = '';
-  beneficiarioFiltrado: any [] = [];
-  
-  filtrarBeneficiario():  any {
-      return this.beneficiarios.filter(beneficioario =>
-        beneficioario.nombres.toLowerCase().includes(this.buscar.toLowerCase(),) ||
-        beneficioario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),)||
-        beneficioario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),)||
-        beneficioario.curp.toLowerCase().includes(this.buscar.toLowerCase(),)
-      );
-  
-    }
-    actualizarFiltro(event: any): void {
-      this.buscar = event.target.value;
-      this.beneficiarioFiltrado = this.filtrarBeneficiario();
-    }
-  
-  
+  beneficiarioFiltrado: any[] = [];
+
+  filtrarBeneficiario(): any {
+    return this.beneficiarios.filter(beneficioario =>
+      beneficioario.nombres.toLowerCase().includes(this.buscar.toLowerCase(),) ||
+      beneficioario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),) ||
+      beneficioario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),) ||
+      beneficioario.curp.toLowerCase().includes(this.buscar.toLowerCase(),)
+    );
+
   }
+  actualizarFiltro(event: any): void {
+    this.buscar = event.target.value;
+    this.beneficiarioFiltrado = this.filtrarBeneficiario();
+  }
+
+
+}
 
 
 
