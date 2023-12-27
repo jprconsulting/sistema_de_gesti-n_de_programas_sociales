@@ -136,13 +136,12 @@ export class UsuariosComponent implements OnInit{
     this.configPaginator.currentPage = 1;
   }
 
-  idToUpdate2!: number;
+  idToUpdate!: number;
   formData: any;
 
   setDataModalUpdate(dto: Usuario) {
-    console.log(dto);
-    this.isUpdating = true;
-    this.idToUpdate2 = dto.id;
+    this.isModalAdd = false;
+    this.idToUpdate = dto.id;
     this.usuarioForm.patchValue({
       id: dto.id,
       nombre: dto.nombre,
@@ -159,7 +158,7 @@ export class UsuariosComponent implements OnInit{
 
   editarUsuario() {
     const usuarioFormValue = { ...this.usuarioForm.value };
-    this.usuarioService.put(this.idToUpdate2, usuarioFormValue).subscribe({
+    this.usuarioService.put(this.idToUpdate, usuarioFormValue).subscribe({
 
       next: () => {
         this.mensajeService.mensajeExito("Usuario actualizado con éxito");
@@ -223,17 +222,24 @@ export class UsuariosComponent implements OnInit{
   isUpdating: boolean = false;
 
   submit() {
-    if (this.isUpdating) {
+    if (this.isModalAdd === false) {
+
       this.editarUsuario();
     } else {
       this.agregar();
+
     }
   }
 
   handleChangeAdd() {
-    this.usuarioForm.reset();
-    this.isModalAdd = true;
-    this.isUpdating = false;
+    if (this.usuarioForm) {
+      this.usuarioForm.reset();
+      const estatusControl = this.usuarioForm.get('estatus');
+      if (estatusControl) {
+        estatusControl.setValue(true);
+      }
+      this.isModalAdd = true;
+    }
   }
   exportarDatosAExcel() {
     if (this.usuarios.length === 0) {

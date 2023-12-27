@@ -86,13 +86,12 @@ export class AreasAdscripcionComponent {
     this.configPaginator.currentPage = 1;
   }
 
-  idToUpdate2!: number;
+  id!: number;
   formData: any;
 
   setDataModalUpdate(dto: AreaAdscripcion) {
-    console.log(dto);
-    this.isUpdating = true;
-    this.idToUpdate2 = dto.id;
+    this.isModalAdd = false;
+    this.id = dto.id;
     this.areaAdscripcionForm.patchValue({
       id: dto.id,
       nombre: dto.nombre,
@@ -106,7 +105,7 @@ export class AreasAdscripcionComponent {
 
   editarArea() {
     const areaFormValue = { ...this.areaAdscripcionForm.value };
-    this.areasAdscripcionService.put(this.idToUpdate2,areaFormValue).subscribe({
+    this.areasAdscripcionService.put(this.id,areaFormValue).subscribe({
       next: () => {
         this.mensajeService.mensajeExito("Área actualizada con éxito");
         this.resetForm();
@@ -162,18 +161,25 @@ export class AreasAdscripcionComponent {
   isUpdating: boolean = false;
 
   submit() {
-    if (this.isUpdating) {
+    if (this.isModalAdd === false) {
+
       this.editarArea();
     } else {
       this.agregar();
+
     }
 
   }
 
   handleChangeAdd() {
-    this.areaAdscripcionForm.reset();
-    this.isModalAdd = true;
-    this.isUpdating = false;
+    if (this.areaAdscripcionForm) {
+      this.areaAdscripcionForm.reset();
+      const estatusControl = this.areaAdscripcionForm.get('estatus');
+      if (estatusControl) {
+        estatusControl.setValue(true);
+      }
+      this.isModalAdd = true;
+    }
   }
 
   exportarDatosAExcel() {
