@@ -115,7 +115,7 @@
                       class="btn btn-warning btn-icon btn-sm"
                       data-bs-toggle="modal"
                       data-bs-target="#modal-area-adscripcion"
-                      (click)="handleChangeAdd(); setDataModalUpdate(area)"
+                      (click)="setDataModalUpdate(area)"
                     >
                       <i class="ti ti-edit"></i>
                     </button>
@@ -164,7 +164,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-          {{ isModalAdd ? "Actualizar" : "Agregar" }} Área de Adscripción
+          {{ isModalAdd ?  "Agregar" : "Actualizar"}} Área de Adscripción
         </h5>
         <button
           #closebutton
@@ -246,7 +246,7 @@
             class="btn btn-success"
             [disabled]="!areaAdscripcionForm.valid"
           >
-            {{ isModalAdd ? "Actualizar" : "Agregar" }}
+            {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
         </div>
       </form>
