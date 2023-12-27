@@ -79,7 +79,7 @@ export class UsuariosComponent implements OnInit {
       ],
       estatus: [true],
       rolId: [null, Validators.required],
-      areaAdscripcionId: [null],
+      areaAdscripcionId: [],
     });
   }
 
@@ -133,12 +133,12 @@ export class UsuariosComponent implements OnInit {
     this.configPaginator.currentPage = 1;
   }
 
-  idToUpdate!: number;
+  idUpdate!: number;
   formData: any;
 
   setDataModalUpdate(dto: Usuario) {
     this.isModalAdd = false;
-    this.idToUpdate = dto.id;
+    this.idUpdate = dto.id;
     this.usuarioForm.patchValue({
       id: dto.id,
       nombre: dto.nombre,
@@ -147,7 +147,7 @@ export class UsuariosComponent implements OnInit {
       correo: dto.correo,
       password: dto.password,
       estatus: dto.estatus,
-      rolId: dto.rol,
+      rolId: dto.rol.id,
     });
     this.formData = this.usuarioForm.value;
     console.log(this.usuarioForm.value);
@@ -155,18 +155,25 @@ export class UsuariosComponent implements OnInit {
 
   editarUsuario() {
     const usuarioFormValue = { ...this.usuarioForm.value };
-    this.usuarioService.put(this.idToUpdate, usuarioFormValue).subscribe({
+    this.usuario = this.usuarioForm.value as Usuario;
 
+    const rolId = this.usuarioForm.get('rolId')?.value;
+    const areaAdscripcionId = this.usuarioForm.get('areaAdscripcionId')?.value;
+
+    this.usuario.rol = { id: rolId } as Rol;
+    this.usuario.areaAdscripcion = { id: areaAdscripcionId } as AreaAdscripcion;
+
+    this.spinnerService.show();
+    this.usuarioService.put(this.idUpdate, this.usuario).subscribe({
       next: () => {
-        this.mensajeService.mensajeExito("Usuario actualizado con éxito");
+        this.spinnerService.hide();
+        this.mensajeService.mensajeExito('Usuario actualizado correctamente');
         this.resetForm();
-        console.log(usuarioFormValue);
       },
       error: (error) => {
-        this.mensajeService.mensajeError("Error al actualizar usuario");
-        console.error(error);
-        console.log(usuarioFormValue);
-      }
+        this.spinnerService.hide();
+        this.mensajeService.mensajeError(error);
+      },
     });
   }
 
@@ -188,27 +195,27 @@ export class UsuariosComponent implements OnInit {
 
   agregar() {
     this.usuario = this.usuarioForm.value as Usuario;
-
     const rolId = this.usuarioForm.get('rolId')?.value;
     const areaAdscripcionId = this.usuarioForm.get('areaAdscripcionId')?.value;
-
     this.usuario.rol = { id: rolId } as Rol;
     this.usuario.areaAdscripcion = { id: areaAdscripcionId } as AreaAdscripcion;
 
     this.spinnerService.show();
-    this.usuarioService.post(this.usuario).subscribe({
-      next: () => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Usuario guardado correctamente');
-        this.resetForm();
-        this.configPaginator.currentPage = 1;
-      },
-      error: (error) => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeError(error);
-      }
-    });
+      this.usuarioService.post(this.usuario).subscribe({
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito('Usuario guardado correctamente');
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeError(error);
+        },
+      });
+
   }
+
 
 
   resetForm() {

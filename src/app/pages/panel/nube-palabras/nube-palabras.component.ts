@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
 import * as Highcharts from 'highcharts';
 
+
 declare var require: any;
 const More = require('highcharts/highcharts-more');
 More(Highcharts);
 
 import Histogram from 'highcharts/modules/histogram-bellcurve';
+import { MunicipiosService } from 'src/app/core/services/municipios.service';
 import { VisitasService } from 'src/app/core/services/visitas.service';
+import { Municipio } from 'src/app/models/municipio';
 Histogram(Highcharts);
 
 const Accessibility = require('highcharts/modules/accessibility');
@@ -24,9 +27,19 @@ Wordcloud(Highcharts);
 export class NubePalabrasComponent {
 
     options: Highcharts.Options = {};
+    municipios: Municipio[] = [];
 
-    constructor(private visitasService: VisitasService) {
+
+    constructor(
+      private visitasService: VisitasService,
+      private municipiosService: MunicipiosService
+      ) {
         this.getWordCloud();
+        this.getMunicipios();
+    }
+
+    getMunicipios() {
+      this.municipiosService.getAll().subscribe({ next: (dataFromAPI) => this.municipios = dataFromAPI });
     }
 
     getWordCloud() {

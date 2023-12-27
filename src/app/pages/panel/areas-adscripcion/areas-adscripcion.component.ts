@@ -104,7 +104,7 @@ export class AreasAdscripcionComponent {
     const areaFormValue = { ...this.areaAdscripcionForm.value };
     this.areasAdscripcionService.put(this.id,areaFormValue).subscribe({
       next: () => {
-        this.mensajeService.mensajeExito("Área actualizada con éxito");
+        this.mensajeService.mensajeExito("Área actualizada correctamente");
         this.resetForm();
         console.log(areaFormValue);
       },
