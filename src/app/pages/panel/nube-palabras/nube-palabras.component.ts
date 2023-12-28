@@ -51,7 +51,6 @@ export class NubePalabrasComponent {
                         },
                         type: 'wordcloud',
                         data: dataFromAPI,
-                        name: ''
                     }],
 
                     title: {
@@ -70,13 +69,13 @@ export class NubePalabrasComponent {
                       stickOnContact: true,
                       shared: false,
                       pointFormat:
-                                    `<div style="width: 360px; height: 70px; background: #ffffff; box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.40); border-radius: 10px; opacity: 25;">
-                                      <div style="width: 20px; height: 100%; box-sizing: border-box; float: left; background-color: {point.color}; border-radius: 10px 0px 0px 10px;"></div>
-                                      <div style="padding: 5px; float: left;box-sizing: border-box; width: 340px; height: 60px; background: #ffffff; border-radius: 0px 0px 10px 0px;">
-                                        <div class="d-flex flex-row justify-content-between w-100">
-                                          <span class="px14 text-muted">Numero de repeticiones</span>
+                                    `<div style="width: 220px; height: 70px; background: #ffffff; box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.40); border-radius: 10px; opacity: 25;">
+                                      <div style="width: 5px; height: 100%; box-sizing: border-box; float: left; background-color: {point.color}; border-radius: 10px 0px 0px 10px;"></div>
+                                      <div style="padding: 5px; float: left;box-sizing: border-box; width: 200px; height: 60px; background: #ffffff; border-radius: 0px 0px 10px 0px;">
+                                        <div class="d-flex flex-row">
+                                          <span class="px14 text-muted" style="font-size: 15px;">Numero de repeticiones</span>
                                         </div>
-                                        <span class="px15 align-self-center text-muted"  style="width: 60%;">15</span>
+                                        <span class="px15 align-self-center text-muted" style="width: 60%; font-size: 15px;">{point.weight}</span>
                                         <br><br>
                                       </div>
                                     </div>`

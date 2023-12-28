@@ -137,14 +137,14 @@ export class MapaProgramasSocialesComponent {
 
                           <div style="padding: 5px; float: left;box-sizing: border-box; width: 340px; height: 60px; background: #ffffff; border-radius: 0px 0px 10px 0px;">
                             <div class="d-flex flex-row justify-content-between w-100">
-                              <span class="px14">Municipio</span>
+                              <span class="px14" style="font-size: 13px;">Municipio</span>
                             </div>
-                            <span class="px15 align-self-center" style="width: 60%;">{point.name}</span>
+                            <span class="px15 align-self-center" style="width: 60%; font-size: 13px;">{point.name}</span>
                             <br><br>
                             <div class="d-flex flex-row justify-content-between w-100">
                               <span class="px14 text-muted">Total de beneficiarios</span>
                             </div>
-                            <span class="px15 align-self-center text-muted"  style="width: 60%;">15</span>
+                            <span class="px15 align-self-center text-muted"  style="width: 60%;">1</span>
                             <br><br>
                             <div class="d-flex flex-row justify-content-between w-100">
                               <span class="px14 text-muted">Porcentaje</span>
