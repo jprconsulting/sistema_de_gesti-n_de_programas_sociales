@@ -76,7 +76,7 @@
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-between">
-                                        <button class="btn btn-warning btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#modal-report" (click)="setDataModalUpdate(beneficiario)">
+                                        <button class="btn btn-warning btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#modal-beneficiario" (click)="setDataModalUpdate(beneficiario)">
                       <i class="ti ti-edit"></i>
                     </button>
                                         <button class="btn btn-danger btn-icon btn-sm" (click)="
@@ -211,13 +211,10 @@
                 />
                 <div *ngIf="beneficiarioForm.get('curp')?.touched" class="error-message">
                   <div *ngIf="beneficiarioForm.get('curp')?.hasError('required')">
-                      El Nombre es obligatorio
-                  </div>
-                  <div *ngIf="beneficiarioForm.get('curp')?.hasError('minlength')">
-                      El Nombre debe tener al menos 3 caracteres
+                      El CURP es obligatorio
                   </div>
                   <div *ngIf="beneficiarioForm.get('curp')?.hasError('pattern')">
-                    El Nombre no puede tener números ni signos
+                    El CURP no es valido
                   </div>
               </div>
               </div>

@@ -34,17 +34,17 @@ export class BeneficiariosComponent implements OnInit {
   beneficiarios: Beneficiario[] = [];
   beneficiariosFilter: Beneficiario[] = [];
   isLoading = LoadingStates.neutro;
-
+  isModalAdd: boolean = true; 
   programasSociales: ProgramaSocial[] = [];
   municipios: Municipio[] = [];
-  isModalAdd = true;
   rolId = 0;
   generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
   estatusBtn = true;
   verdadero = "Activo";
   falso = "Inactivo";
   estatusTag = this.verdadero;
-
+  formData: any;
+  id!: number;
   // MAPS
   latitude: number = 19.316818295403003;
   longitude: number = -98.23837658175323;
@@ -222,7 +222,7 @@ export class BeneficiariosComponent implements OnInit {
       apellidoMaterno:['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
       fechaNacimiento: ['', Validators.required],
       sexo: [null, Validators.required],
-      curp: ['', Validators.required],
+      curp:  ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
       estatus: [this.estatusBtn],
       programaSocialId: [null, Validators.required],
       municipioId: [null, Validators.required],
@@ -259,10 +259,66 @@ export class BeneficiariosComponent implements OnInit {
     );
     this.configPaginator.currentPage = 1;
   }
-  setDataModalUpdate(dto: Beneficiario) {
-    console.log(dto);
+  setDataModalUpdate(beneficiario: Beneficiario) {
+    this.isModalAdd = false;
+    this.id = beneficiario.id;
+    const fechaFormateada = this.formatoFecha(beneficiario.fechaNacimiento);
+    console.log('nfjnvf', fechaFormateada);
+  
+    // Comprobaciones para evitar errores si los objetos son null o undefined
+    const municipioId = beneficiario.municipio ? beneficiario.municipio.id : null;
+    const programaSocialId = beneficiario.programaSocial ? beneficiario.programaSocial.id : null;
+  
+    this.beneficiarioForm.patchValue({
+      id: beneficiario.id,
+      nombres: beneficiario.nombres,
+      apellidoPaterno: beneficiario.apellidoPaterno,
+      apellidoMaterno: beneficiario.apellidoMaterno,
+      fechaNacimiento: fechaFormateada,
+      domicilio: beneficiario.domicilio,
+      estatus: beneficiario.estatus,
+      latitud: beneficiario.latitud,
+      longitud: beneficiario.longitud,
+      municipioId: beneficiario.municipio.id,
+      curp: beneficiario.curp,
+      sexo: beneficiario.sexo,
+      programaSocialId: beneficiario.programaSocial.id
+    });
+  
+    this.formData = this.beneficiarioForm.value;
+    
+  
+    setTimeout(() => {
+      this.mapa2();
+    }, 500);
+  console.log(beneficiario);
   }
+  
+  actualizar() {
+    const socialFormValue = { ...this.beneficiarioForm.value };
+    socialFormValue.programaSocialId = +socialFormValue.programaSocialId;
+    socialFormValue.municipioId = +socialFormValue.municipioId;
+    console.log('ded',socialFormValue)
+    this.beneficiariosService.put(this.id, socialFormValue).subscribe({
 
+      next: () => {
+        this.mensajeService.mensajeExito("Beneficiario actualizado con éxito");
+        this.resetForm();
+        console.log(socialFormValue);
+      },
+      error: (error) => {
+        this.mensajeService.mensajeError("Error al actualizar el beneficiario");
+        console.error(error);
+        console.log(socialFormValue);
+      }
+    });
+  }
+  formatoFecha(fecha: string): string {
+    // Aquí puedes utilizar la lógica para formatear la fecha según tus necesidades
+    const fechaFormateada = new Date(fecha).toISOString().split('T')[0];
+    return fechaFormateada;
+  }
+  
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
       `¿Estás seguro de eliminar el beneficiario: ${nameItem}?`,
@@ -283,8 +339,17 @@ export class BeneficiariosComponent implements OnInit {
     this.closebutton.nativeElement.click();
     this.beneficiarioForm.reset();
   }
-
   submit() {
+    if (this.isModalAdd === false) {
+
+      this.actualizar();
+    } else {
+      this.agregar();
+
+    }
+  }
+  
+  agregar() {
     this.beneficiario = this.beneficiarioForm.value as Beneficiario;
 
     const programaSocialId = this.beneficiarioForm.get('programaSocialId')?.value;
@@ -321,5 +386,113 @@ export class BeneficiariosComponent implements OnInit {
     }
   }
   
+mapa2(): void {
+  this.formData = this.beneficiarioForm.value;
+  const latitudControl = this.beneficiarioForm.get('latitud');
+  const longitudControl = this.beneficiarioForm.get('longitud');
+
+  if (latitudControl && longitudControl) {
+    const latitud = latitudControl.value;
+    const longitud = longitudControl.value;
+
+    console.log('Latitud:', latitud);
+    console.log('Longitud:', longitud);
+
+    const mapElement = document.getElementById("map-canvas");
+    if (!mapElement) {
+      console.error("Elemento del mapa no encontrado.");
+      return;
+    }
+
+    const myLatlng = new google.maps.LatLng(latitud, longitud);
+    const mapOptions = {
+      zoom: 13,
+      scrollwheel: false,
+      center: myLatlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      styles: [
+        {
+          featureType: "administrative",
+          elementType: "labels.text.fill",
+          stylers: [{ color: "#444444" }],
+        },
+        {
+          featureType: "landscape",
+          elementType: "all",
+          stylers: [{ color: "#f2f2f2" }],
+        },
+        {
+          featureType: "poi",
+          elementType: "all",
+          stylers: [{ visibility: "off" }],
+        },
+        {
+          featureType: "road",
+          elementType: "all",
+          stylers: [{ saturation: -100 }, { lightness: 45 }],
+        },
+        {
+          featureType: "road.highway",
+          elementType: "all",
+          stylers: [{ visibility: "simplified" }],
+        },
+        {
+          featureType: "road.arterial",
+          elementType: "labels.icon",
+          stylers: [{ visibility: "off" }],
+        },
+        {
+          featureType: "transit",
+          elementType: "all",
+          stylers: [{ visibility: "off" }],
+        },
+        {
+          featureType: "water",
+          elementType: "all",
+          stylers: [{ color: "#0ba4e2" }, { visibility: "on" }],
+        },
+      ],
+    };
+
+    let map = new google.maps.Map(mapElement, mapOptions);
+
+    map.setCenter(new google.maps.LatLng(latitud, longitud));
+    map.setZoom(15);
+
+    const input = document.getElementById('searchInput') as HTMLInputElement | null;
+
+if (!input) {
+  console.error("Elemento de entrada de búsqueda no encontrado.");
+  return;
+}
+    const autocomplete = new google.maps.places.Autocomplete(input);
+    
+    autocomplete.bindTo('bounds', map);
+    autocomplete.addListener("place_changed", function () {
+      const place = autocomplete.getPlace();
+      if (!place.geometry) {
+        window.alert("Autocomplete's returned place contains no geometry");
+        return;
+      }
+      console.log(place);
+      // If the place has a geometry, then present it on a map.
+      if (place.geometry.viewport) {
+        map.fitBounds(place.geometry.viewport);
+      } 
+    });
+    const marker1 = new google.maps.Marker({
+      position: new google.maps.LatLng(latitud, longitud),
+      map: map,
+      animation: google.maps.Animation.DROP,
+      title: "Hello World!",
+    });
+   
+    const infoWindowOpenOptions = {
+      map: map,
+      anchor: marker1,
+      shouldFocus: false
+    };
+  }
+}
 
 }
