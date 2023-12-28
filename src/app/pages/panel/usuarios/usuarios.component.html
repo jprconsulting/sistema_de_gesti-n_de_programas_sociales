@@ -371,7 +371,7 @@
           <button
             type="submit"
             class="btn btn-success"
-            [disabled]="usuarioForm.valid"
+            [disabled]="!usuarioForm.valid"
           >
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
           </button>
