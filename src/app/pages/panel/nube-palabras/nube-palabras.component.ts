@@ -51,16 +51,37 @@ export class NubePalabrasComponent {
                         },
                         type: 'wordcloud',
                         data: dataFromAPI,
-                        name: '',
-
+                        name: ''
                     }],
 
                     title: {
                         text: ''
                     },
                     tooltip: {
-                        enabled: true
-                    },
+                      useHTML: true,
+                      padding: 0,
+                      borderRadius: 0,
+                      borderWidth: 0,
+                      shadow: false,
+                      backgroundColor: 'none',
+                      borderColor: 'none',
+                      headerFormat: '',
+                      followPointer: false,
+                      stickOnContact: true,
+                      shared: false,
+                      pointFormat:
+                                    `<div style="width: 360px; height: 70px; background: #ffffff; box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.40); border-radius: 10px; opacity: 25;">
+                                      <div style="width: 20px; height: 100%; box-sizing: border-box; float: left; background-color: {point.color}; border-radius: 10px 0px 0px 10px;"></div>
+                                      <div style="padding: 5px; float: left;box-sizing: border-box; width: 340px; height: 60px; background: #ffffff; border-radius: 0px 0px 10px 0px;">
+                                        <div class="d-flex flex-row justify-content-between w-100">
+                                          <span class="px14 text-muted">Numero de repeticiones</span>
+                                        </div>
+                                        <span class="px15 align-self-center text-muted"  style="width: 60%;">15</span>
+                                        <br><br>
+                                      </div>
+                                    </div>`
+
+                      },
                     subtitle: {
                         text: ''
                     },

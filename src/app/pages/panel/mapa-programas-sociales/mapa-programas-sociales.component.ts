@@ -53,13 +53,13 @@ export class MapaProgramasSocialesComponent {
 
   handleChangeSearch(event: any) {
     const searchTerm = event.target.value.toLowerCase();
-  
+
     // Filtrar totalesPorMunicipioFilter basado en el nombre del municipio
     this.totalesPorMunicipioFilter = this.totalesPorMunicipio.filter(municipio =>
       municipio.nombre.toLowerCase().includes(searchTerm)
     );
   }
-  
+
 
   setSettingsMapa() {
     this.beneficiariosService.dataMapa$.subscribe((newData) => {
@@ -132,21 +132,28 @@ export class MapaProgramasSocialesComponent {
           stickOnContact: true,
           shared: false,
           pointFormat:
+                        `<div style="width: 360px; height: 120px; background: #ffffff; box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.40); border-radius: 10px; opacity: 1;">
+                          <div style="width: 20px; height: 100%; box-sizing: border-box; float: left; background-color: {point.color}; border-radius: 10px 0px 0px 10px;"></div>
 
-            `<div style="width: 360px; height: 120px; background: #ffffff; box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.40); border-radius: 10px; opacity: 1;">
-            <div style="width: 20px; height: 100%; box-sizing: border-box; float: left; background-color: {point.color}; border-radius: 10px 0px 0px 10px;"></div>
-            <div class="d-flex align-items-center" style="padding: 5px; box-sizing: border-box; height: 60px; width: 340px; float: left;background: #fff;border-radius: 0px 10px 0px 0px;">
-            <img src="assets/img/logos-partidos/{point.candidatura}.png" onerror="this.src='assets/img/logos-partidos/SG.png'" height="30">
-            </div>
-            <div style="padding: 5px; float: left;box-sizing: border-box; width: 340px; height: 60px; background: #f7f7f7; border-radius: 0px 0px 10px 0px;">
-              <div class="d-flex flex-row justify-content-between w-100">
-                <span class="px14 text-bold">Municipio</span>
-                <a class="txRosaIne" href="{point.ruta}"  ><span class="txRosaIne px12 text-bold" style="width: 40%; text-decoration: underline;">Ver detalle</span></a>
-              </div>
-              <span class="px15 text-bold align-self-center" style="width: 60%;">{point.name}</span>
-            </div>
-          </div>`
-        },
+                          <div style="padding: 5px; float: left;box-sizing: border-box; width: 340px; height: 60px; background: #ffffff; border-radius: 0px 0px 10px 0px;">
+                            <div class="d-flex flex-row justify-content-between w-100">
+                              <span class="px14">Municipio</span>
+                            </div>
+                            <span class="px15 align-self-center" style="width: 60%;">{point.name}</span>
+                            <br><br>
+                            <div class="d-flex flex-row justify-content-between w-100">
+                              <span class="px14 text-muted">Total de beneficiarios</span>
+                            </div>
+                            <span class="px15 align-self-center text-muted"  style="width: 60%;">15</span>
+                            <br><br>
+                            <div class="d-flex flex-row justify-content-between w-100">
+                              <span class="px14 text-muted">Porcentaje</span>
+                            </div>
+                            <span class="px15 align-self-center text-muted"  style="width: 60%;">22%</span>
+                          </div>
+                        </div>`
+
+          },
 
         series: [
           {
