@@ -285,11 +285,11 @@ export class BeneficiariosComponent implements OnInit {
     this.formData = this.beneficiarioForm.value;
     
   
-    setTimeout(() => {
-      this.mapa2();
-    }, 500);
-  console.log(beneficiario);
-  }
+  //   setTimeout(() => {
+  //     this.mapa2();
+  //   }, 500);
+  // console.log(beneficiario);
+   }
   
   actualizar() {
     const socialFormValue = { ...this.beneficiarioForm.value };
