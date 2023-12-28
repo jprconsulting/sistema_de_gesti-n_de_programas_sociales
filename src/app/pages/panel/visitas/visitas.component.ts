@@ -195,20 +195,30 @@ export class VisitasComponent {
     this.visita = this.visitaForm.value as Visita;
     const beneficiarioId = this.visitaForm.get('beneficiarioId')?.value;
     this.visita.beneficiario = { id: beneficiarioId } as Beneficiario;
-    this.spinnerService.show();
-    this.visitasService.put(this.id, this.visita).subscribe({
-      next: () => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Visita actualizada correctamente');
-        this.resetForm();
-        this.configPaginator.currentPage = 1;
-      },
-      error: (error) => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeError(error);
-      }
-    });
+
+    const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
+
+    if (imagenBase64) {
+      const formData = { ...this.visita, imagenBase64 };
+      this.spinnerService.show();
+
+      this.visitasService.put(this.id, formData).subscribe({
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito('Visita actualizada correctamente');
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeError(error);
+        }
+      });
+    } else {
+      console.error('Error: No se encontró una representación válida en base64 de la imagen.');
+    }
   }
+
 
   handleChangeAdd() {
     this.visitaForm.reset();
