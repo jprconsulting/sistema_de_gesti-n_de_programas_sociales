@@ -22,7 +22,7 @@ export class MapaBeneficiariosComponent {
   constructor(
     private formBuilder: FormBuilder,
     private beneficiariosService: BeneficiariosService,
-    private programaService: ProgramasSocialesService,
+    private programasSocialesService: ProgramasSocialesService,
   ) {
     this.myForm = this.formBuilder.group({
       select: ['']
@@ -51,14 +51,13 @@ dato(){
       const programaSocialId = event.target.value;
       
       const beneficiariosFiltrados = this.beneficiarios.filter(beneficiario => {
-       
+        return beneficiario.programaSocial.id == programaSocialId;
+    });
     
-        return beneficiario.id == programaSocialId;
-      });
       
-      this.select = beneficiariosFiltrados.length > 0
-      ? this.prograsmasocial.find(p => p.id === beneficiariosFiltrados[0].id)?.nombre || ''
-      : '';
+    this.select = beneficiariosFiltrados.length > 0
+    ? this.prograsmasocial.find(p => p.id === beneficiariosFiltrados[0].programaSocial.id)?.nombre || ''
+    : '';
     
 
       
@@ -74,7 +73,7 @@ dato(){
     
      
     const mapOptions = {
-      zoom: 13,
+      zoom: 10,
       scrollwheel: false,
       center: myLatlng,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -133,7 +132,7 @@ dato(){
   
     const infowindow = new google.maps.InfoWindow();
   
-    this.programaService.getAll().subscribe(
+    this.programasSocialesService.getAll().subscribe(
       (programasocial: ProgramaSocial[]) => {
         this.prograsmasocial = programasocial;
   
@@ -143,11 +142,14 @@ dato(){
         });
         
         beneficiariosFiltrados.forEach(beneficiario => {
-          const programaSocial = this.prograsmasocial.find(p => p.id === beneficiario.id);
+          const programaSocial = this.prograsmasocial.find(p => p.id === beneficiario.programaSocial.id);
           if (programaSocial) {
-            beneficiario.id = programaSocial.id;
-            console.log('Valores del programa social:', programaSocial);
-            const colorRGB = coloresPorPrograma[beneficiario.id] || 'rgb(255, 0, 0)';
+              beneficiario.programaSocial.id = programaSocial.id; // Use a new property
+              console.log('Valores del programa social:', programaSocial);
+              const colorRGB = coloresPorPrograma[beneficiario.programaSocial.id] || 'rgb(255, 0, 0)';
+
+          
+          
   
             const marker = new google.maps.Marker({
               position: new google.maps.LatLng(beneficiario.latitud, beneficiario.longitud),
@@ -163,30 +165,28 @@ dato(){
             });
   
             const contentString = `
-          <div style="max-width: 200px; max-height:280px; text-align: center;" class="custom-infowindow max-w-sm rounded overflow-hidden shadow-lg">
-          <img class="w-24 h-24 mb-3 rounded-full shadow-lg mx-auto" 
-         src="${beneficiario.sexo === 1 ? 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80"' : 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1361&q=80'}" 
-         alt="Sunset in the mountains">
-
-            <div class="px-6 py-4">
-              <div class="font-bold text-xl mb-2">${beneficiario.nombres} ${beneficiario.apellidoPaterno}</div>
-              <p class="text-gray-900 text-base">
-                Programa inscrito:
-                <p class="text-gray-700 text-base">
-                ${programaSocial.nombre}
-                </p>
-              </p>
-              <p class="text-gray-900 text-base">
-                Dirección:
-                <p class="text-gray-700 text-base">
-                  ${beneficiario.domicilio}
-                </p>
-              </p>
-            </div>
-          </div>
-        `;
-        
-  
+                <div class="w-64 text-center overflow-hidden shadow-lg">
+                  <img class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;"
+                    src="${beneficiario.sexo === 1 ? 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80"' : 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1361&q=80'}"
+                    alt="Sunset in the mountains">
+                  
+                  <div class="px-6 py-4">
+                    <div class="font-bold text-xl mb-2">${beneficiario.nombres} ${beneficiario.apellidoPaterno}</div>
+                    <p class="text-gray-900 text-base font-bold">
+                      Programa inscrito:
+                      <p class="text-gray-700 text-base font-bold">
+                        ${programaSocial.nombre}
+                      </p>
+                    </p>
+                    <p class="text-gray-900 text-base font-bold">
+                      Dirección:
+                      <p class="text-gray-700 text-base font-bold">
+                        ${beneficiario.domicilio}
+                      </p>
+                    </p>
+                  </div>
+                </div>
+                `; 
             google.maps.event.addListener(marker, "click", () => {
               if (infowindow && infowindow.getMap()) {
                 infowindow.close();
@@ -205,7 +205,7 @@ dato(){
     );
   }
   obtenerProgramas() {
-    this.programaService.getAll().subscribe(
+    this.programasSocialesService.getAll().subscribe(
       (prograsmasocial: ProgramaSocial[]) => {
         console.log('Datos:', prograsmasocial);
         this.prograsmasocial = prograsmasocial;
@@ -220,7 +220,7 @@ dato(){
     const myLatlng = new google.maps.LatLng(lat, lng);
     
     const mapOptions = {
-      zoom: 13,
+      zoom: 10,
       scrollwheel: false,
       center: myLatlng,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -279,14 +279,14 @@ dato(){
   
     // Declara infowindow una vez fuera del bucle
     const infowindow = new google.maps.InfoWindow();
+  
     this.beneficiariosService.getAll().subscribe(
       (beneficiarios: Beneficiario[]) => {
         console.log('Datos de beneficiarios recibidos:', beneficiarios);
         this.beneficiarios = beneficiarios;
     
-        this.programaService.getAll().subscribe(
+        this.programasSocialesService.getAll().subscribe(
           (programasocial: ProgramaSocial[]) => {
-            console.log('vnfj',programasocial)
             this.prograsmasocial = programasocial;
     
             const coloresPorPrograma: { [id: number]: string } = {};
@@ -295,12 +295,13 @@ dato(){
             });
     
             this.beneficiarios.forEach(beneficiario => {
-              const programaSocial = this.prograsmasocial.find(p => p.id === beneficiario.id);
+              console.log('Beneficiario:', beneficiario);
+              const programaSocial = this.prograsmasocial.find(p => p.id === beneficiario.programaSocial.id);
               if (programaSocial) {
-                beneficiario.id = programaSocial.id;
+                beneficiario.programaSocial.id = programaSocial.id;
                 console.log('Valores del programa social:', programaSocial);
     
-                const colorRGB = coloresPorPrograma[beneficiario.id] || 'rgb(255, 0, 0)';
+                const colorRGB = coloresPorPrograma[beneficiario.programaSocial.id] || 'rgb(255, 0, 0)';
     
                 const marker = new google.maps.Marker({
                   position: new google.maps.LatLng(beneficiario.latitud, beneficiario.longitud),
@@ -314,31 +315,29 @@ dato(){
                   },
                   title: `${beneficiario.nombres} ${beneficiario.apellidoPaterno} ${beneficiario.apellidoMaterno}`,
                 });
-    
                 const contentString = `
-          <div style="max-width: 200px; max-height:280px; text-align: center;" class="custom-infowindow max-w-sm rounded overflow-hidden shadow-lg">
-          <img class="w-24 h-24 mb-3 rounded-full shadow-lg mx-auto" 
-         src="${beneficiario.sexo === 1 ? 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80"' : 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1361&q=80'}" 
-         alt="Sunset in the mountains">
-
-            <div class="px-6 py-4">
-              <div class="font-bold text-xl mb-2">${beneficiario.nombres} ${beneficiario.apellidoPaterno}</div>
-              <p class="text-gray-900 text-base">
-                Programa inscrito:
-                <p class="text-gray-700 text-base">
-                ${programaSocial.nombre}
-                </p>
-              </p>
-              <p class="text-gray-900 text-base">
-                Dirección:
-                <p class="text-gray-700 text-base">
-                  ${beneficiario.domicilio}
-                </p>
-              </p>
-            </div>
-          </div>
-        `;
-  
+                <div class="w-64 text-center overflow-hidden shadow-lg">
+                  <img class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;"
+                    src="${beneficiario.sexo === 1 ? 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80"' : 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1361&q=80'}"
+                    alt="Sunset in the mountains">
+                  
+                  <div class="px-6 py-4">
+                    <div class="font-bold text-xl mb-2">${beneficiario.nombres} ${beneficiario.apellidoPaterno}</div>
+                    <p class="text-gray-900 text-base font-bold">
+                      Programa inscrito:
+                      <p class="text-gray-700 text-base font-bold">
+                        ${programaSocial.nombre}
+                      </p>
+                    </p>
+                    <p class="text-gray-900 text-base font-bold">
+                      Dirección:
+                      <p class="text-gray-700 text-base font-bold">
+                        ${beneficiario.domicilio}
+                      </p>
+                    </p>
+                  </div>
+                </div>
+                `; 
                 google.maps.event.addListener(marker, "click", () => {
                   if (infowindow && infowindow.getMap()) {
                     infowindow.close();

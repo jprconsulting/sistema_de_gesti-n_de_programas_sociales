@@ -25,9 +25,11 @@ export class BeneficiariosComponent implements OnInit {
   @ViewChild('searchItem') searchItem!: ElementRef;
   @ViewChild('ngxPlaces') placesRef!: NgxGpAutocompleteDirective;
   @ViewChild('mapCanvas') mapCanvas!: ElementRef<HTMLElement>;
+  @ViewChild('ubicacionInput', { static: false }) ubicacionInput!: ElementRef;
 
 
-
+  programaSelect!: ProgramaSocial | undefined;
+  municipiosSelect!: Municipio | undefined;
   canvas!: HTMLElement;
   beneficiario!: Beneficiario;
   beneficiarioForm!: FormGroup;
@@ -54,7 +56,8 @@ export class BeneficiariosComponent implements OnInit {
   };
   maps!: google.maps.Map;
   SocialForm: any;
-
+  private map: any; 
+  private marker: any; 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     @Inject('GENEROS') public objGeneros: any,
@@ -74,9 +77,14 @@ export class BeneficiariosComponent implements OnInit {
 
 
   ngOnInit() {
-    this.setCurrentLocation();
   }
 
+  resetMap() {
+    this.ubicacionInput.nativeElement.value = '';
+    this.setCurrentLocation();
+    this.ngAfterViewInit()
+  }
+  
   selectAddress(place: google.maps.places.PlaceResult) {
     if (!place.geometry) {
       window.alert("Autocomplete's returned place contains no geometry");
@@ -97,7 +105,6 @@ export class BeneficiariosComponent implements OnInit {
     const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
     this.maps.setCenter(newLatLng);
     this.maps.setZoom(15);
-
     const marker = new google.maps.Marker({
       position: newLatLng,
       map: this.maps,
@@ -256,16 +263,24 @@ export class BeneficiariosComponent implements OnInit {
     );
     this.configPaginator.currentPage = 1;
   }
+  onSelectprograma(id: number) {
+    if (id) {
+      this.programaSelect = this.programasSociales.find(b => b.id === id);
+    }
+  }
+  onSelectmunicipios(id: number) {
+    if (id) {
+      this.municipiosSelect = this.municipios.find(b => b.id === id);
+    }
+  }
   setDataModalUpdate(beneficiario: Beneficiario) {
     this.isModalAdd = false;
     this.id = beneficiario.id;
     const fechaFormateada = this.formatoFecha(beneficiario.fechaNacimiento);
-    console.log('nfjnvf', fechaFormateada);
-  
-    // Comprobaciones para evitar errores si los objetos son null o undefined
-    const municipioId = beneficiario.municipio ? beneficiario.municipio.id : null;
-    const programaSocialId = beneficiario.programaSocial ? beneficiario.programaSocial.id : null;
-  
+    const priogramaId = beneficiario.programaSocial.id;
+    this.onSelectprograma(priogramaId);
+    const municipio = beneficiario.municipio.id;
+    this.onSelectmunicipios(municipio);
     this.beneficiarioForm.patchValue({
       id: beneficiario.id,
       nombres: beneficiario.nombres,
@@ -276,37 +291,41 @@ export class BeneficiariosComponent implements OnInit {
       estatus: beneficiario.estatus,
       latitud: beneficiario.latitud,
       longitud: beneficiario.longitud,
-      municipioId: beneficiario.municipio.id,
+      municipioId: municipio,
       curp: beneficiario.curp,
       sexo: beneficiario.sexo,
-      programaSocialId: beneficiario.programaSocial.id
+      programaSocialId: priogramaId
     });
-  
-    this.formData = this.beneficiarioForm.value;
-    
-  
-  //   setTimeout(() => {
-  //     this.mapa2();
-  //   }, 500);
-  // console.log(beneficiario);
+
+      console.log(beneficiario);
+      console.log(this.beneficiarioForm.value);
    }
   
-  actualizar() {
-    const socialFormValue = { ...this.beneficiarioForm.value };
-    socialFormValue.programaSocialId = +socialFormValue.programaSocialId;
-    socialFormValue.municipioId = +socialFormValue.municipioId;
-    console.log('ded',socialFormValue)
-    this.beneficiariosService.put(this.id, socialFormValue).subscribe({
+   actualizar() {
+    this.beneficiario = this.beneficiarioForm.value as Beneficiario;
 
+    const programaSocialId = this.beneficiarioForm.get('programaSocialId')?.value;
+    const municipioId = this.beneficiarioForm.get('municipioId')?.value;
+
+    this.beneficiario.programaSocial = { id: programaSocialId } as ProgramaSocial;
+    this.beneficiario.municipio = { id: municipioId } as Municipio;
+
+    console.log(this.beneficiario);
+
+    this.spinnerService.show();
+    console.log('ded', this.beneficiario);
+  
+    this.beneficiariosService.put(this.id, this.beneficiario).subscribe({
       next: () => {
+        this.spinnerService.hide();
         this.mensajeService.mensajeExito("Beneficiario actualizado con éxito");
         this.resetForm();
-        console.log(socialFormValue);
+        
+        this.configPaginator.currentPage = 1;
       },
       error: (error) => {
         this.mensajeService.mensajeError("Error al actualizar el beneficiario");
         console.error(error);
-        console.log(socialFormValue);
       }
     });
   }

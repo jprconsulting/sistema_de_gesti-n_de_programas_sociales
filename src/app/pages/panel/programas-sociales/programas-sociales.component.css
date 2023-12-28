@@ -1,10 +1,4 @@
-.custom-green-switch input {
-    background-color: #1db83f;
-  }
-  
-  .custom-green-switch input:checked {
-    background-color: #1db83f; 
-  }
+
   .error-message {
     color: #e53e3e;
     font-size: 0.875rem;

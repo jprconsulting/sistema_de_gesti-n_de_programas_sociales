@@ -98,7 +98,6 @@ export class ProgramasSocialesComponent {
   
   actualizar() {
     const socialFormValue = { ...this.programaSocialForm.value };
-    socialFormValue.areaAdscripcionId = +socialFormValue.areaAdscripcionId;
   console.log('ded',socialFormValue)
     const selectedArea = this.areasAdscripcion.find(area => area.id === socialFormValue.areaAdscripcionId);
     if (selectedArea) {
@@ -128,7 +127,7 @@ export class ProgramasSocialesComponent {
         color: dto.color,
         estatus: dto.estatus,
         acronimo: dto.acronimo,
-        areaAdscripcionId: dto.areaAdscripcion.id  // Aquí asigna el ID de areaAdscripcion
+        areaAdscripcionId: dto.areaAdscripcion.id
       });
       this.formData = this.programaSocialForm.value;
       console.log(dto)
