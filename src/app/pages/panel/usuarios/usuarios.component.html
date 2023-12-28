@@ -8,6 +8,8 @@
   <p style="color: white">Guardando...</p>
 </ngx-spinner>
 
+<app-page-header headerTitle="Usuarios"></app-page-header>
+
 <div class="row">
   <div class="col-12">
     <div class="card">
@@ -20,6 +22,31 @@
             (click)="handleChangeAdd()"
           >
             <i class="ti ti-plus me-1"></i>Agregar
+          </button>
+          <button
+            title="Descargar base de datos de usuarios"
+            class="mr-5"
+            (click)="exportarDatosAExcel()"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="icon icon-tabler icon-tabler-cloud-download"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path
+                d="M19 18a3.5 3.5 0 0 0 0 -7h-1a5 4.5 0 0 0 -11 -2a4.6 4.4 0 0 0 -2.1 8.4"
+              />
+              <path d="M12 13l0 9" />
+              <path d="M9 19l3 3l3 -3" />
+            </svg>
           </button>
           <div class="ms-auto">
             <div class="input-icon">
@@ -92,7 +119,7 @@
                     <button
                       class="btn btn-warning btn-icon btn-sm"
                       data-bs-toggle="modal"
-                      data-bs-target="#modal-report"
+                      data-bs-target="#modal-usuario"
                       (click)="setDataModalUpdate(usuario)"
                     >
                       <i class="ti ti-edit"></i>
@@ -164,6 +191,14 @@
                   class="form-control"
                   formControlName="nombre"
                 />
+                <div
+                  *ngIf="usuarioForm.get('nombre')?.touched"
+                  class="error-message"
+                >
+                  <div *ngIf="usuarioForm.get('nombre')?.hasError('required')">
+                    <p style="color: red">El nombre es obligatorio</p>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-lg-4">
@@ -174,6 +209,18 @@
                   class="form-control"
                   formControlName="apellidoPaterno"
                 />
+                <div
+                  *ngIf="usuarioForm.get('apellidoPaterno')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
+                      usuarioForm.get('apellidoPaterno')?.hasError('required')
+                    "
+                  >
+                    <p style="color: red">El apellido paterno es obligatorio</p>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-lg-4">
@@ -184,6 +231,18 @@
                   class="form-control"
                   formControlName="apellidoMaterno"
                 />
+                <div
+                  *ngIf="usuarioForm.get('apellidoMaterno')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="
+                      usuarioForm.get('apellidoMaterno')?.hasError('required')
+                    "
+                  >
+                    <p style="color: red">El apellido materno es obligatorio</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -196,20 +255,48 @@
                   class="form-control"
                   formControlName="correo"
                 />
+                <div
+                  *ngIf="usuarioForm.get('correo')?.touched"
+                  class="error-message"
+                >
+                  <div *ngIf="usuarioForm.get('correo')?.hasError('required')">
+                    <p style="color: red">El correo es obligatorio</p>
+                  </div>
+                  <div *ngIf="usuarioForm.get('correo')?.hasError('email')">
+                    <p style="color: red">El correo no es válido</p>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
                 <label class="form-label">Contraseña</label>
                 <input
-                  type="text"
+                  type="password"
                   class="form-control"
                   formControlName="password"
                 />
+                <div
+                  *ngIf="usuarioForm.get('password')?.touched"
+                  class="error-message"
+                >
+                  <div
+                    *ngIf="usuarioForm.get('password')?.hasError('required')"
+                  >
+                    <p style="color: red">La contraseña es obligatoria</p>
+                  </div>
+                  <div
+                    *ngIf="usuarioForm.get('password')?.hasError('minlength')"
+                  >
+                    <p style="color: red">
+                      La contraseña debe tener al menos 8 caracteres
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-lg-4">
-              <div class="mb-3">
+              <div class="mb-3 custom-green-switch">
                 <label for="estadoActivo" class="form-label">Estatus</label>
                 <label class="form-check form-switch checkbox-verde">
                   <input
@@ -250,6 +337,14 @@
                     {{ item.nombreRol }}
                   </ng-template>
                 </ng-select>
+                <div
+                  *ngIf="usuarioForm.get('rolId')?.touched"
+                  class="error-message"
+                >
+                  <div *ngIf="usuarioForm.get('rolId')?.hasError('required')">
+                    <p style="color: red">La rol es obligatorio</p>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-lg-4">

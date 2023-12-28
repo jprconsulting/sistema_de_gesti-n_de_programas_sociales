@@ -6,7 +6,6 @@ import * as Highcharts from 'highcharts';
 import MapModule from 'highcharts/modules/map';
 import { LoadingStates } from 'src/app/global/global';
 import { PaginationInstance } from 'ngx-pagination';
-import { HeaderTitleService } from 'src/app/core/services/header-title.service';
 MapModule(Highcharts);
 
 @Component({
@@ -29,11 +28,9 @@ export class MapaProgramasSocialesComponent {
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     private beneficiariosService: BeneficiariosService,
-    private headerTitleService: HeaderTitleService
   ) {
     this.setSettingsMapa();
     this.getTotalBeneficiariosPorMunicipio();
-    this.headerTitleService.updateHeaderTitle('Mapa Total de Beneficiarios por Municipio');
   }
 
   getTotalBeneficiariosPorMunicipio() {
@@ -55,8 +52,14 @@ export class MapaProgramasSocialesComponent {
   }
 
   handleChangeSearch(event: any) {
-    console.log(event);
+    const searchTerm = event.target.value.toLowerCase();
+  
+    // Filtrar totalesPorMunicipioFilter basado en el nombre del municipio
+    this.totalesPorMunicipioFilter = this.totalesPorMunicipio.filter(municipio =>
+      municipio.nombre.toLowerCase().includes(searchTerm)
+    );
   }
+  
 
   setSettingsMapa() {
     this.beneficiariosService.dataMapa$.subscribe((newData) => {

@@ -1,0 +1,15 @@
+.custom-green-switch input {
+  background-color: #1db83f;
+}
+
+.custom-green-switch input:checked {
+  background-color: #1db83f;
+}
+.input-group {
+    display: flex;
+    align-items: center; 
+  }
+  
+  .input-icon {
+    margin-right: 10px; 
+  }

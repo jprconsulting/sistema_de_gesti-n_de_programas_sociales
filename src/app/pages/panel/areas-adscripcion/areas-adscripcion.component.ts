@@ -6,7 +6,7 @@ import { PaginationInstance } from 'ngx-pagination';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MensajeService } from 'src/app/core/services/mensaje.service';
 import { AreasAdscripcionService } from 'src/app/core/services/areas-adscripcion.service';
-import { HeaderTitleService } from 'src/app/core/services/header-title.service';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-areas-adscripcion',
@@ -23,7 +23,7 @@ export class AreasAdscripcionComponent {
   areasAdscripcion: AreaAdscripcion[] = [];
   areasAdscripcionFilter: AreaAdscripcion[] = [];
   isLoading = LoadingStates.neutro;
-  isModalAdd = true;
+  isModalAdd: boolean = true;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -31,15 +31,22 @@ export class AreasAdscripcionComponent {
     private mensajeService: MensajeService,
     private formBuilder: FormBuilder,
     private areasAdscripcionService: AreasAdscripcionService,
-    private headerTitleService: HeaderTitleService
   ) {
     this.areasAdscripcionService.refreshListAreasAdscripcion.subscribe(() => this.getAreasAdscripcion());
     this.getAreasAdscripcion();
-    this.creteForm();
-    this.headerTitleService.updateHeaderTitle('Áreas de Adscripción');
+    this.createForm();
   }
 
-  creteForm() {
+  estatusBtn = true;
+  verdadero = "Activo";
+  falso = "Inactivo";
+  estatusTag = this.verdadero;
+  setEstatus() {
+    this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
+  }
+
+
+  createForm() {
     this.areaAdscripcionForm = this.formBuilder.group({
       id: [null],
       nombre: ['', Validators.required],
@@ -58,7 +65,7 @@ export class AreasAdscripcionComponent {
           this.isLoading = LoadingStates.falseLoading;
         },
         error: () => {
-          this.isLoading = LoadingStates.errorLoading
+          this.isLoading = LoadingStates.errorLoading;
         }
       }
     );
@@ -75,9 +82,40 @@ export class AreasAdscripcionComponent {
     );
     this.configPaginator.currentPage = 1;
   }
+
+  id!: number;
+  formData: any;
+
   setDataModalUpdate(dto: AreaAdscripcion) {
-    console.log(dto);
+    this.isModalAdd = false;
+    this.id = dto.id;
+    this.areaAdscripcionForm.patchValue({
+      id: dto.id,
+      nombre: dto.nombre,
+      descripcion: dto.descripcion,
+      estatus: dto.estatus,
+    });
+    this.formData = this.areaAdscripcionForm.value;
+    console.log(this.areaAdscripcionForm.value);
   }
+
+
+  editarArea() {
+    const areaFormValue = { ...this.areaAdscripcionForm.value };
+    this.areasAdscripcionService.put(this.id,areaFormValue).subscribe({
+      next: () => {
+        this.mensajeService.mensajeExito("Área actualizada correctamente");
+        this.resetForm();
+        console.log(areaFormValue);
+      },
+      error: (error) => {
+        this.mensajeService.mensajeError("Error al actualizar Area");
+        console.error(error);
+        console.log(areaFormValue);
+      }
+    });
+  }
+
 
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
@@ -95,13 +133,12 @@ export class AreasAdscripcionComponent {
     );
   }
 
-
   resetForm() {
     this.closebutton.nativeElement.click();
     this.areaAdscripcionForm.reset();
   }
 
-  submit() {
+  agregar() {
     this.areaAdscripcion = this.areaAdscripcionForm.value as AreaAdscripcion;
     this.spinnerService.show();
     this.areasAdscripcionService.post(this.areaAdscripcion).subscribe({
@@ -118,11 +155,84 @@ export class AreasAdscripcionComponent {
     });
   }
 
-  handleChangeAdd() {
-    this.areaAdscripcionForm.reset();
-    this.isModalAdd = true;
+  isUpdating: boolean = false;
+
+  submit() {
+    if (this.isModalAdd === false) {
+
+      this.editarArea();
+    } else {
+      this.agregar();
+
+    }
+
   }
 
+  handleChangeAdd() {
+    if (this.areaAdscripcionForm) {
+      this.areaAdscripcionForm.reset();
+      const estatusControl = this.areaAdscripcionForm.get('estatus');
+      if (estatusControl) {
+        estatusControl.setValue(true);
+      }
+      this.isModalAdd = true;
+    }
+  }
 
+  exportarDatosAExcel() {
+    if (this.areasAdscripcion.length === 0) {
+      console.warn('La lista de usuarios está vacía. No se puede exportar.');
+      return;
+    }
 
+    const datosParaExportar = this.areasAdscripcion.map(areasadscripcion => {
+      return {
+        'ID': areasadscripcion.id,
+        'Nombre': areasadscripcion.nombre,
+        'Descripcion': areasadscripcion.descripcion,
+        'Estatus': areasadscripcion.estatus,
+
+      };
+    });
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+    this.guardarArchivoExcel(excelBuffer, 'areas_adscripcion.xlsx');
+  }
+
+  guardarArchivoExcel(buffer: any, nombreArchivo: string) {
+    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url: string = window.URL.createObjectURL(data);
+    const a: HTMLAnchorElement = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  // Remove the following code as it's unnecessary and may cause issues
+  /*
+  areas: any[] = [
+    // Llama a un método de tu servicio para obtener los usuarios desde la base de datos
+    this.areasadscripcionService.getAreasadscripcion().subscribe((data: any) => {
+      this.areas = data;
+      console.log(data)
+    })
+  ];
+
+  filtrarAreas():  any {
+    return this.areasadscripcion.filter(area =>
+      area.nombre.toLowerCase().includes(this.buscar.toLowerCase(),)||
+      area.descripcion.toLowerCase().includes(this.buscar.toLowerCase(),)
+    );
+
+  }
+
+  actualizarFiltro(event: any): void {
+    this.buscar = event.target.value;
+    this.areasFiltradas = this.filtrarAreas();
+  }
+  */
 }

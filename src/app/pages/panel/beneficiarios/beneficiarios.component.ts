@@ -11,7 +11,7 @@ import { BeneficiariosService } from 'src/app/core/services/beneficiarios.servic
 import { ProgramasSocialesService } from 'src/app/core/services/programas-sociales.service';
 import { MunicipiosService } from 'src/app/core/services/municipios.service';
 import { NgxGpAutocompleteDirective } from '@angular-magic/ngx-gp-autocomplete';
-import { HeaderTitleService } from 'src/app/core/services/header-title.service';
+import * as XLSX from 'xlsx';
 
 
 @Component({
@@ -53,8 +53,7 @@ export class BeneficiariosComponent implements OnInit {
     componentRestrictions: { country: 'MX' }
   };
   maps!: google.maps.Map;
-
-
+  SocialForm: any;
 
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
@@ -65,14 +64,12 @@ export class BeneficiariosComponent implements OnInit {
     private formBuilder: FormBuilder,
     private programasSocialesService: ProgramasSocialesService,
     private municipiosService: MunicipiosService,
-    private headerTitleService: HeaderTitleService
   ) {
     this.beneficiariosService.refreshListBeneficiarios.subscribe(() => this.getBeneficiarios());
     this.getBeneficiarios();
     this.getMunicipios();
     this.getProgramasSociales();
     this.creteForm();
-    this.headerTitleService.updateHeaderTitle('Beneficiarios');
   }
 
 
@@ -85,7 +82,7 @@ export class BeneficiariosComponent implements OnInit {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
     }
-    
+
     if (place.formatted_address) {
       this.beneficiarioForm.patchValue({
         domicilio: place.formatted_address
@@ -219,7 +216,7 @@ export class BeneficiariosComponent implements OnInit {
       id: [null],
       nombres: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
-      apellidoMaterno:['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
+      apellidoMaterno: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
       fechaNacimiento: ['', Validators.required],
       sexo: [null, Validators.required],
       curp:  ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
@@ -385,114 +382,70 @@ export class BeneficiariosComponent implements OnInit {
       this.isModalAdd = true;
     }
   }
-  
-mapa2(): void {
-  this.formData = this.beneficiarioForm.value;
-  const latitudControl = this.beneficiarioForm.get('latitud');
-  const longitudControl = this.beneficiarioForm.get('longitud');
-
-  if (latitudControl && longitudControl) {
-    const latitud = latitudControl.value;
-    const longitud = longitudControl.value;
-
-    console.log('Latitud:', latitud);
-    console.log('Longitud:', longitud);
-
-    const mapElement = document.getElementById("map-canvas");
-    if (!mapElement) {
-      console.error("Elemento del mapa no encontrado.");
+  exportarDatosAExcel() {
+    if (this.beneficiarios.length === 0) {
+      console.warn('La lista de usuarios está vacía. No se puede exportar.');
       return;
     }
 
-    const myLatlng = new google.maps.LatLng(latitud, longitud);
-    const mapOptions = {
-      zoom: 13,
-      scrollwheel: false,
-      center: myLatlng,
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      styles: [
-        {
-          featureType: "administrative",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#444444" }],
-        },
-        {
-          featureType: "landscape",
-          elementType: "all",
-          stylers: [{ color: "#f2f2f2" }],
-        },
-        {
-          featureType: "poi",
-          elementType: "all",
-          stylers: [{ visibility: "off" }],
-        },
-        {
-          featureType: "road",
-          elementType: "all",
-          stylers: [{ saturation: -100 }, { lightness: 45 }],
-        },
-        {
-          featureType: "road.highway",
-          elementType: "all",
-          stylers: [{ visibility: "simplified" }],
-        },
-        {
-          featureType: "road.arterial",
-          elementType: "labels.icon",
-          stylers: [{ visibility: "off" }],
-        },
-        {
-          featureType: "transit",
-          elementType: "all",
-          stylers: [{ visibility: "off" }],
-        },
-        {
-          featureType: "water",
-          elementType: "all",
-          stylers: [{ color: "#0ba4e2" }, { visibility: "on" }],
-        },
-      ],
-    };
-
-    let map = new google.maps.Map(mapElement, mapOptions);
-
-    map.setCenter(new google.maps.LatLng(latitud, longitud));
-    map.setZoom(15);
-
-    const input = document.getElementById('searchInput') as HTMLInputElement | null;
-
-if (!input) {
-  console.error("Elemento de entrada de búsqueda no encontrado.");
-  return;
-}
-    const autocomplete = new google.maps.places.Autocomplete(input);
-    
-    autocomplete.bindTo('bounds', map);
-    autocomplete.addListener("place_changed", function () {
-      const place = autocomplete.getPlace();
-      if (!place.geometry) {
-        window.alert("Autocomplete's returned place contains no geometry");
-        return;
-      }
-      console.log(place);
-      // If the place has a geometry, then present it on a map.
-      if (place.geometry.viewport) {
-        map.fitBounds(place.geometry.viewport);
-      } 
+    const datosParaExportar = this.beneficiarios.map(beneficiarios => {
+      return {
+        'ID': beneficiarios.nombres,
+        'ApellidoPaterno': beneficiarios.apellidoPaterno,
+        'Apellido Materno': beneficiarios.apellidoMaterno,
+        'FechaNacimiento': beneficiarios.fechaNacimiento,
+        'Curp': beneficiarios.curp,
+        'Sexo': beneficiarios.sexo,
+        'Domicilio': beneficiarios.domicilio,
+        'Estatus': beneficiarios.estatus,
+      };
     });
-    const marker1 = new google.maps.Marker({
-      position: new google.maps.LatLng(latitud, longitud),
-      map: map,
-      animation: google.maps.Animation.DROP,
-      title: "Hello World!",
-    });
-   
-    const infoWindowOpenOptions = {
-      map: map,
-      anchor: marker1,
-      shouldFocus: false
-    };
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+    this.guardarArchivoExcel(excelBuffer, 'beneficiarios.xlsx');
   }
-}
+
+  guardarArchivoExcel(buffer: any, nombreArchivo: string) {
+    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url: string = window.URL.createObjectURL(data);
+    const a: HTMLAnchorElement = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  toggleEstatus() {
+    const estatusControl = this.SocialForm.get('Estatus');
+
+    if (estatusControl) {
+      estatusControl.setValue(estatusControl.value === 1 ? 0 : 1);
+    }
+  }
+
+  buscar: string = '';
+  beneficiarioFiltrado: any[] = [];
+
+  filtrarBeneficiario(): any {
+    return this.beneficiarios.filter(beneficioario =>
+      beneficioario.nombres.toLowerCase().includes(this.buscar.toLowerCase(),) ||
+      beneficioario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),) ||
+      beneficioario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),) ||
+      beneficioario.curp.toLowerCase().includes(this.buscar.toLowerCase(),)
+    );
+
+  }
+  actualizarFiltro(event: any): void {
+    this.buscar = event.target.value;
+    this.beneficiarioFiltrado = this.filtrarBeneficiario();
+  }
+
 
 }
+
+
+
+

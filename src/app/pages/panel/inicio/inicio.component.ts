@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { HeaderTitleService } from 'src/app/core/services/header-title.service';
+import { AppUserAuth } from 'src/app/models/login';
+import { SecurityService } from 'src/app/core/services/security.service';
 
 @Component({
   selector: 'app-inicio',
@@ -7,7 +8,17 @@ import { HeaderTitleService } from 'src/app/core/services/header-title.service';
   styleUrls: ['./inicio.component.css']
 })
 export class InicioComponent {
-  constructor(private headerTitleService: HeaderTitleService) {
-    this.headerTitleService.updateHeaderTitle('');
+
+  dataObject!: AppUserAuth | null;
+  constructor(
+    private securityService: SecurityService
+    ) {
+    localStorage.getItem('dataObject') && this.setDataUser();
   }
+
+  setDataUser() {
+    this.dataObject = this.securityService.getDataUser();
+  }
+
 }
+
