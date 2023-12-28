@@ -99,7 +99,7 @@ export class ProgramasSocialesComponent {
   actualizar() {
     const socialFormValue = { ...this.programaSocialForm.value };
     socialFormValue.areaAdscripcionId = +socialFormValue.areaAdscripcionId;
-  
+  console.log('ded',socialFormValue)
     const selectedArea = this.areasAdscripcion.find(area => area.id === socialFormValue.areaAdscripcionId);
     if (selectedArea) {
       socialFormValue.areaAdscripcion = selectedArea; // Utiliza el objeto completo
@@ -131,6 +131,7 @@ export class ProgramasSocialesComponent {
         areaAdscripcionId: dto.areaAdscripcion.id  // Aquí asigna el ID de areaAdscripcion
       });
       this.formData = this.programaSocialForm.value;
+      console.log(dto)
 
     }
   deleteItem(id: number, nameItem: string) {

@@ -34,17 +34,17 @@ export class BeneficiariosComponent implements OnInit {
   beneficiarios: Beneficiario[] = [];
   beneficiariosFilter: Beneficiario[] = [];
   isLoading = LoadingStates.neutro;
-
+  isModalAdd: boolean = true; 
   programasSociales: ProgramaSocial[] = [];
   municipios: Municipio[] = [];
-  isModalAdd = true;
   rolId = 0;
   generos: GenericType[] = [{ id: 1, name: 'Masculino' }, { id: 2, name: 'Femenino' }];
   estatusBtn = true;
   verdadero = "Activo";
   falso = "Inactivo";
   estatusTag = this.verdadero;
-
+  formData: any;
+  id!: number;
   // MAPS
   latitude: number = 19.316818295403003;
   longitude: number = -98.23837658175323;
@@ -219,7 +219,7 @@ export class BeneficiariosComponent implements OnInit {
       apellidoMaterno: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
       fechaNacimiento: ['', Validators.required],
       sexo: [null, Validators.required],
-      curp: ['', Validators.required],
+      curp:  ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
       estatus: [this.estatusBtn],
       programaSocialId: [null, Validators.required],
       municipioId: [null, Validators.required],
@@ -256,10 +256,66 @@ export class BeneficiariosComponent implements OnInit {
     );
     this.configPaginator.currentPage = 1;
   }
-  setDataModalUpdate(dto: Beneficiario) {
-    console.log(dto);
-  }
+  setDataModalUpdate(beneficiario: Beneficiario) {
+    this.isModalAdd = false;
+    this.id = beneficiario.id;
+    const fechaFormateada = this.formatoFecha(beneficiario.fechaNacimiento);
+    console.log('nfjnvf', fechaFormateada);
+  
+    // Comprobaciones para evitar errores si los objetos son null o undefined
+    const municipioId = beneficiario.municipio ? beneficiario.municipio.id : null;
+    const programaSocialId = beneficiario.programaSocial ? beneficiario.programaSocial.id : null;
+  
+    this.beneficiarioForm.patchValue({
+      id: beneficiario.id,
+      nombres: beneficiario.nombres,
+      apellidoPaterno: beneficiario.apellidoPaterno,
+      apellidoMaterno: beneficiario.apellidoMaterno,
+      fechaNacimiento: fechaFormateada,
+      domicilio: beneficiario.domicilio,
+      estatus: beneficiario.estatus,
+      latitud: beneficiario.latitud,
+      longitud: beneficiario.longitud,
+      municipioId: beneficiario.municipio.id,
+      curp: beneficiario.curp,
+      sexo: beneficiario.sexo,
+      programaSocialId: beneficiario.programaSocial.id
+    });
+  
+    this.formData = this.beneficiarioForm.value;
+    
+  
+  //   setTimeout(() => {
+  //     this.mapa2();
+  //   }, 500);
+  // console.log(beneficiario);
+   }
+  
+  actualizar() {
+    const socialFormValue = { ...this.beneficiarioForm.value };
+    socialFormValue.programaSocialId = +socialFormValue.programaSocialId;
+    socialFormValue.municipioId = +socialFormValue.municipioId;
+    console.log('ded',socialFormValue)
+    this.beneficiariosService.put(this.id, socialFormValue).subscribe({
 
+      next: () => {
+        this.mensajeService.mensajeExito("Beneficiario actualizado con éxito");
+        this.resetForm();
+        console.log(socialFormValue);
+      },
+      error: (error) => {
+        this.mensajeService.mensajeError("Error al actualizar el beneficiario");
+        console.error(error);
+        console.log(socialFormValue);
+      }
+    });
+  }
+  formatoFecha(fecha: string): string {
+    // Aquí puedes utilizar la lógica para formatear la fecha según tus necesidades
+    const fechaFormateada = new Date(fecha).toISOString().split('T')[0];
+    return fechaFormateada;
+  }
+  
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
       `¿Estás seguro de eliminar el beneficiario: ${nameItem}?`,
@@ -280,8 +336,17 @@ export class BeneficiariosComponent implements OnInit {
     this.closebutton.nativeElement.click();
     this.beneficiarioForm.reset();
   }
-
   submit() {
+    if (this.isModalAdd === false) {
+
+      this.actualizar();
+    } else {
+      this.agregar();
+
+    }
+  }
+  
+  agregar() {
     this.beneficiario = this.beneficiarioForm.value as Beneficiario;
 
     const programaSocialId = this.beneficiarioForm.get('programaSocialId')?.value;
