@@ -338,10 +338,13 @@
                   </ng-template>
                 </ng-select>
                 <div
-                    *ngIf="usuarioForm.get('rolId')?.hasError('required')"
-                  >
+                  *ngIf="usuarioForm.get('rolId')?.touched"
+                  class="error-message"
+                >
+                  <div *ngIf="usuarioForm.get('rolId')?.hasError('required')">
                     <p style="color: red">La rol es obligatorio</p>
                   </div>
+                </div>
               </div>
             </div>
             <div class="col-lg-4">

@@ -58,7 +58,7 @@ export class VisitasComponent {
           this.beneficiarios = dataFromAPI;
         },
         error: (error) => {
-          this.mensajeService.mensajeError(error);
+          console.error(error);
         }
       }
     );
@@ -84,7 +84,7 @@ export class VisitasComponent {
 
         },
         error: () => {
-          this.isLoading = LoadingStates.errorLoading
+          this.isLoading = LoadingStates.errorLoading;
         }
       }
     );
@@ -112,7 +112,9 @@ export class VisitasComponent {
     this.id = dto.id;
 
     // Asegúrate de asignar solo el ID del beneficiario si beneficiarioId es un campo de ID
-    const beneficiarioId = dto.beneficiario?.id || null;
+    // beneficiario no puede ser nulo
+    const beneficiarioId = dto.beneficiario.id;
+    this.onSelectBeneficiario(beneficiarioId);
 
     this.visitaForm.patchValue({
       id: dto.id,
@@ -190,19 +192,11 @@ export class VisitasComponent {
   }
 
   actualizarVisita() {
-    const visitaFormValue = this.visitaForm.value;
-
-    const visitaData: Visita = {
-      id: visitaFormValue.id,
-      descripcion: visitaFormValue.descripcion,
-      imagenBase64: visitaFormValue.imagenBase64,
-      foto: '', // Valor vacío o lo que corresponda
-      strFechaHoraVisita: '', // Valor vacío o lo que corresponda
-      beneficiario: this.visita?.beneficiario // Asegúrate de mantener el beneficiario actual
-    };
-
+    this.visita = this.visitaForm.value as Visita;
+    const beneficiarioId = this.visitaForm.get('beneficiarioId')?.value;
+    this.visita.beneficiario = { id: beneficiarioId } as Beneficiario;
     this.spinnerService.show();
-    this.visitasService.put(visitaData.id, visitaData).subscribe({
+    this.visitasService.put(this.id, this.visita).subscribe({
       next: () => {
         this.spinnerService.hide();
         this.mensajeService.mensajeExito('Visita actualizada correctamente');
@@ -296,15 +290,13 @@ export class VisitasComponent {
   }
 
   getProgramasSociales() {
-    this.isLoading = LoadingStates.trueLoading;
     this.programasSocialesService.getAll().subscribe(
       {
         next: (dataFromAPI) => {
           this.programasSociales = dataFromAPI;
-          this.isLoading = LoadingStates.falseLoading;
         },
-        error: () => {
-          this.isLoading = LoadingStates.errorLoading
+        error: (error) => {
+          console.error(error);
         }
       }
     );
@@ -312,9 +304,9 @@ export class VisitasComponent {
 
   filterByProgram() {
     if (this.selectedProgramaSocial) {
-        this.visitasFilter = this.visitas.filter(visita => visita.beneficiario.programaSocial.id === this.selectedProgramaSocial);
+      this.visitasFilter = this.visitas.filter(visita => visita.beneficiario.programaSocial.id === this.selectedProgramaSocial);
     } else {
-        this.visitasFilter = this.visitas; // Si no se selecciona ningún programa, mostrar todos
+      this.visitasFilter = this.visitas; // Si no se selecciona ningún programa, mostrar todos
     }
-}
+  }
 }

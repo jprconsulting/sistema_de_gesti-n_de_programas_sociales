@@ -120,7 +120,6 @@ export class UsuariosComponent implements OnInit {
     );
   }
 
-
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
   }
@@ -134,7 +133,6 @@ export class UsuariosComponent implements OnInit {
   }
 
   idUpdate!: number;
-  formData: any;
 
   setDataModalUpdate(dto: Usuario) {
     this.isModalAdd = false;
@@ -148,9 +146,8 @@ export class UsuariosComponent implements OnInit {
       password: dto.password,
       estatus: dto.estatus,
       rolId: dto.rol.id,
+      areaAdscripcionId: dto.areaAdscripcion?.id
     });
-    this.formData = this.usuarioForm.value;
-    console.log(this.usuarioForm.value);
   }
 
   editarUsuario() {
@@ -201,29 +198,26 @@ export class UsuariosComponent implements OnInit {
     this.usuario.areaAdscripcion = { id: areaAdscripcionId } as AreaAdscripcion;
 
     this.spinnerService.show();
-      this.usuarioService.post(this.usuario).subscribe({
-        next: () => {
-          this.spinnerService.hide();
-          this.mensajeService.mensajeExito('Usuario guardado correctamente');
-          this.resetForm();
-          this.configPaginator.currentPage = 1;
-        },
-        error: (error) => {
-          this.spinnerService.hide();
-          this.mensajeService.mensajeError(error);
-        },
-      });
+    this.usuarioService.post(this.usuario).subscribe({
+      next: () => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeExito('Usuario guardado correctamente');
+        this.resetForm();
+        this.configPaginator.currentPage = 1;
+      },
+      error: (error) => {
+        this.spinnerService.hide();
+        this.mensajeService.mensajeError(error);
+      },
+    });
 
   }
-
-
 
   resetForm() {
     this.closebutton.nativeElement.click();
     this.usuarioForm.reset();
   }
 
-  isUpdating: boolean = false;
 
   submit() {
     if (this.isModalAdd === false) {
