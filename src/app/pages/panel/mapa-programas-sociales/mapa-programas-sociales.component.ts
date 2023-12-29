@@ -37,7 +37,7 @@ export class MapaProgramasSocialesComponent {
     this.isLoading = LoadingStates.trueLoading;
     this.beneficiariosService.getTotalBeneficiariosPorMunicipio().subscribe({
       next: (dataFromAPI) => {
-        this.beneficiariosService.updateDataMapa(dataFromAPI.map((i) => ({ id: i.id.toString(), color: i.color })));
+        this.beneficiariosService.updateDataMapa(dataFromAPI.map((i) => ({ id: i.id.toString(), color: i.color, total: i.totalBeneficiarios })));
         this.totalesPorMunicipio = dataFromAPI;
         this.totalesPorMunicipioFilter = dataFromAPI;
         this.isLoading = LoadingStates.falseLoading;
@@ -144,7 +144,7 @@ export class MapaProgramasSocialesComponent {
                             <div class="d-flex flex-row justify-content-between w-100">
                               <span class="px14 text-muted">Total de beneficiarios</span>
                             </div>
-                            <span class="px15 align-self-center text-muted"  style="width: 60%;">1</span>
+                            <span class="px15 align-self-center text-muted"  style="width: 60%;">{point.total}</span>
                             <br><br>
                             <div class="d-flex flex-row justify-content-between w-100">
                               <span class="px14 text-muted">Porcentaje</span>
