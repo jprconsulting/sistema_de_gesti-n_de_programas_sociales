@@ -33,6 +33,7 @@ export class BeneficiariosComponent implements OnInit {
   canvas!: HTMLElement;
   beneficiario!: Beneficiario;
   beneficiarioForm!: FormGroup;
+  busqueda!: FormGroup;
   beneficiarios: Beneficiario[] = [];
   beneficiariosFilter: Beneficiario[] = [];
   isLoading = LoadingStates.neutro;
@@ -73,6 +74,7 @@ export class BeneficiariosComponent implements OnInit {
     this.getMunicipios();
     this.getProgramasSociales();
     this.creteForm();
+    this.busquedav();
   }
 
 
@@ -285,9 +287,9 @@ export class BeneficiariosComponent implements OnInit {
   creteForm() {
     this.beneficiarioForm = this.formBuilder.group({
       id: [null],
-      nombres: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
-      apellidoPaterno: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
-      apellidoMaterno: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
+      nombres: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^([a-zA-Z]{3})[a-zA-Z ]+$')]],
+      apellidoPaterno: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^([a-zA-Z]{3})[a-zA-Z ]+$')]],
+      apellidoMaterno: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^([a-zA-Z]{3})[a-zA-Z ]+$')]],
       fechaNacimiento: ['', Validators.required],
       sexo: [null, Validators.required],
       curp:  ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
@@ -300,7 +302,11 @@ export class BeneficiariosComponent implements OnInit {
 
     });
   }
-
+  busquedav() {
+    this.busqueda = this.formBuilder.group({
+      busqueda: ['', [Validators.pattern('^[a-zA-Z ]+$')]],
+    });
+  }
   getBeneficiarios() {
     this.isLoading = LoadingStates.trueLoading;
     this.beneficiariosService.getAll().subscribe(

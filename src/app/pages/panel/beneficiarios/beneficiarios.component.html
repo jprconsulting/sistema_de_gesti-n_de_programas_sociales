@@ -21,10 +21,19 @@
                   <div class="ms-auto d-flex align-items-center">
                       <i class="ti ti-cloud-down" style="font-size: 28px; padding-right: 10px;" (click)="exportarDatosAExcel()"></i>
                       <div class="input-icon">
-                          <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar" (input)="handleChangeSearch($event)" />
+                        <form [formGroup]="busqueda">
+                          <input #searchItem type="text" class="form-control form-control-rounded" formControlName="busqueda" placeholder="Buscar" (input)="handleChangeSearch($event)" />
+                          <div *ngIf="busqueda.get('busqueda')?.touched" class="error-message">
+                            <div *ngIf="
+              busqueda.get('busqueda')?.hasError('pattern')
+            ">
+                                No se aceptan numeros
+                            </div>
+                        </div>
                           <span class="input-icon-addon">
                         <i class="ti ti-search"></i>
                     </span>
+                  </form>
                       </div>
                   </div>
               </div>
@@ -147,7 +156,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-          {{ isModalAdd ? "Agregar" : "Actualizar" }} Beneficiario
+          {{ isModalAdd ? "Agregar" : "Actualizar" }} beneficiario
         </h5>
         <button
           #closebutton
