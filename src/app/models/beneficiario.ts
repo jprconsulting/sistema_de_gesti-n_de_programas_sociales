@@ -28,4 +28,5 @@ export interface TotalBeneficiariosMunicipio extends Municipio {
 export interface DataMapa {
     id: string;
     color: string;
+    total: number;
 }
