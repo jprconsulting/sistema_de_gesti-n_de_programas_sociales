@@ -14,23 +14,22 @@
               [items]="municipios"
               bindLabel="nombre"
               bindValue="id"
-              placeholder="Elegir"
-              [clearable]="false"
+              placeholder="Seleccionar"
+              [clearable]="true"
+              (change)="onSelectMunicipio($event?.id)"
+              (clear)="onClear()"
             >
               <ng-template ng-header-tmp>
                 <input
                   class="form-control"
                   type="text"
-                  (input)="
-                    selectMunicipio.filter($any($event.target).value)
-                  "
+                  (input)="selectMunicipio.filter($any($event.target).value)"
                 />
               </ng-template>
               <ng-template ng-option-tmp let-item="item" let-index="index">
                 {{ item.nombre }}
               </ng-template>
             </ng-select>
-
           </div>
         </div>
       </div>

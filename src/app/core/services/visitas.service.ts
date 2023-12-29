@@ -2,10 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HandleErrorService } from './handle-error.service';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Visita } from 'src/app/models/visita';
-import { WordCloud } from 'src/app/models/word-cloud';
+import { GeneralWordCloud, WordCloud } from 'src/app/models/word-cloud';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +13,18 @@ import { WordCloud } from 'src/app/models/word-cloud';
 export class VisitasService {
   route = `${environment.apiUrl}/visitas`;
   private _refreshListVisitas$ = new Subject<Visita | null>();
+  private dataWordCloudSubject = new BehaviorSubject<WordCloud[]>([]);
+  dataWordCloud$ = this.dataWordCloudSubject.asObservable();
+
 
   constructor(
     private http: HttpClient,
     private handleErrorService: HandleErrorService
   ) { }
+
+  updateWordCloud(newData: WordCloud[]) {
+    this.dataWordCloudSubject.next(newData);
+  }
 
   get refreshListVisitas() {
     return this._refreshListVisitas$;
@@ -62,7 +69,7 @@ export class VisitasService {
   }
 
   getWordCloud() {
-    return this.http.get<WordCloud[]>(`${this.route}/obtener-nube-palabras`);
+    return this.http.get<GeneralWordCloud>(`${this.route}/obtener-nube-palabras`);
   }
 
 }
