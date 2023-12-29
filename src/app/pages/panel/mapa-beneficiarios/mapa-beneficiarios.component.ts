@@ -11,13 +11,14 @@ declare const google: any;
   styleUrls: ['./mapa-beneficiarios.component.css']
 })
 export class MapaBeneficiariosComponent {
-  
+
   BeneficiarioForm!: FormGroup;
   beneficiarios: Beneficiario[] = [];
   prograsmasocial: ProgramaSocial [] = [];
   beneficiariosFiltrados: Beneficiario[] = [];
   myForm!: FormGroup;
   select ="";
+
 
   constructor(
     private formBuilder: FormBuilder,
@@ -32,7 +33,7 @@ export class MapaBeneficiariosComponent {
   ngAfterViewInit() {
     this.mapa();
   }
-  
+
   ngOnInit() {
     // Asegúrate de que el DOM esté completamente cargado
     document.addEventListener('DOMContentLoaded', () => {
@@ -41,37 +42,37 @@ export class MapaBeneficiariosComponent {
     });
 
   }
-  
-dato(){
-  this.select ="";
-}
+
+    dato(){
+      this.select ="";
+    }
     filtrarPorPrograma(event: any) {
       console.log('Valor seleccionado:', event.target.value);
-      
+
       const programaSocialId = event.target.value;
-      
+
       const beneficiariosFiltrados = this.beneficiarios.filter(beneficiario => {
         return beneficiario.programaSocial.id == programaSocialId;
-    });
-    
-      
-    this.select = beneficiariosFiltrados.length > 0
-    ? this.prograsmasocial.find(p => p.id === beneficiariosFiltrados[0].programaSocial.id)?.nombre || ''
-    : '';
-    
+      });
 
-      
-      
+
+      this.select = beneficiariosFiltrados.length > 0
+      ? this.prograsmasocial.find(p => p.id === beneficiariosFiltrados[0].programaSocial.id)?.nombre || ''
+      : '';
+
+
+
+
       const mapElement = document.getElementById("map-canvas") || null;
       const lat = mapElement?.getAttribute("data-lat") || null;
       const lng = mapElement?.getAttribute("data-lng") || null;
       const myLatlng = new google.maps.LatLng(lat, lng);
-    
-      
 
-  console.log('Valor de this.select:', this.select);
-    
-     
+
+
+      console.log('Valor de this.select:', this.select);
+
+
     const mapOptions = {
       zoom: 10,
       scrollwheel: false,
@@ -120,27 +121,27 @@ dato(){
         },
       ],
     };
-  
+
     let map = new google.maps.Map(mapElement, mapOptions);
     const input = document.getElementById('searchInput');
     const autocomplete = new google.maps.places.Autocomplete(input);
     autocomplete.bindTo('bounds', map);
-  
+
     autocomplete.addListener("place_changed", function () {
       // Lógica de autocompletado...
     });
-  
+
     const infowindow = new google.maps.InfoWindow();
-  
+
     this.programasSocialesService.getAll().subscribe(
       (programasocial: ProgramaSocial[]) => {
         this.prograsmasocial = programasocial;
-  
+
         const coloresPorPrograma: { [id: number]: string } = {};
         this.prograsmasocial.forEach(programaSocial => {
           coloresPorPrograma[programaSocial.id] = programaSocial.color;
         });
-        
+
         beneficiariosFiltrados.forEach(beneficiario => {
           const programaSocial = this.prograsmasocial.find(p => p.id === beneficiario.programaSocial.id);
           if (programaSocial) {
@@ -148,9 +149,9 @@ dato(){
               console.log('Valores del programa social:', programaSocial);
               const colorRGB = coloresPorPrograma[beneficiario.programaSocial.id] || 'rgb(255, 0, 0)';
 
-          
-          
-  
+
+
+
             const marker = new google.maps.Marker({
               position: new google.maps.LatLng(beneficiario.latitud, beneficiario.longitud),
               map: map,
@@ -163,13 +164,13 @@ dato(){
               },
               title: `${beneficiario.nombres} ${beneficiario.apellidoPaterno} ${beneficiario.apellidoMaterno}`,
             });
-  
+
             const contentString = `
                 <div class="w-64 text-center overflow-hidden shadow-lg">
                   <img class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;"
                     src="${beneficiario.sexo === 1 ? 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80"' : 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1361&q=80'}"
                     alt="Sunset in the mountains">
-                  
+
                   <div class="px-6 py-4">
                     <div class="font-bold text-xl mb-2">${beneficiario.nombres} ${beneficiario.apellidoPaterno}</div>
                     <p class="text-gray-900 text-base font-bold">
@@ -186,12 +187,12 @@ dato(){
                     </p>
                   </div>
                 </div>
-                `; 
+                `;
             google.maps.event.addListener(marker, "click", () => {
               if (infowindow && infowindow.getMap()) {
                 infowindow.close();
               }
-  
+
               infowindow.setContent(contentString);
               infowindow.setPosition(marker.getPosition());
               infowindow.open(map, marker);
@@ -204,6 +205,7 @@ dato(){
       }
     );
   }
+
   obtenerProgramas() {
     this.programasSocialesService.getAll().subscribe(
       (prograsmasocial: ProgramaSocial[]) => {
@@ -213,12 +215,13 @@ dato(){
     );
   }
 
+
   mapa() {
     const mapElement = document.getElementById("map-canvas") || null;
     const lat = mapElement?.getAttribute("data-lat") || null;
     const lng = mapElement?.getAttribute("data-lng") || null;
     const myLatlng = new google.maps.LatLng(lat, lng);
-    
+
     const mapOptions = {
       zoom: 10,
       scrollwheel: false,
@@ -267,42 +270,42 @@ dato(){
         },
       ],
     };
-    
+
     let map = new google.maps.Map(mapElement, mapOptions);
     const input = document.getElementById('searchInput');
     const autocomplete = new google.maps.places.Autocomplete(input);
     autocomplete.bindTo('bounds', map);
-  
+
     autocomplete.addListener("place_changed", function () {
       // Lógica de autocompletado...
     });
-  
+
     // Declara infowindow una vez fuera del bucle
     const infowindow = new google.maps.InfoWindow();
-  
+
     this.beneficiariosService.getAll().subscribe(
       (beneficiarios: Beneficiario[]) => {
         console.log('Datos de beneficiarios recibidos:', beneficiarios);
         this.beneficiarios = beneficiarios;
-    
+
         this.programasSocialesService.getAll().subscribe(
           (programasocial: ProgramaSocial[]) => {
             this.prograsmasocial = programasocial;
-    
+
             const coloresPorPrograma: { [id: number]: string } = {};
             this.prograsmasocial.forEach(programaSocial => {
               coloresPorPrograma[programaSocial.id] = programaSocial.color;
             });
-    
+
             this.beneficiarios.forEach(beneficiario => {
               console.log('Beneficiario:', beneficiario);
               const programaSocial = this.prograsmasocial.find(p => p.id === beneficiario.programaSocial.id);
               if (programaSocial) {
                 beneficiario.programaSocial.id = programaSocial.id;
                 console.log('Valores del programa social:', programaSocial);
-    
+
                 const colorRGB = coloresPorPrograma[beneficiario.programaSocial.id] || 'rgb(255, 0, 0)';
-    
+
                 const marker = new google.maps.Marker({
                   position: new google.maps.LatLng(beneficiario.latitud, beneficiario.longitud),
                   map: map,
@@ -320,7 +323,7 @@ dato(){
                   <img class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;"
                     src="${beneficiario.sexo === 1 ? 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80"' : 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1361&q=80'}"
                     alt="Sunset in the mountains">
-                  
+
                   <div class="px-6 py-4">
                     <div class="font-bold text-xl mb-2">${beneficiario.nombres} ${beneficiario.apellidoPaterno}</div>
                     <p class="text-gray-900 text-base font-bold">
@@ -337,12 +340,12 @@ dato(){
                     </p>
                   </div>
                 </div>
-                `; 
+                `;
                 google.maps.event.addListener(marker, "click", () => {
                   if (infowindow && infowindow.getMap()) {
                     infowindow.close();
                   }
-  
+
                   infowindow.setContent(contentString);
                   infowindow.setPosition(marker.getPosition());
                   infowindow.open(map, marker);
@@ -357,6 +360,6 @@ dato(){
       }
     );
   }
-  
+
 
 }
