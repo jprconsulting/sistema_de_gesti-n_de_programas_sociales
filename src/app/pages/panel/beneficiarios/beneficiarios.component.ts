@@ -84,7 +84,22 @@ export class BeneficiariosComponent implements OnInit {
     this.setCurrentLocation();
     this.ngAfterViewInit()
   }
+  mapa() {
+    this.setCurrentLocation();
   
+    // Puedes proporcionar un valor predeterminado o nulo, según tus necesidades
+    const dummyPlace: google.maps.places.PlaceResult = {
+      geometry: {
+        location: new google.maps.LatLng(0, 0), // Coordenadas predeterminadas o nulas
+      },
+      formatted_address: '',
+      name: '',
+      // Otras propiedades según tus necesidades
+    };
+  
+    this.selectAddress2(dummyPlace);
+  }
+   
   selectAddress(place: google.maps.places.PlaceResult) {
     if (!place.geometry) {
       window.alert("Autocomplete's returned place contains no geometry");
@@ -132,6 +147,55 @@ export class BeneficiariosComponent implements OnInit {
 
 
   }
+  selectAddress2(place: google.maps.places.PlaceResult) {
+    if (!place.geometry) {
+      window.alert("Autocomplete's returned place contains no geometry");
+      return;
+    }
+
+    if (place.formatted_address) {
+      this.beneficiarioForm.patchValue({
+        domicilio: place.formatted_address
+      });
+    }
+    console.log('reset', this.beneficiarioForm.value);
+      console.log('si llega')
+      // Obtén los valores de latitud y longitud del formulario
+      const selectedLat = this.beneficiarioForm.value.latitud;
+      const selectedLng = this.beneficiarioForm.value.longitud;
+
+      this.canvas.setAttribute("data-lat", selectedLat.toString());
+      this.canvas.setAttribute("data-lng", selectedLng.toString());
+
+      const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
+      this.maps.setCenter(newLatLng);
+      this.maps.setZoom(15);
+
+      const marker = new google.maps.Marker({
+        position: newLatLng,
+        map: this.maps,
+        animation: google.maps.Animation.DROP,
+        title: this.beneficiarioForm.value.nombres, // Usa un campo relevante como título
+      });
+    const contentString = `
+        <!-- Contenido de la ventana de información (infowindow) -->
+        <!-- ... -->
+      `;
+
+    const infowindow = new google.maps.InfoWindow({
+      content: contentString,
+    });
+
+    google.maps.event.addListener(marker, "click", () => {
+      infowindow.open(this.maps, marker);
+    });
+
+    this.beneficiarioForm.patchValue({
+      longitud: selectedLng,
+      latitud: selectedLat
+    });
+  }
+
   setEstatus() {
     this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
   }
@@ -233,6 +297,7 @@ export class BeneficiariosComponent implements OnInit {
       domicilio: [null, Validators.required],
       latitud: [null, Validators.required],
       longitud: [null, Validators.required],
+
     });
   }
 
