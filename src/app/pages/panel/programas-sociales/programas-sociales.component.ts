@@ -22,6 +22,7 @@ export class ProgramasSocialesComponent {
 
   programaSocial!: ProgramaSocial;
   programaSocialForm!: FormGroup;
+  busqueda!: FormGroup;
   programasSociales: ProgramaSocial[] = [];
   programasSocialesFilter: ProgramaSocial[] = [];
   isLoading = LoadingStates.neutro;
@@ -48,6 +49,7 @@ export class ProgramasSocialesComponent {
     this.getProgramasSociales();
     this.getAreasAdscripcion();
     this.creteForm();
+    this.busquedav();
   }
 
   getAreasAdscripcion() {
@@ -57,12 +59,18 @@ export class ProgramasSocialesComponent {
   creteForm() {
     this.programaSocialForm = this.formBuilder.group({
       id: [null],
-      nombre: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
+      nombre: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^([a-zA-Z]{3})[a-zA-Z ]+$')]],
       descripcion: [''],
       color: ['', Validators.required],
       estatus: [true],
-      acronimo: ['', [Validators.required, Validators.minLength(4), Validators.pattern('^[a-zA-Z ]+$')]],
+      acronimo: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^([a-zA-Z]{3})[a-zA-Z ]+$')]],
       areaAdscripcionId: [null, Validators.required],
+    });
+  }
+
+  busquedav() {
+    this.busqueda = this.formBuilder.group({
+      busqueda: ['', [Validators.pattern('^[a-zA-Z ]+$')]],
     });
   }
 

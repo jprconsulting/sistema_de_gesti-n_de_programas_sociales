@@ -14,10 +14,19 @@
               </button>
                     <div class="ms-auto d-flex align-items-center">
                         <div class="input-icon">
-                            <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar" (input)="handleChangeSearch($event)" />
-                            <span class="input-icon-addon">
-                          <i class="ti ti-search"></i>
-                      </span>
+                            <form [formGroup]="busqueda">
+                                <input #searchItem type="text" class="form-control form-control-rounded" formControlName="busqueda" placeholder="Buscar" (input)="handleChangeSearch($event)" />
+                                <div *ngIf="busqueda.get('busqueda')?.touched" class="error-message">
+                                    <div *ngIf="
+                      busqueda.get('busqueda')?.hasError('pattern')
+                    ">
+                                        No se aceptan numeros
+                                    </div>
+                                </div>
+                                <span class="input-icon-addon">
+                                    <i class="ti ti-search"></i>
+                                </span>
+                            </form>
                         </div>
                         <a class="btn w-30 btn-icon" aria-label="Dribbble" (click)="exportarDatosAExcel()" title="Descargar excel de programas sociales" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px;">
                             <i class="ti ti-cloud-down text-muted" style="font-size: 28px;"></i>
@@ -111,7 +120,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    {{ isModalAdd ? "Agregar" : "Actualizar" }} Programa Social
+                    {{ isModalAdd ? "Agregar" : "Actualizar" }} programa social
                 </h5>
                 <button #closebutton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -121,7 +130,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="mb-3">
-                                <label class="form-label">Nombre</label>
+                                <label class="form-label">Nombre*:</label>
                                 <input type="text" class="form-control" formControlName="nombre" />
                                 <div *ngIf="programaSocialForm.get('nombre')?.touched" class="error-message">
                                     <div *ngIf="
@@ -137,14 +146,14 @@
                                     <div *ngIf="
                       programaSocialForm.get('nombre')?.hasError('pattern')
                     ">
-                                        El Nombre no puede tener números ni signos
+                                        El Nombre no puede tener números mi caracteres especiales
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-12">
                             <div class="mb-3">
-                                <label class="form-label">Área de adscripción</label>
+                                <label class="form-label">Área de adscripción*:</label>
                                 <ng-select placeholder="Elegir" [items]="areasAdscripcion" bindLabel="nombre" bindValue="id" [searchable]="false" [clearable]="false" formControlName="areaAdscripcionId">
                                     <ng-template ng-option-tmp let-item="item">
                                         {{ item.nombre }}
@@ -163,7 +172,7 @@
                         </div>
                         <div class="col-lg-12">
                             <div class="mb-3">
-                                <label class="form-label">Acrónimo</label>
+                                <label class="form-label">Acrónimo*:</label>
                                 <input type="text" class="form-control" formControlName="acronimo" />
                                 <div *ngIf="programaSocialForm.get('acronimo')?.touched" class="error-message">
                                     <div *ngIf="
@@ -187,7 +196,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <label class="form-label">Color</label>
+                            <label class="form-label">Color*:</label>
                             <input type="color" class="form-control form-control-color" title="Selecciona color" formControlName="color" value="#206bc4" />
                             <div *ngIf="programaSocialForm.get('color')?.touched" class="error-message">
                                 <div *ngIf="programaSocialForm.get('color')?.hasError('required')">
@@ -219,12 +228,18 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="mb-3">
-                                <label class="form-label">Descripción</label>
+                                <label class="form-label">Descripción:</label>
                                 <textarea rows="5" class="form-control" placeholder="" formControlName="descripcion"></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
+                <p class="form-label" style="
+                    margin-left: 20px;
+                    color: red;
+                    font-weight: bold;
+                ">Todos los campos marcados con * son requeridos</p>
+
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success" [disabled]="!programaSocialForm.valid">
             {{ isModalAdd ? "Agregar" : "Actualizar" }}

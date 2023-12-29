@@ -12,26 +12,32 @@
                     <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modal-beneficiario" (click)="handleChangeAdd()">
                 <i class="ti ti-plus me-1"></i>Agregar
             </button>
-                    <div class="ms-auto d-flex align-items-center">
-                        <div class="input-icon">
-                            <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar" (input)="handleChangeSearch($event)" />
-                            <span class="input-icon-addon">
-                        <i class="ti ti-search"></i>
-                    </span>
+                  <div class="ms-auto d-flex align-items-center">
+                      <i class="ti ti-cloud-down" style="font-size: 28px; padding-right: 10px;" (click)="exportarDatosAExcel()"></i>
+                      <div class="input-icon">
+                        <form [formGroup]="busqueda">
+                          <input #searchItem type="text" class="form-control form-control-rounded" formControlName="busqueda" placeholder="Buscar" (input)="handleChangeSearch($event)" />
+                          <div *ngIf="busqueda.get('busqueda')?.touched" class="error-message">
+                            <div *ngIf="
+              busqueda.get('busqueda')?.hasError('pattern')
+            ">
+                                No se aceptan numeros
+                            </div>
                         </div>
-                        <a class="btn w-30 btn-icon" aria-label="Dribbble" (click)="exportarDatosAExcel()" title="Descargar excel de beneficiarios" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px;">
-                            <i class="ti ti-cloud-down text-muted" style="font-size: 28px;"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <br>
-            <ng-container [ngSwitch]="isLoading">
-                <div style="height: 300px" *ngSwitchCase="2">
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-indeterminate bg-green"></div>
-                    </div>
-                </div>
+                          <span class="input-icon-addon">
+                        <i class="ti ti-search"></i>
+                    </span></form>
+                      </div>
+                  </div>
+              </div>
+          </div>
+<br>
+      <ng-container [ngSwitch]="isLoading">
+        <div style="height: 300px" *ngSwitchCase="2">
+          <div class="progress">
+            <div class="progress-bar progress-bar-indeterminate bg-green"></div>
+          </div>
+        </div>
 
                 <div *ngSwitchCase="3" class="table-responsive">
                     <table class="table table-vcenter card-table table-striped">
@@ -113,15 +119,28 @@
     </div>
 </div>
 
-<div class="modal" id="modal-beneficiario" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    {{ isModalAdd ? "Agregar" : "Actualizar" }} Beneficiario
-                </h5>
-                <button #closebutton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="resetMap()"></button>
-            </div>
+<div
+  class="modal"
+  id="modal-beneficiario"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ isModalAdd ? "Agregar" : "Actualizar" }} Beneficiario
+        </h5>
+        <button
+          #closebutton
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="resetMap()"
+        ></button>
+      </div>
 
             <form [formGroup]="beneficiarioForm" (ngSubmit)="submit()">
                 <div class="modal-body">
