@@ -31,7 +31,7 @@
                   </div>
               </div>
           </div>
-<br>
+
       <ng-container [ngSwitch]="isLoading">
         <div style="height: 300px" *ngSwitchCase="2">
           <div class="progress">
@@ -40,19 +40,19 @@
         </div>
 
                 <div *ngSwitchCase="3" class="table-responsive">
-                    <table class="table table-vcenter card-table table-striped">
+                  <table class="table table-vcenter card-table">
                         <thead>
-                            <tr>
-                                <th class="text-center">#</th>
-                                <th>Nombre Completo</th>
-                                <th>Fecha Nacimiento</th>
-                                <th>Domicilio</th>
-                                <th>Sexo</th>
-                                <th>CURP</th>
-                                <th>Programa Social</th>
-                                <th>Municipio</th>
-                                <th class="text-center">Estatus</th>
-                                <th class="w-1">Acciones</th>
+                            <tr >
+                                <th class="text-center " style="text-transform: none; ">#</th>
+                                <th style="text-transform: none; font-size: inherit;">Nombre completo</th>
+                                <th style="text-transform: none; font-size: inherit;">Fecha nacimiento</th>
+                                <th style="text-transform: none; font-size: inherit;">Domicilio</th>
+                                <th style="text-transform: none; font-size: inherit;">Sexo</th>
+                                <th style="text-transform: none; font-size: inherit;">CURP</th>
+                                <th style="text-transform: none; font-size: inherit;">Programa social</th>
+                                <th style="text-transform: none; font-size: inherit;">Municipio</th>
+                                <th class="text-center" style="text-transform: none; font-size: inherit;">Estatus</th>
+                                <th class="w-1" style="text-transform: none; font-size: inherit;">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -147,7 +147,7 @@
                     <div class="row">
                         <div class="col-lg-4">
                             <div class="mb-3">
-                                <label class="form-label">Nombre</label>
+                                <label class="form-label">Nombre*:</label>
                                 <input type="text" class="form-control" formControlName="nombres" />
                                 <div *ngIf="beneficiarioForm.get('nombres')?.touched" class="error-message">
                                     <div *ngIf="
@@ -168,7 +168,7 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="mb-3">
-                                <label class="form-label">Apellido Paterno</label>
+                                <label class="form-label">Apellido Paterno*:</label>
                                 <input type="text" class="form-control" formControlName="apellidoPaterno" />
                                 <div *ngIf="beneficiarioForm.get('apellidoPaterno')?.touched" class="error-message">
                                     <div *ngIf="
@@ -197,7 +197,7 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="mb-3">
-                                <label class="form-label">Apellido Materno</label>
+                                <label class="form-label">Apellido Materno*:</label>
                                 <input type="text" class="form-control" formControlName="apellidoMaterno" />
                                 <div *ngIf="beneficiarioForm.get('apellidoMaterno')?.touched" class="error-message">
                                     <div *ngIf="
@@ -228,7 +228,7 @@
                     <div class="row">
                         <div class="col-lg-4">
                             <div class="mb-3">
-                                <label class="form-label">Fecha Nacimiento</label>
+                                <label class="form-label">Fecha Nacimiento*:</label>
                                 <input type="date" class="form-control" formControlName="fechaNacimiento" />
                                 <div *ngIf="beneficiarioForm.get('fechaNacimiento')?.touched" class="error-message">
                                     <div *ngIf="
@@ -243,7 +243,7 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="mb-3">
-                                <label class="form-label">CURP</label>
+                                <label class="form-label">CURP*:</label>
                                 <input type="text" class="form-control" formControlName="curp" />
                                 <div *ngIf="beneficiarioForm.get('curp')?.touched" class="error-message">
                                     <div *ngIf="beneficiarioForm.get('curp')?.hasError('required')">
@@ -257,7 +257,7 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="mb-3">
-                                <label class="form-label">Género</label>
+                                <label class="form-label">Género*:</label>
                                 <ng-select placeholder="Elegir" [items]="generos" bindLabel="name" bindValue="id" [searchable]="false" [clearable]="false" formControlName="sexo">
                                     <ng-template ng-option-tmp let-item="item">
                                         {{ item.name }}
@@ -274,7 +274,7 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <label class="form-label">Programa Social</label>
+                                <label class="form-label">Programa Social*:</label>
                                 <ng-select formControlName="programaSocialId" #selectProgramaSocial [searchable]="false" [items]="programasSociales" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
                                     <ng-template ng-header-tmp>
                                         <input class="form-control" type="text" (input)="
@@ -298,7 +298,7 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <label class="form-label">Municipio</label>
+                                <label class="form-label">Municipio*:</label>
                                 <ng-select formControlName="municipioId" #selectMunicipio [searchable]="false" [items]="municipios" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
                                     <ng-template ng-header-tmp>
                                         <input class="form-control" type="text" (input)="
@@ -342,7 +342,7 @@
 
                         <div class="col-lg-12">
                             <div class="mb-3">
-                                <label class="form-label">Ubicación</label>
+                                <label class="form-label">Ubicación*</label>
                                 <input #ubicacionInput [options]="options" class="form-control" type="text" ngx-gp-autocomplete formControlName="domicilio" (onAddressChange)="selectAddress($event)" />
                             </div>
                         </div>
@@ -353,6 +353,11 @@
                         </div>
                     </div>
                 </div>
+                <p class="form-label" style="
+                    margin-left: 20px;
+                    color: red;
+                    font-weight: bold;
+                ">Todos los campos marcados con * son requeridos</p>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success" [disabled]="!beneficiarioForm.valid">
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
