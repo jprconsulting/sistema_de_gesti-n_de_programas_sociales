@@ -65,13 +65,13 @@
             <thead>
               <tr>
                 <th class="text-center">#</th>
-                <th>Beneficiario</th>
-                <th>Programa Social</th>
-                <th>Municipio</th>
-                <th>Descripcion</th>
-                <th>Evidencia</th>
-                <th>Fecha Visita</th>
-                <th class="w-1">Acciones</th>
+                <th style="text-transform: none; font-size: inherit;">Beneficiario</th>
+                <th style="text-transform: none; font-size: inherit;">Programa Social</th>
+                <th style="text-transform: none; font-size: inherit;">Municipio</th>
+                <th style="text-transform: none; font-size: inherit;">Descripcion</th>
+                <th style="text-transform: none; font-size: inherit;">Evidencia</th>
+                <th style="text-transform: none; font-size: inherit;">Fecha Visita</th>
+                <th style="text-transform: none; font-size: inherit;">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -114,25 +114,25 @@
                 </td>
                 <td class="text-muted">{{ visita.strFechaHoraVisita }}</td>
 
-                <td>
-                  <div class="d-flex justify-content-between">
+                <td style="width: 50px">
+                  <div>
                     <button
                       class="btn btn-warning btn-icon btn-sm"
                       data-bs-toggle="modal"
                       data-bs-target="#modal-visita"
                       (click)="setDataModalUpdate(visita)"
+                      style="margin-right: 5px;"
                     >
                       <i class="ti ti-edit"></i>
                     </button>
                     <button
                       class="btn btn-danger btn-icon btn-sm"
-                      (click)="
-                        deleteItem(visita.id, visita.beneficiario.nombres)
-                      "
+                      (click)="deleteItem(visita.id, visita.beneficiario.nombres)"
                     >
                       <i class="ti ti-eraser"></i>
                     </button>
                   </div>
+
                 </td>
               </tr>
             </tbody>
@@ -187,7 +187,7 @@
           <div class="row">
             <div class="col-lg-12">
               <div class="mb-3">
-                <label class="form-label">Beneficiario</label>
+                <label class="form-label">Beneficiario*</label>
                         <ng-select formControlName="beneficiarioId" #selectBeneficiario [searchable]="false" [items]="beneficiarios" bindLabel="nombreCompleto" bindValue="id" placeholder="Elegir" [clearable]="false" (change)="onSelectBeneficiario($event.id)">
                             <ng-template ng-header-tmp>
                                 <input class="form-control" type="text" (input)="
@@ -202,13 +202,13 @@
                 </div>
                 <div class="col-md-12">
                     <div class="mb-3">
-                        <label class="form-label">Programa Social</label>
+                        <label class="form-label">Programa social</label>
                         <input type="text" class="form-control" disabled [value]="beneficiarioSelect?.programaSocial?.nombre" />
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="mb-3">
-                        <label class="form-label">Área Adscripción</label>
+                        <label class="form-label">Área adscripción</label>
                         <input type="text" class="form-control" disabled [value]="
                     beneficiarioSelect?.programaSocial?.areaAdscripcion?.nombre
                   " />
@@ -216,13 +216,13 @@
                 </div>
                 <div class="col-lg-12">
                     <div class="mb-3">
-                        <label class="form-label">Descripción</label>
+                        <label class="form-label">Descripción*</label>
                         <textarea rows="5" class="form-control" placeholder="" formControlName="descripcion"></textarea>
                     </div>
                 </div>
                 <div class="col-lg-12">
                     <div class="mb-3">
-                        <div class="form-label">Selecciona archivo</div>
+                        <div class="form-label">Selecciona una imagen*</div>
                         <input class="input" type="file" (change)="onFileChange($event)" formControlName="imagenBase64" />
                     </div>
                 </div>
@@ -236,6 +236,11 @@
                 </div>
             </div>
         </div>
+        <p class="form-label" style="
+        margin-left: 20px;
+        color: red;
+        font-weight: bold;
+    ">Todos los campos marcados con * son requeridos</p>
         <div class="modal-footer">
             <button type="submit" class="btn btn-success" [disabled]="!visitaForm.valid">
             {{ isModalAdd ? "Agregar" : "Actualizar" }}
