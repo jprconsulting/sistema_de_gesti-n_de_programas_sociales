@@ -27,7 +27,7 @@ export class ProgramasSocialesComponent {
   isLoading = LoadingStates.neutro;
 
   areasAdscripcion: AreaAdscripcion[] = [];
-  isModalAdd: boolean = true; 
+  isModalAdd: boolean = true;
   formData: any;
   rolId = 0;
   defaultColor = '#206bc4';
@@ -95,7 +95,7 @@ export class ProgramasSocialesComponent {
     this.configPaginator.currentPage = 1;
   }
 
-  
+
   actualizar() {
     const socialFormValue = { ...this.programaSocialForm.value };
   console.log('ded',socialFormValue)
@@ -115,7 +115,7 @@ export class ProgramasSocialesComponent {
       }
     });
   }
-  
+
 
     setDataModalUpdate(dto: ProgramaSocial) {
       this.isModalAdd = false;
@@ -164,10 +164,10 @@ export class ProgramasSocialesComponent {
     }
   }
 
-  
+
   agregar() {
     this.programaSocial = this.programaSocialForm.value as ProgramaSocial;
-    
+
     const areaAdscripcionId = this.programaSocialForm.get('areaAdscripcionId')?.value;
     this.programaSocial.areaAdscripcion = { id: areaAdscripcionId } as AreaAdscripcion;
 
@@ -196,7 +196,7 @@ export class ProgramasSocialesComponent {
       this.isModalAdd = true;
     }
   }
-  
+
 
  setEstatus() {
     this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
@@ -208,12 +208,13 @@ export class ProgramasSocialesComponent {
     }
 
     const datosParaExportar = this.programasSociales.map(programasSociales => {
+      const estatus = programasSociales.estatus ? 'Activo' : 'Inactivo';
       return {
         'ID': programasSociales.nombre,
         'descripcion': programasSociales.descripcion,
         'color': programasSociales.color,
-        'estatus': programasSociales.estatus,
         'acronimo': programasSociales.acronimo,
+        'estatus': estatus,
       };
     });
 
