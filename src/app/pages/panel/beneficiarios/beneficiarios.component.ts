@@ -33,10 +33,11 @@ export class BeneficiariosComponent implements OnInit {
   canvas!: HTMLElement;
   beneficiario!: Beneficiario;
   beneficiarioForm!: FormGroup;
+  busqueda!: FormGroup;
   beneficiarios: Beneficiario[] = [];
   beneficiariosFilter: Beneficiario[] = [];
   isLoading = LoadingStates.neutro;
-  isModalAdd: boolean = true; 
+  isModalAdd: boolean = true;
   programasSociales: ProgramaSocial[] = [];
   municipios: Municipio[] = [];
   rolId = 0;
@@ -56,8 +57,8 @@ export class BeneficiariosComponent implements OnInit {
   };
   maps!: google.maps.Map;
   SocialForm: any;
-  private map: any; 
-  private marker: any; 
+  private map: any;
+  private marker: any;
   constructor(
     @Inject('CONFIG_PAGINATOR') public configPaginator: PaginationInstance,
     @Inject('GENEROS') public objGeneros: any,
@@ -73,6 +74,7 @@ export class BeneficiariosComponent implements OnInit {
     this.getMunicipios();
     this.getProgramasSociales();
     this.creteForm();
+    this.busquedav();
   }
 
 
@@ -84,7 +86,22 @@ export class BeneficiariosComponent implements OnInit {
     this.setCurrentLocation();
     this.ngAfterViewInit()
   }
-  
+  mapa() {
+    this.setCurrentLocation();
+
+    // Puedes proporcionar un valor predeterminado o nulo, según tus necesidades
+    const dummyPlace: google.maps.places.PlaceResult = {
+      geometry: {
+        location: new google.maps.LatLng(0, 0), // Coordenadas predeterminadas o nulas
+      },
+      formatted_address: '',
+      name: '',
+      // Otras propiedades según tus necesidades
+    };
+
+    this.selectAddress2(dummyPlace);
+  }
+
   selectAddress(place: google.maps.places.PlaceResult) {
     if (!place.geometry) {
       window.alert("Autocomplete's returned place contains no geometry");
@@ -132,6 +149,55 @@ export class BeneficiariosComponent implements OnInit {
 
 
   }
+  selectAddress2(place: google.maps.places.PlaceResult) {
+    if (!place.geometry) {
+      window.alert("Autocomplete's returned place contains no geometry");
+      return;
+    }
+
+    if (place.formatted_address) {
+      this.beneficiarioForm.patchValue({
+        domicilio: place.formatted_address
+      });
+    }
+    console.log('reset', this.beneficiarioForm.value);
+      console.log('si llega')
+      // Obtén los valores de latitud y longitud del formulario
+      const selectedLat = this.beneficiarioForm.value.latitud;
+      const selectedLng = this.beneficiarioForm.value.longitud;
+
+      this.canvas.setAttribute("data-lat", selectedLat.toString());
+      this.canvas.setAttribute("data-lng", selectedLng.toString());
+
+      const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
+      this.maps.setCenter(newLatLng);
+      this.maps.setZoom(15);
+
+      const marker = new google.maps.Marker({
+        position: newLatLng,
+        map: this.maps,
+        animation: google.maps.Animation.DROP,
+        title: this.beneficiarioForm.value.nombres, // Usa un campo relevante como título
+      });
+    const contentString = `
+        <!-- Contenido de la ventana de información (infowindow) -->
+        <!-- ... -->
+      `;
+
+    const infowindow = new google.maps.InfoWindow({
+      content: contentString,
+    });
+
+    google.maps.event.addListener(marker, "click", () => {
+      infowindow.open(this.maps, marker);
+    });
+
+    this.beneficiarioForm.patchValue({
+      longitud: selectedLng,
+      latitud: selectedLat
+    });
+  }
+
   setEstatus() {
     this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
   }
@@ -221,9 +287,9 @@ export class BeneficiariosComponent implements OnInit {
   creteForm() {
     this.beneficiarioForm = this.formBuilder.group({
       id: [null],
-      nombres: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
-      apellidoPaterno: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
-      apellidoMaterno: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
+      nombres: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
+      apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
+      apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
       fechaNacimiento: ['', Validators.required],
       sexo: [null, Validators.required],
       curp:  ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
@@ -233,9 +299,14 @@ export class BeneficiariosComponent implements OnInit {
       domicilio: [null, Validators.required],
       latitud: [null, Validators.required],
       longitud: [null, Validators.required],
+
     });
   }
-
+  busquedav() {
+    this.busqueda = this.formBuilder.group({
+      busqueda: ['', [Validators.pattern('^[a-zA-Z ]+$')]],
+    });
+  }
   getBeneficiarios() {
     this.isLoading = LoadingStates.trueLoading;
     this.beneficiariosService.getAll().subscribe(
@@ -300,7 +371,7 @@ export class BeneficiariosComponent implements OnInit {
       console.log(beneficiario);
       console.log(this.beneficiarioForm.value);
    }
-  
+
    actualizar() {
     this.beneficiario = this.beneficiarioForm.value as Beneficiario;
 
@@ -314,13 +385,13 @@ export class BeneficiariosComponent implements OnInit {
 
     this.spinnerService.show();
     console.log('ded', this.beneficiario);
-  
+
     this.beneficiariosService.put(this.id, this.beneficiario).subscribe({
       next: () => {
         this.spinnerService.hide();
         this.mensajeService.mensajeExito("Beneficiario actualizado con éxito");
         this.resetForm();
-        
+
         this.configPaginator.currentPage = 1;
       },
       error: (error) => {
@@ -334,7 +405,7 @@ export class BeneficiariosComponent implements OnInit {
     const fechaFormateada = new Date(fecha).toISOString().split('T')[0];
     return fechaFormateada;
   }
-  
+
   deleteItem(id: number, nameItem: string) {
     this.mensajeService.mensajeAdvertencia(
       `¿Estás seguro de eliminar el beneficiario: ${nameItem}?`,
@@ -364,7 +435,7 @@ export class BeneficiariosComponent implements OnInit {
 
     }
   }
-  
+
   agregar() {
     this.beneficiario = this.beneficiarioForm.value as Beneficiario;
 
@@ -408,6 +479,8 @@ export class BeneficiariosComponent implements OnInit {
     }
 
     const datosParaExportar = this.beneficiarios.map(beneficiarios => {
+      const estatus = beneficiarios.estatus ? 'Activo' : 'Inactivo';
+
       return {
         'ID': beneficiarios.nombres,
         'ApellidoPaterno': beneficiarios.apellidoPaterno,
@@ -416,7 +489,7 @@ export class BeneficiariosComponent implements OnInit {
         'Curp': beneficiarios.curp,
         'Sexo': beneficiarios.sexo,
         'Domicilio': beneficiarios.domicilio,
-        'Estatus': beneficiarios.estatus,
+        'Estatus': estatus,
       };
     });
 

@@ -22,12 +22,13 @@ export class ProgramasSocialesComponent {
 
   programaSocial!: ProgramaSocial;
   programaSocialForm!: FormGroup;
+  busqueda!: FormGroup;
   programasSociales: ProgramaSocial[] = [];
   programasSocialesFilter: ProgramaSocial[] = [];
   isLoading = LoadingStates.neutro;
 
   areasAdscripcion: AreaAdscripcion[] = [];
-  isModalAdd: boolean = true; 
+  isModalAdd: boolean = true;
   formData: any;
   rolId = 0;
   defaultColor = '#206bc4';
@@ -48,6 +49,7 @@ export class ProgramasSocialesComponent {
     this.getProgramasSociales();
     this.getAreasAdscripcion();
     this.creteForm();
+    this.busquedav();
   }
 
   getAreasAdscripcion() {
@@ -57,12 +59,18 @@ export class ProgramasSocialesComponent {
   creteForm() {
     this.programaSocialForm = this.formBuilder.group({
       id: [null],
-      nombre: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]+$')]],
+      nombre: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
       descripcion: [''],
       color: ['', Validators.required],
       estatus: [true],
-      acronimo: ['', [Validators.required, Validators.minLength(4), Validators.pattern('^[a-zA-Z ]+$')]],
+      acronimo: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
       areaAdscripcionId: [null, Validators.required],
+    });
+  }
+
+  busquedav() {
+    this.busqueda = this.formBuilder.group({
+      busqueda: ['', [Validators.pattern('^[a-zA-Z ]+$')]],
     });
   }
 
@@ -95,7 +103,7 @@ export class ProgramasSocialesComponent {
     this.configPaginator.currentPage = 1;
   }
 
-  
+
   actualizar() {
     const socialFormValue = { ...this.programaSocialForm.value };
   console.log('ded',socialFormValue)
@@ -115,7 +123,7 @@ export class ProgramasSocialesComponent {
       }
     });
   }
-  
+
 
     setDataModalUpdate(dto: ProgramaSocial) {
       this.isModalAdd = false;
@@ -164,10 +172,10 @@ export class ProgramasSocialesComponent {
     }
   }
 
-  
+
   agregar() {
     this.programaSocial = this.programaSocialForm.value as ProgramaSocial;
-    
+
     const areaAdscripcionId = this.programaSocialForm.get('areaAdscripcionId')?.value;
     this.programaSocial.areaAdscripcion = { id: areaAdscripcionId } as AreaAdscripcion;
 
@@ -196,7 +204,7 @@ export class ProgramasSocialesComponent {
       this.isModalAdd = true;
     }
   }
-  
+
 
  setEstatus() {
     this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
@@ -208,12 +216,14 @@ export class ProgramasSocialesComponent {
     }
 
     const datosParaExportar = this.programasSociales.map(programasSociales => {
+      const estatus = programasSociales.estatus ? 'Activo' : 'Inactivo';
       return {
-        'ID': programasSociales.nombre,
-        'descripcion': programasSociales.descripcion,
-        'color': programasSociales.color,
-        'estatus': programasSociales.estatus,
-        'acronimo': programasSociales.acronimo,
+        'Id': programasSociales.id,
+        'Nombre': programasSociales.nombre,
+        'Descripcion': programasSociales.descripcion,
+        'Color': programasSociales.color,
+        'Acronimo': programasSociales.acronimo,
+        'Estatus': estatus,
       };
     });
 
