@@ -74,6 +74,7 @@ export class NubePalabrasComponent implements AfterViewInit {
                     },
                     type: 'wordcloud',
                     data: newData,
+
                 }],
                 title: {
                     text: ''
@@ -95,12 +96,13 @@ export class NubePalabrasComponent implements AfterViewInit {
                                   <div style="width: 5px; height: 100%; box-sizing: border-box; float: left; background-color: {point.color}; border-radius: 10px 0px 0px 10px;"></div>
                                   <div style="padding: 5px; float: left;box-sizing: border-box; width: 200px; height: 60px; background: #ffffff; border-radius: 0px 0px 10px 0px;">
                                     <div class="d-flex flex-row">
-                                      <span class="px14 text-muted" style="font-size: 15px;">Numero de repeticiones</span>
+                                      <span class="px14 text-muted" style="font-size: 17px;">Número de repeticiones</span>
                                     </div>
-                                    <span class="px15 align-self-center text-muted" style="width: 60%; font-size: 15px;">{point.weight}</span>
+                                    <span class="px15 align-self-center" style="width: 60%; font-size: 19px; font-weight:  bolder;">{point.weight}</span>
                                     <br><br>
                                   </div>
-                                </div>`
+                                </div>
+                              </div>`
 
                 },
                 subtitle: {
