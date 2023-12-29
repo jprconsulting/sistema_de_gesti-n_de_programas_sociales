@@ -210,11 +210,12 @@ export class ProgramasSocialesComponent {
     const datosParaExportar = this.programasSociales.map(programasSociales => {
       const estatus = programasSociales.estatus ? 'Activo' : 'Inactivo';
       return {
-        'ID': programasSociales.nombre,
-        'descripcion': programasSociales.descripcion,
-        'color': programasSociales.color,
-        'acronimo': programasSociales.acronimo,
-        'estatus': estatus,
+        'Id': programasSociales.id,
+        'Nombre': programasSociales.nombre,
+        'Descripcion': programasSociales.descripcion,
+        'Color': programasSociales.color,
+        'Acronimo': programasSociales.acronimo,
+        'Estatus': estatus,
       };
     });
 
