@@ -482,7 +482,7 @@ export class BeneficiariosComponent implements OnInit {
       const estatus = beneficiarios.estatus ? 'Activo' : 'Inactivo';
 
       return {
-        'ID': beneficiarios.nombres,
+        'Id': beneficiarios.id,
         'ApellidoPaterno': beneficiarios.apellidoPaterno,
         'Apellido Materno': beneficiarios.apellidoMaterno,
         'FechaNacimiento': beneficiarios.fechaNacimiento,

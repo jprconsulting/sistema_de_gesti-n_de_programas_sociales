@@ -329,7 +329,7 @@ export class VisitasComponent {
 
     const datosParaExportar = this.visitas.map(visitas => {
       return {
-        'ID': visitas.id,
+        'Id': visitas.id,
         'Nombre del beneficiario': visitas.beneficiario.nombreCompleto,
         'Descripción': visitas.descripcion,
         'Fecha y hora de visita': visitas.strFechaHoraVisita,

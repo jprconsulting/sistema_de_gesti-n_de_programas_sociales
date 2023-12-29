@@ -188,7 +188,7 @@ export class AreasAdscripcionComponent {
     const datosParaExportar = this.areasAdscripcion.map(areasadscripcion => {
       const estatus = areasadscripcion.estatus ? 'Activo' : 'Inactivo';
       return {
-        'ID': areasadscripcion.id,
+        'Id': areasadscripcion.id,
         'Nombre': areasadscripcion.nombre,
         'Descripcion': areasadscripcion.descripcion,
         'Estatus': estatus,

@@ -249,7 +249,7 @@ export class UsuariosComponent implements OnInit {
       const datosParaExportar = this.usuarios.map(usuario => {
         const estatus = usuario.estatus ? 'Activo' : 'Inactivo';
         return {
-          'ID': usuario.id,
+          'Id': usuario.id,
           'Nombre': usuario.nombre,
           'Apellido Paterno': usuario.apellidoPaterno,
           'Apellido Materno': usuario.apellidoMaterno,
