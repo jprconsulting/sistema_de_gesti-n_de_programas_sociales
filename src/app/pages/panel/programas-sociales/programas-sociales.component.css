@@ -1,15 +1,1 @@
 
-  .error-message {
-    color: #e53e3e;
-    font-size: 0.875rem;
-}
-
-.input-group {
-  display: flex;
-  align-items: center; 
-}
-
-.input-icon {
-  margin-right: 10px; 
-}
-

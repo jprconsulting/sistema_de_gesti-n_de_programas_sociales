@@ -10,6 +10,7 @@ import { BeneficiariosService } from 'src/app/core/services/beneficiarios.servic
 import { VisitasService } from 'src/app/core/services/visitas.service';
 import { ProgramasSocialesService } from 'src/app/core/services/programas-sociales.service';
 import { ProgramaSocial } from 'src/app/models/programa-social';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-visitas',
@@ -195,20 +196,30 @@ export class VisitasComponent {
     this.visita = this.visitaForm.value as Visita;
     const beneficiarioId = this.visitaForm.get('beneficiarioId')?.value;
     this.visita.beneficiario = { id: beneficiarioId } as Beneficiario;
-    this.spinnerService.show();
-    this.visitasService.put(this.id, this.visita).subscribe({
-      next: () => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeExito('Visita actualizada correctamente');
-        this.resetForm();
-        this.configPaginator.currentPage = 1;
-      },
-      error: (error) => {
-        this.spinnerService.hide();
-        this.mensajeService.mensajeError(error);
-      }
-    });
+
+    const imagenBase64 = this.visitaForm.get('imagenBase64')?.value;
+
+    if (imagenBase64) {
+      const formData = { ...this.visita, imagenBase64 };
+      this.spinnerService.show();
+
+      this.visitasService.put(this.id, formData).subscribe({
+        next: () => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeExito('Visita actualizada correctamente');
+          this.resetForm();
+          this.configPaginator.currentPage = 1;
+        },
+        error: (error) => {
+          this.spinnerService.hide();
+          this.mensajeService.mensajeError(error);
+        }
+      });
+    } else {
+      console.error('Error: No se encontró una representación válida en base64 de la imagen.');
+    }
   }
+
 
   handleChangeAdd() {
     this.visitaForm.reset();
@@ -309,4 +320,38 @@ export class VisitasComponent {
       this.visitasFilter = this.visitas; // Si no se selecciona ningún programa, mostrar todos
     }
   }
+
+  exportarDatosAExcel() {
+    if (this.visitas.length === 0) {
+      console.warn('La lista de evidencias está vacía. No se puede exportar.');
+      return;
+    }
+
+    const datosParaExportar = this.visitas.map(visitas => {
+      return {
+        'ID': visitas.id,
+        'Nombre del beneficiario': visitas.beneficiario.nombreCompleto,
+        'Descripción': visitas.descripcion,
+        'Fecha y hora de visita': visitas.strFechaHoraVisita,
+      };
+    });
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+    this.guardarArchivoExcel(excelBuffer, 'visitas.xlsx');
+  }
+
+  guardarArchivoExcel(buffer: any, nombreArchivo: string) {
+    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url: string = window.URL.createObjectURL(data);
+    const a: HTMLAnchorElement = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+  buscar: string = '';
+  usuarioFiltrado: any[] = [];
 }
