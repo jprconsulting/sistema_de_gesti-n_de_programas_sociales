@@ -271,7 +271,7 @@ export class BeneficiariosComponent implements OnInit {
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
     const valueSearch = inputValue.toLowerCase();
-    
+
     this.beneficiariosFilter = this.beneficiarios.filter(beneficiario =>
       beneficiario.nombreCompleto.toLowerCase().includes(valueSearch) ||
       this.getGeneroName(beneficiario.sexo).toLowerCase().includes(valueSearch) ||
@@ -282,14 +282,14 @@ export class BeneficiariosComponent implements OnInit {
       beneficiario.municipio.nombre.toLowerCase().includes(valueSearch) ||
       beneficiario.id.toString().includes(valueSearch)
     );
-    
+
     this.configPaginator.currentPage = 1;
   }
   getGeneroName(id: number): string {
     const genero = this.generos.find(g => g.id === id);
     return genero ? genero.name : '';
   }
-  
+
   onSelectprograma(id: number) {
     if (id) {
       this.programaSelect = this.programasSociales.find(b => b.id === id);
@@ -439,6 +439,7 @@ export class BeneficiariosComponent implements OnInit {
 
       return {
         'Id': beneficiarios.id,
+        'Nombre': beneficiarios.nombres,
         'ApellidoPaterno': beneficiarios.apellidoPaterno,
         'Apellido Materno': beneficiarios.apellidoMaterno,
         'FechaNacimiento': beneficiarios.strFechaNacimiento,
