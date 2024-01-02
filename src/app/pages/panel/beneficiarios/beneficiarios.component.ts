@@ -106,12 +106,6 @@ export class BeneficiariosComponent implements OnInit {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
     }
-
-    if (place.formatted_address) {
-      this.beneficiarioForm.patchValue({
-        domicilio: place.formatted_address
-      });
-    }
     const selectedLat = place.geometry?.location?.lat() || this.latitude;
     const selectedLng = place.geometry?.location?.lng() || this.longitude;
 
@@ -135,40 +129,26 @@ export class BeneficiariosComponent implements OnInit {
 
   }
   selectAddress2(place: google.maps.places.PlaceResult) {
-    if (!place.geometry) {
-      window.alert("Autocomplete's returned place contains no geometry");
-      return;
-    }
-
-    if (place.formatted_address) {
-      this.beneficiarioForm.patchValue({
-        domicilio: place.formatted_address
-      });
-    }
-    console.log('reset', this.beneficiarioForm.value);
-    console.log('si llega')
-    // Obtén los valores de latitud y longitud del formulario
     const selectedLat = this.beneficiarioForm.value.latitud;
     const selectedLng = this.beneficiarioForm.value.longitud;
 
     this.canvas.setAttribute("data-lat", selectedLat.toString());
     this.canvas.setAttribute("data-lng", selectedLng.toString());
-
-    const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
+      const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
     this.maps.setCenter(newLatLng);
     this.maps.setZoom(15);
-
-    const marker = new google.maps.Marker({
-      position: newLatLng,
-      map: this.maps,
-      animation: google.maps.Animation.DROP,
-      title: this.beneficiarioForm.value.nombres, // Usa un campo relevante como título
-    });
-    this.beneficiarioForm.patchValue({
-      longitud: selectedLng,
-      latitud: selectedLat
-    });
+     const marker = new google.maps.Marker({
+    position: newLatLng,
+    map: this.maps,
+    animation: google.maps.Animation.DROP,
+    title: this.beneficiarioForm.value.nombres, // Usa un campo relevante como título
+  });
+  this.beneficiarioForm.patchValue({
+    longitud: selectedLng,
+    latitud: selectedLat
+  });
   }
+
   setEstatus() {
     this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
   }
