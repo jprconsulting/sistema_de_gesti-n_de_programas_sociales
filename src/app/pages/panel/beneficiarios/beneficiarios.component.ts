@@ -74,7 +74,6 @@ export class BeneficiariosComponent implements OnInit {
     this.getMunicipios();
     this.getProgramasSociales();
     this.creteForm();
-    this.busquedav();
   }
 
 
@@ -88,18 +87,15 @@ export class BeneficiariosComponent implements OnInit {
   }
   mapa() {
     this.setCurrentLocation();
-
-    // Puedes proporcionar un valor predeterminado o nulo, según tus necesidades
     const dummyPlace: google.maps.places.PlaceResult = {
       geometry: {
-        location: new google.maps.LatLng(0, 0), // Coordenadas predeterminadas o nulas
+        location: new google.maps.LatLng(0, 0),
       },
       formatted_address: '',
       name: '',
-      // Otras propiedades según tus necesidades
     };
-
-    this.selectAddress2(dummyPlace);
+  
+    this.selectAddress(dummyPlace);
   }
 
   selectAddress(place: google.maps.places.PlaceResult) {
@@ -107,97 +103,35 @@ export class BeneficiariosComponent implements OnInit {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
     }
-
+  
     if (place.formatted_address) {
       this.beneficiarioForm.patchValue({
         domicilio: place.formatted_address
       });
     }
-    const selectedLat = place.geometry?.location?.lat() || this.latitude;
-    const selectedLng = place.geometry?.location?.lng() || this.longitude;
-
+  
+    const selectedLat = this.beneficiarioForm.value.latitud || place.geometry?.location?.lat() || this.latitude;
+    const selectedLng = this.beneficiarioForm.value.longitud || place.geometry?.location?.lng() || this.longitude;
+  
     this.canvas.setAttribute("data-lat", selectedLat.toString());
     this.canvas.setAttribute("data-lng", selectedLng.toString());
-
+  
     const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
     this.maps.setCenter(newLatLng);
     this.maps.setZoom(15);
+  
     const marker = new google.maps.Marker({
       position: newLatLng,
       map: this.maps,
       animation: google.maps.Animation.DROP,
-      title: place.name,
+      title: this.beneficiarioForm.value.nombres || place.name, // Use a relevant field as a title
     });
-
-    const contentString = `
-        <!-- Contenido de la ventana de información (infowindow) -->
-        <!-- ... -->
-      `;
-
-    const infowindow = new google.maps.InfoWindow({
-      content: contentString,
-    });
-
-    google.maps.event.addListener(marker, "click", () => {
-      infowindow.open(this.maps, marker);
-    });
-
-    this.beneficiarioForm.patchValue({
-      longitud: selectedLng,
-      latitud: selectedLat
-    });
-
-
-  }
-  selectAddress2(place: google.maps.places.PlaceResult) {
-    if (!place.geometry) {
-      window.alert("Autocomplete's returned place contains no geometry");
-      return;
-    }
-
-    if (place.formatted_address) {
-      this.beneficiarioForm.patchValue({
-        domicilio: place.formatted_address
-      });
-    }
-    console.log('reset', this.beneficiarioForm.value);
-    console.log('si llega')
-    // Obtén los valores de latitud y longitud del formulario
-    const selectedLat = this.beneficiarioForm.value.latitud;
-    const selectedLng = this.beneficiarioForm.value.longitud;
-
-    this.canvas.setAttribute("data-lat", selectedLat.toString());
-    this.canvas.setAttribute("data-lng", selectedLng.toString());
-
-    const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
-    this.maps.setCenter(newLatLng);
-    this.maps.setZoom(15);
-
-    const marker = new google.maps.Marker({
-      position: newLatLng,
-      map: this.maps,
-      animation: google.maps.Animation.DROP,
-      title: this.beneficiarioForm.value.nombres, // Usa un campo relevante como título
-    });
-    const contentString = `
-        <!-- Contenido de la ventana de información (infowindow) -->
-        <!-- ... -->
-      `;
-
-    const infowindow = new google.maps.InfoWindow({
-      content: contentString,
-    });
-
-    google.maps.event.addListener(marker, "click", () => {
-      infowindow.open(this.maps, marker);
-    });
-
+  
     this.beneficiarioForm.patchValue({
       longitud: selectedLng,
       latitud: selectedLat
     });
   }
-
   setEstatus() {
     this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
   }
@@ -263,19 +197,14 @@ export class BeneficiariosComponent implements OnInit {
 
     this.maps = new google.maps.Map(this.canvas, mapOptions);
   }
-
   setCurrentLocation() {
     if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition((postion) => {
-        this.latitude = postion.coords.latitude;
-        this.longitude = postion.coords.longitude;
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.latitude = position.coords.latitude;
+        this.longitude = position.coords.longitude;
       });
     }
   }
-
-
-
-
   getMunicipios() {
     this.municipiosService.getAll().subscribe({ next: (dataFromAPI) => this.municipios = dataFromAPI });
   }
@@ -302,11 +231,7 @@ export class BeneficiariosComponent implements OnInit {
 
     });
   }
-  busquedav() {
-    this.busqueda = this.formBuilder.group({
-      busqueda: ['', [Validators.pattern('^[a-zA-Z ]+$')]],
-    });
-  }
+
   getBeneficiarios() {
     this.isLoading = LoadingStates.trueLoading;
     this.beneficiariosService.getAll().subscribe(
@@ -326,14 +251,28 @@ export class BeneficiariosComponent implements OnInit {
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
   }
-
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
-    this.beneficiariosFilter = this.beneficiarios.filter(i => i.nombreCompleto
-      .toLowerCase().includes(inputValue.toLowerCase())
+    const valueSearch = inputValue.toLowerCase();
+    
+    this.beneficiariosFilter = this.beneficiarios.filter(beneficiario =>
+      beneficiario.nombreCompleto.toLowerCase().includes(valueSearch) ||
+      this.getGeneroName(beneficiario.sexo).toLowerCase().includes(valueSearch) ||
+      beneficiario.domicilio.toLowerCase().includes(valueSearch) ||
+      beneficiario.strFechaNacimiento.toLowerCase().includes(valueSearch) ||
+      beneficiario.curp.toLowerCase().includes(valueSearch) ||
+      beneficiario.programaSocial.nombre.toLowerCase().includes(valueSearch) ||
+      beneficiario.municipio.nombre.toLowerCase().includes(valueSearch) ||
+      beneficiario.id.toString().includes(valueSearch)
     );
+    
     this.configPaginator.currentPage = 1;
   }
+  getGeneroName(id: number): string {
+    const genero = this.generos.find(g => g.id === id);
+    return genero ? genero.name : '';
+  }
+  
   onSelectprograma(id: number) {
     if (id) {
       this.programaSelect = this.programasSociales.find(b => b.id === id);
@@ -384,7 +323,7 @@ export class BeneficiariosComponent implements OnInit {
     console.log(this.beneficiario);
 
     this.spinnerService.show();
-    console.log('ded', this.beneficiario);
+    console.log('data:', this.beneficiario);
 
     this.beneficiariosService.put(this.id, this.beneficiario).subscribe({
       next: () => {
