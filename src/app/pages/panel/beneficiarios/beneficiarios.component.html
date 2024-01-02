@@ -14,18 +14,10 @@
             </button>
                     <div class="ms-auto d-flex align-items-center">
                         <div class="input-icon">
-                            <form [formGroup]="busqueda">
                                 <input #searchItem type="text" class="form-control form-control-rounded" formControlName="busqueda" placeholder="Buscar" (input)="handleChangeSearch($event)" />
-                                <div *ngIf="busqueda.get('busqueda')?.touched" class="error-message">
-                                    <div *ngIf="
-              busqueda.get('busqueda')?.hasError('pattern')
-            ">
-                                        No se aceptan numeros
-                                    </div>
-                                </div>
                                 <span class="input-icon-addon">
                         <i class="ti ti-search"></i>
-                    </span></form>
+                    </span>
                         </div>
                         <a class="btn w-30 btn-icon" aria-label="Dribbble" (click)="exportarDatosAExcel()" title="Descargar excel de beneficiarios" style="margin-left: 8px; padding-top: 4px; padding-bottom: 4px;">
                             <i class="ti ti-cloud-down text-muted" style="font-size: 28px;"></i>
