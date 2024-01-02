@@ -80,6 +80,9 @@ export class AreasAdscripcionComponent {
     this.areasAdscripcionFilter = this.areasAdscripcion.filter(i => i.nombre
       .toLowerCase().includes(inputValue.toLowerCase())
     );
+    this.areasAdscripcionFilter = this.areasAdscripcion.filter(i => i.descripcion
+      .toLowerCase().includes(inputValue.toLowerCase())
+    );
     this.configPaginator.currentPage = 1;
   }
 

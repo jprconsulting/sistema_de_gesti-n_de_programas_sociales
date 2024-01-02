@@ -100,8 +100,11 @@ export class VisitasComponent {
     const inputValue = event.target.value.toLowerCase();
     this.visitasFilter = this.visitas.filter(visita =>
       visita.descripcion.toLowerCase().includes(inputValue) ||
-      visita.beneficiario.nombreCompleto.toLowerCase().includes(inputValue)
+      visita.beneficiario.nombreCompleto.toLowerCase().includes(inputValue)||
+      visita.beneficiario.domicilio.toLowerCase().includes(inputValue)||
+      visita.beneficiario.programaSocial.nombre.toLowerCase().includes(inputValue)
     );
+
     this.configPaginator.currentPage = 1;
   }
 
