@@ -87,15 +87,18 @@ export class BeneficiariosComponent implements OnInit {
   }
   mapa() {
     this.setCurrentLocation();
+
+    // Puedes proporcionar un valor predeterminado o nulo, según tus necesidades
     const dummyPlace: google.maps.places.PlaceResult = {
       geometry: {
-        location: new google.maps.LatLng(0, 0),
+        location: new google.maps.LatLng(0, 0), // Coordenadas predeterminadas o nulas
       },
       formatted_address: '',
       name: '',
+      // Otras propiedades según tus necesidades
     };
-  
-    this.selectAddress(dummyPlace);
+
+    this.selectAddress2(dummyPlace);
   }
 
   selectAddress(place: google.maps.places.PlaceResult) {
@@ -103,35 +106,49 @@ export class BeneficiariosComponent implements OnInit {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
     }
-  
-    if (place.formatted_address) {
-      this.beneficiarioForm.patchValue({
-        domicilio: place.formatted_address
-      });
-    }
-  
-    const selectedLat = this.beneficiarioForm.value.latitud || place.geometry?.location?.lat() || this.latitude;
-    const selectedLng = this.beneficiarioForm.value.longitud || place.geometry?.location?.lng() || this.longitude;
-  
+    const selectedLat = place.geometry?.location?.lat() || this.latitude;
+    const selectedLng = place.geometry?.location?.lng() || this.longitude;
+
     this.canvas.setAttribute("data-lat", selectedLat.toString());
     this.canvas.setAttribute("data-lng", selectedLng.toString());
-  
+
     const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
     this.maps.setCenter(newLatLng);
     this.maps.setZoom(15);
-  
     const marker = new google.maps.Marker({
       position: newLatLng,
       map: this.maps,
       animation: google.maps.Animation.DROP,
-      title: this.beneficiarioForm.value.nombres || place.name, // Use a relevant field as a title
+      title: place.name,
     });
-  
     this.beneficiarioForm.patchValue({
       longitud: selectedLng,
       latitud: selectedLat
     });
+
+
   }
+  selectAddress2(place: google.maps.places.PlaceResult) {
+    const selectedLat = this.beneficiarioForm.value.latitud;
+    const selectedLng = this.beneficiarioForm.value.longitud;
+
+    this.canvas.setAttribute("data-lat", selectedLat.toString());
+    this.canvas.setAttribute("data-lng", selectedLng.toString());
+      const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
+    this.maps.setCenter(newLatLng);
+    this.maps.setZoom(15);
+     const marker = new google.maps.Marker({
+    position: newLatLng,
+    map: this.maps,
+    animation: google.maps.Animation.DROP,
+    title: this.beneficiarioForm.value.nombres, // Usa un campo relevante como título
+  });
+  this.beneficiarioForm.patchValue({
+    longitud: selectedLng,
+    latitud: selectedLat
+  });
+  }
+
   setEstatus() {
     this.estatusTag = this.estatusBtn ? this.verdadero : this.falso;
   }
