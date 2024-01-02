@@ -95,18 +95,24 @@ export class DashboardComponent implements AfterViewInit {
     });
 }
 
-  getTotalVisitasPorProgramaSocial() {
-    this.dashboardService.getTotalVisitasPorProgramaSocial().subscribe({
-      next: (dataFromAPI) => {
-        const langConfig = {
-          viewFullscreen: "Ver en pantalla completa",
-          printChart: "Imprimir gráfica",
-          downloadPNG: 'Descargar imagen PNG',
-          downloadJPEG: 'Descargar imagen JPEG',
-          downloadPDF: 'Descargar en formato PDF',
-          downloadSVG: 'Descargar imagen vectorial en SVG',
-        };
+getTotalVisitasPorProgramaSocial() {
+  this.dashboardService.getTotalVisitasPorProgramaSocial().subscribe({
+    next: (dataFromAPI) => {
+      const langConfig = {
+        viewFullscreen: "Ver en pantalla completa",
+        printChart: "Imprimir gráfica",
+        downloadPNG: 'Descargar imagen PNG',
+        downloadJPEG: 'Descargar imagen JPEG',
+        downloadPDF: 'Descargar en formato PDF',
+        downloadSVG: 'Descargar imagen vectorial en SVG',
+      };
+      Highcharts.setOptions({
+        lang: langConfig
+      });
 
+      const hasData = dataFromAPI && dataFromAPI.length > 0;
+
+      if (hasData) {
         this.optionsVisitasPorProgramaSocial = {
           chart: {
             type: 'pie',
@@ -118,7 +124,6 @@ export class DashboardComponent implements AfterViewInit {
           credits: {
             enabled: false
           },
-          lang: langConfig,
           subtitle: {
             text: '',
           },
@@ -132,94 +137,107 @@ export class DashboardComponent implements AfterViewInit {
             type: 'pie',
             name: 'Visitas',
             data: dataFromAPI.map((d) => ([d.nombre, d.total]))
-          }]
+          }],
         };
 
         Highcharts.chart('container-visitas-por-programa-social', this.optionsVisitasPorProgramaSocial);
+      } else {
+        const element = document.getElementById('container-visitas-por-programa-social');
+        if (element) {
+          element.innerHTML = '<h2 class="page-title">Sin datos</h2>';
+        }
       }
-    });
-  }
+    }
+  });
+}
 
-  getTotalBeneficiariosPorMunicipio() {
-    this.dashboardService.getTotalBeneficiariosPorMunicipio().subscribe({
+getTotalBeneficiariosPorMunicipio() {
+  this.dashboardService.getTotalBeneficiariosPorMunicipio().subscribe({
       next: (dataFromAPI) => {
-        const langConfig = {
-          viewFullscreen: "Ver en pantalla completa",
-          printChart: "Imprimir gráfica",
-          downloadPNG: 'Descargar imagen PNG',
-          downloadJPEG: 'Descargar imagen JPEG',
-          downloadPDF: 'Descargar en formato PDF',
-          downloadSVG: 'Descargar imagen vectorial en SVG',
-        };
+          const langConfig = {
+              viewFullscreen: "Ver en pantalla completa",
+              printChart: "Imprimir gráfica",
+              downloadPNG: 'Descargar imagen PNG',
+              downloadJPEG: 'Descargar imagen JPEG',
+              downloadPDF: 'Descargar en formato PDF',
+              downloadSVG: 'Descargar imagen vectorial en SVG',
+          };
 
-        this.optionsBeneficiariosPorMunicipio = {
-          chart: {
-            type: 'column'
-          },
-          title: {
-            text: 'Beneficiarios por municipio',
-            align: 'left'
-          },
-          lang: langConfig,
-          subtitle: {
-            text: ''
-          },
-          credits: {
-            enabled: false
-          },
-          xAxis: {
-            type: 'category',
-            labels: {
-              autoRotation: [-45, -90],
-              style: {
-                fontSize: '13px',
-                fontFamily: 'Verdana, sans-serif'
-              }
-            }
-          },
-          yAxis: {
-            min: 0,
-            title: {
-              text: 'Total de beneficiarios'
-            }
-          },
-          legend: {
-            enabled: false
-          },
-          tooltip: {
-            pointFormat: 'Beneficiarios: <b>{point.y:.1f}</b>'
-          },
-          series: [{
-            type: 'column',
-            name: 'Beneficiarios',
-            colors: [
-              '#9b20d9', '#9215ac', '#861ec9', '#7a17e6', '#7010f9', '#691af3',
-              '#6225ed', '#5b30e7', '#533be1', '#4c46db', '#4551d5', '#3e5ccf',
-              '#3667c9', '#2f72c3', '#277dbd', '#1f88b7', '#1693b1', '#0a9eaa',
-              '#03c69b', '#00f194'
-            ],
-            colorByPoint: true,
-            groupPadding: 0,
-            data: dataFromAPI.map((d) => ([d.nombre, d.total])),
-            dataLabels: {
-              enabled: true,
-              rotation: -90,
-              color: '#FFFFFF',
-              align: 'right',
-              format: '{point.y:.1f}',
-              y: 10,
-              style: {
-                fontSize: '13px',
-                fontFamily: 'Verdana, sans-serif'
-              }
-            }
-          }]
-        };
+          this.optionsBeneficiariosPorMunicipio = {
+              chart: {
+                  type: 'column'
+              },
+              title: {
+                  text: 'Beneficiarios por municipio',
+                  align: 'left'
+              },
+              subtitle: {
+                  text: ''
+              },
+              credits: {
+                  enabled: false
+              },
+              lang: langConfig,
+              xAxis: {
+                  type: 'category',
+                  labels: {
+                      autoRotation: [-45, -90],
+                      style: {
+                          fontSize: '13px',
+                          fontFamily: 'Verdana, sans-serif'
+                      }
+                  }
+              },
+              yAxis: {
+                  min: 0,
+                  title: {
+                      text: 'Total de beneficiarios'
+                  }
+              },
+              legend: {
+                  enabled: false
+              },
+              tooltip: {
+                  pointFormat: 'Beneficiarios: <b>{point.y:.1f}</b>'
+              },
+              series: [{
+                  type: 'column',
+                  name: 'Beneficiarios',
+                  colors: [
+                      '#9b20d9', '#9215ac', '#861ec9', '#7a17e6', '#7010f9', '#691af3',
+                      '#6225ed', '#5b30e7', '#533be1', '#4c46db', '#4551d5', '#3e5ccf',
+                      '#3667c9', '#2f72c3', '#277dbd', '#1f88b7', '#1693b1', '#0a9eaa',
+                      '#03c69b', '#00f194'
+                  ],
+                  colorByPoint: true,
+                  groupPadding: 0,
+                  data: dataFromAPI.map((d) => ([d.nombre, d.total])),
+                  dataLabels: {
+                      enabled: true,
+                      rotation: -90,
+                      color: '#FFFFFF',
+                      align: 'right',
+                      format: '{point.y:.1f}',
+                      y: 10,
+                      style: {
+                          fontSize: '13px',
+                          fontFamily: 'Verdana, sans-serif'
+                      }
+                  }
+              }]
+          };
 
-        Highcharts.chart('container-beneficiarios-por-municipio', this.optionsBeneficiariosPorMunicipio);
+          if (!dataFromAPI || dataFromAPI.length === 0) {
+              const container = document.getElementById('container-beneficiarios-por-municipio');
+              if (container) {
+                  container.innerHTML = '<h2 class="page-title">Sin datos</h2>';
+              }
+          } else {
+              Highcharts.chart('container-beneficiarios-por-municipio', this.optionsBeneficiariosPorMunicipio);
+          }
       }
-    });
-  }
+  });
+}
 
   getTotalGeneral() {
     this.dashboardService.getTotalGeneral().subscribe({
