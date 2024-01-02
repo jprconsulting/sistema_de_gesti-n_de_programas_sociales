@@ -49,7 +49,6 @@ export class ProgramasSocialesComponent {
     this.getProgramasSociales();
     this.getAreasAdscripcion();
     this.creteForm();
-    this.busquedav();
   }
 
   getAreasAdscripcion() {
@@ -68,11 +67,7 @@ export class ProgramasSocialesComponent {
     });
   }
 
-  busquedav() {
-    this.busqueda = this.formBuilder.group({
-      busqueda: ['', [Validators.pattern('^[a-zA-Z ]+$')]],
-    });
-  }
+
 
   getProgramasSociales() {
     this.isLoading = LoadingStates.trueLoading;
@@ -94,11 +89,15 @@ export class ProgramasSocialesComponent {
   onPageChange(number: number) {
     this.configPaginator.currentPage = number;
   }
-
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
-    this.programasSocialesFilter = this.programasSociales.filter(i => i.nombre
-      .toLowerCase().includes(inputValue.toLowerCase())
+    const valueSearch = inputValue.toLowerCase();
+    this.programasSocialesFilter = this.programasSociales.filter(programa =>
+      programa.nombre.toLowerCase().includes(valueSearch) ||
+      programa.descripcion.toLowerCase().includes(valueSearch) ||
+      programa.acronimo.toLowerCase().includes(valueSearch) ||
+      programa.areaAdscripcion?.nombre.toLowerCase().includes(valueSearch) ||
+      programa.id.toString().includes(valueSearch)
     );
     this.configPaginator.currentPage = 1;
   }
