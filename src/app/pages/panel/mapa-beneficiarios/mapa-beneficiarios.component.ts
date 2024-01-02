@@ -164,22 +164,27 @@ export class MapaBeneficiariosComponent implements AfterViewInit {
 
   getContentString(beneficiario: Beneficiario) {
     return `
-      <div class="w-64 text-center overflow-hidden shadow-lg">
+      <div style="width: 450px; height: auto;" class=" text-center">
         <img class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;"
-          src="${beneficiario.sexo === 1 ? 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80"' : 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1361&q=80'}"
+          src="${beneficiario.sexo === 1 ? '../../../../assets/images/hombre.png' : '../../../../assets/images/mujer.png'}"
           alt="Sunset in the mountains">
 
-        <div class="px-6 py-4">
-          <div class="font-bold text-xl mb-2">${beneficiario.nombreCompleto}</div>
-          <p class="text-gray-900 text-base font-bold">
+        <div class="px-4 py-4">
+          <p style="font-weight:  bolder;" class=" ">
+            Nombre:
+            <p class="text-muted ">
+              ${beneficiario.nombreCompleto}
+            </p>
+          </p>
+          <p style="font-weight:  bolder;" class="">
             Programa inscrito:
-            <p class="text-gray-700 text-base font-bold">
+            <p class=" text-muted">
               ${beneficiario.programaSocial.nombre}
             </p>
           </p>
-          <p class="text-gray-900 text-base font-bold">
+          <p style="font-weight:  bolder;" class="" >
             Dirección:
-            <p class="text-gray-700 text-base font-bold">
+            <p class="text-muted">
               ${beneficiario.domicilio}
             </p>
           </p>
