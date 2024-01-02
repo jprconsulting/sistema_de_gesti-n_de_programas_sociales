@@ -2,8 +2,9 @@ import { AfterViewInit, Component } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { DashboardService } from 'src/app/core/services/dashboard.service';
 import { TotalGeneral } from 'src/app/models/estadistica';
-// import HC_exporting from 'highcharts/modules/exporting';
-// HC_exporting(Highcharts);
+import HC_exporting from 'highcharts/modules/exporting';
+HC_exporting(Highcharts);
+
 
 interface PointOptionsWithTotal extends Highcharts.PointOptionsObject {
   totalItems: number;
@@ -34,59 +35,78 @@ export class DashboardComponent implements AfterViewInit {
 
   getTotalBeneficiariosPorProgramaSocial() {
     this.dashboardService.getTotalBeneficiariosPorProgramaSocial().subscribe({
-      next: (dataFromAPI) => {
-        this.optionsBeneficiariosPorProgramaSocial = {
-          chart: {
-            type: 'pie'
-          },
-          title: {
-            text: 'Beneficiarios por programa social',
-            align: 'left'
-          },
+        next: (dataFromAPI) => {
+            const langConfig = {
+                viewFullscreen: "Ver en pantalla completa",
+                printChart: "Imprimir gráfica",
+                downloadPNG: 'Descargar imagen PNG',
+                downloadJPEG: 'Descargar imagen JPEG',
+                downloadPDF: 'Descargar en formato PDF',
+                downloadSVG: 'Descargar imagen vectorial en SVG',
+              };
 
-          tooltip: {
-            pointFormat: `
-              {series.name}:
-              <b>{point.percentage:.1f}%</b> <br> 
-              Beneficiarios: <b>{point.totalItems}</b>
-            `
-          },
-          subtitle: {
-            text: ''
-          },
-          credits: {
-            enabled: false
-          },
-          plotOptions: {
-            pie: {
-              allowPointSelect: true,
-              cursor: 'pointer',
-              dataLabels: {
-                enabled: true,
-                distance: 20,
-                format: '{point.name}: {point.percentage:.1f}%',
-                style: {
-                  fontSize: '0.8rem',
-                  textOutline: 'none',
-                  opacity: 0.7
+            this.optionsBeneficiariosPorProgramaSocial = {
+                chart: {
+                    type: 'pie'
                 },
-              },
-            }
-          },
-          series: [{
-            type: 'pie',
-            name: 'Porcentaje',
-            data: dataFromAPI.map((d) => ({ name: d.nombre, y: d.porcentaje, totalItems: d.totalBeneficiarios }) as PointOptionsWithTotal)
-          }]
-        };
-        Highcharts.chart('container-beneficiarios-por-programa-social', this.optionsBeneficiariosPorProgramaSocial);
-      }
+                title: {
+                    text: 'Beneficiarios por programa social',
+                    align: 'left'
+                },
+                tooltip: {
+                    pointFormat: `
+                        {series.name}:
+                        <b>{point.percentage:.1f}%</b> <br>
+                        Beneficiarios: <b>{point.totalItems}</b>
+                    `
+                },
+                lang: langConfig,
+                subtitle: {
+                    text: ''
+                },
+                credits: {
+                    enabled: false
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            distance: 20,
+                            format: '{point.name}: {point.percentage:.1f}%',
+                            style: {
+                                fontSize: '0.8rem',
+                                textOutline: 'none',
+                                opacity: 0.7
+                            },
+                        },
+                    }
+                },
+                series: [{
+                    type: 'pie',
+                    name: 'Porcentaje',
+                    data: dataFromAPI.map((d) => ({ name: d.nombre, y: d.porcentaje, totalItems: d.totalBeneficiarios }) as PointOptionsWithTotal)
+                }]
+            };
+
+            Highcharts.chart('container-beneficiarios-por-programa-social', this.optionsBeneficiariosPorProgramaSocial);
+        }
     });
-  }
+}
 
   getTotalVisitasPorProgramaSocial() {
     this.dashboardService.getTotalVisitasPorProgramaSocial().subscribe({
       next: (dataFromAPI) => {
+        const langConfig = {
+          viewFullscreen: "Ver en pantalla completa",
+          printChart: "Imprimir gráfica",
+          downloadPNG: 'Descargar imagen PNG',
+          downloadJPEG: 'Descargar imagen JPEG',
+          downloadPDF: 'Descargar en formato PDF',
+          downloadSVG: 'Descargar imagen vectorial en SVG',
+        };
+
         this.optionsVisitasPorProgramaSocial = {
           chart: {
             type: 'pie',
@@ -98,6 +118,7 @@ export class DashboardComponent implements AfterViewInit {
           credits: {
             enabled: false
           },
+          lang: langConfig,
           subtitle: {
             text: '',
           },
@@ -122,6 +143,15 @@ export class DashboardComponent implements AfterViewInit {
   getTotalBeneficiariosPorMunicipio() {
     this.dashboardService.getTotalBeneficiariosPorMunicipio().subscribe({
       next: (dataFromAPI) => {
+        const langConfig = {
+          viewFullscreen: "Ver en pantalla completa",
+          printChart: "Imprimir gráfica",
+          downloadPNG: 'Descargar imagen PNG',
+          downloadJPEG: 'Descargar imagen JPEG',
+          downloadPDF: 'Descargar en formato PDF',
+          downloadSVG: 'Descargar imagen vectorial en SVG',
+        };
+
         this.optionsBeneficiariosPorMunicipio = {
           chart: {
             type: 'column'
@@ -130,6 +160,7 @@ export class DashboardComponent implements AfterViewInit {
             text: 'Beneficiarios por municipio',
             align: 'left'
           },
+          lang: langConfig,
           subtitle: {
             text: ''
           },
@@ -200,88 +231,50 @@ export class DashboardComponent implements AfterViewInit {
 
   getWordCloud() {
     this.dashboardService.getWordCloud().subscribe({
-      next: (dataFromAPI) => {
-        this.optionsNubePalabras = {
-          series: [{
-            rotation: {
-              from: -60,
-              to: 60,
-              orientations: 5
-            },
-            type: 'wordcloud',
-            data: dataFromAPI.generalWordCloud,
+        next: (dataFromAPI) => {
+            const langConfig = {
+                viewFullscreen: "Ver en pantalla completa",
+                printChart: "Imprimir gráfica",
+                downloadPNG: 'Descargar imagen PNG',
+                downloadJPEG: 'Descargar imagen JPEG',
+                downloadPDF: 'Descargar en formato PDF',
+                downloadSVG: 'Descargar imagen vectorial en SVG',
+            };
 
-          }],
-          title: {
-            text: 'Nube de palabras',
-            align: 'left'
-          },
-          lang: {
-            noData: '<h2 class="page-title">Sin datos</h2>'
-          },
-          tooltip: {
-            useHTML: true,
-            padding: 0,
-            borderRadius: 0,
-            borderWidth: 0,
-            shadow: false,
-            backgroundColor: 'none',
-            borderColor: 'none',
-            headerFormat: '',
-            followPointer: false,
-            stickOnContact: true,
-            shared: false,
-            pointFormat: `
-                <div
-                style="
-                    width: 220px;
-                    height: 70px;
-                    background: #ffffff;
-                    box-shadow: 0px 0px 12px 2px rgba(0, 0, 0, 0.4);
-                    border-radius: 10px;
-                    opacity: 25;
-                "
-                >
-                    <div
-                        style="width: 5px; height: 100%; box-sizing: border-box; float: left; background-color: {point.color}; border-radius: 10px 0px 0px 10px;"
-                    ></div>
-                    <div
-                        style="
-                        padding: 5px;
-                        float: left;
-                        box-sizing: border-box;
-                        width: 200px;
-                        height: 60px;
-                        background: #ffffff;
-                        border-radius: 0px 0px 10px 0px;
-                        "
-                    >
-                        <div class="d-flex flex-row">
-                        <span class="px14 text-muted" style="font-size: 17px"
-                            >Número de repeticiones</span
-                        >
-                        </div>
-                        <span
-                        class="px15 align-self-center"
-                        style="width: 60%; font-size: 19px; font-weight: bolder"
-                        >{point.weight}</span
-                        >
-                        <br /><br />
-                    </div>
-                </div>
-            `
-          },
-          subtitle: {
-            text: ''
-          },
-          credits: {
-            enabled: false
-          },
-        };
-        Highcharts.chart('container-nube-palabras', this.optionsNubePalabras);
-      }
+            Highcharts.setOptions({
+                lang: langConfig
+            });
+
+            this.optionsNubePalabras = {
+                series: [{
+                    rotation: {
+                        from: -60,
+                        to: 60,
+                        orientations: 5
+                    },
+                    type: 'wordcloud',
+                    data: dataFromAPI.generalWordCloud,
+                }],
+                title: {
+                    text: 'Nube de palabras',
+                    align: 'left'
+                },
+                lang: {
+                    noData: '<h2 class="page-title">Sin datos</h2>'
+                },
+                tooltip: {
+                },
+                subtitle: {
+                    text: ''
+                },
+                credits: {
+                    enabled: false
+                },
+            };
+            Highcharts.chart('container-nube-palabras', this.optionsNubePalabras);
+        }
     })
-  }
+}
 
   ngAfterViewInit() {
     Highcharts.chart('container-beneficiarios-por-programa-social', this.optionsBeneficiariosPorProgramaSocial);
@@ -289,7 +282,6 @@ export class DashboardComponent implements AfterViewInit {
     Highcharts.chart('container-beneficiarios-por-municipio', this.optionsBeneficiariosPorMunicipio);
     Highcharts.chart('container-nube-palabras', this.optionsNubePalabras);
   }
-
 
 
 
