@@ -9,3 +9,7 @@ export interface ProgramaSocial {
     acronimo: string;
     areaAdscripcion: AreaAdscripcion;
 }
+export interface ProgramaSocialEstadistica extends ProgramaSocial  {
+    totalBeneficiarios: number;
+    porcentaje: number;  
+}

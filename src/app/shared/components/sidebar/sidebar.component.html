@@ -342,12 +342,13 @@
       </div>
     </div>
   </div>
-  <div class="collapse navbar-collapse" id="sidebar-menu">
+  <div class="collapse navbar-collapse" id="sidebar-menu" *ngIf="dataObject && dataObject.isAuthenticated">
     <ul class="navbar-nav pt-lg-3">
       <li
         class="nav-item"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
+        *appHasClaim="'CanAccessInicio'"
       >
         <a class="nav-link" [routerLink]="['inicio']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -360,6 +361,7 @@
         class="nav-item"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
+        *appHasClaim="'CanAccessTablero'"
       >
         <a class="nav-link" [routerLink]="['dashboard']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -372,6 +374,7 @@
         class="nav-item"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
+        *appHasClaim="'CanAccessUsuarios'"
       >
         <a class="nav-link" [routerLink]="['usuarios']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -384,6 +387,7 @@
         class="nav-item"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
+        *appHasClaim="'CanAccessAreasAdscripcion'"
       >
         <a class="nav-link" [routerLink]="['areas-adscripcion']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -396,6 +400,7 @@
         class="nav-item"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
+        *appHasClaim="'CanAccessProgramasSociales'"
       >
         <a class="nav-link" [routerLink]="['programas-sociales']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -408,6 +413,7 @@
         class="nav-item"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
+        *appHasClaim="'CanAccessBeneficiarios'"
       >
         <a class="nav-link" [routerLink]="['beneficiarios']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -420,6 +426,7 @@
         class="nav-item"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
+        *appHasClaim="'CanAccessVisitas'"
       >
         <a class="nav-link" [routerLink]="['visitas']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -432,6 +439,7 @@
         class="nav-item"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
+        *appHasClaim="'CanAccessMapaBeneficiarios'"
       >
         <a class="nav-link" [routerLink]="['mapa-beneficiarios']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -444,6 +452,7 @@
         class="nav-item"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
+        *appHasClaim="'CanAccessMapaProgramasSociales'"
       >
         <a class="nav-link" [routerLink]="['mapa-programas-sociales']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -456,6 +465,7 @@
         class="nav-item"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
+        *appHasClaim="'CanAccessNubePalabras'"
       >
         <a class="nav-link" [routerLink]="['nube-palabras']">
           <span class="nav-link-icon d-md-none d-lg-inline-block">

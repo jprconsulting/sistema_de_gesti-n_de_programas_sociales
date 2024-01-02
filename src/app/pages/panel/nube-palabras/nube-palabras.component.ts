@@ -6,7 +6,9 @@ import { VisitasService } from 'src/app/core/services/visitas.service';
 import { Municipio } from 'src/app/models/municipio';
 import { GeneralWordCloud } from 'src/app/models/word-cloud';
 
-
+import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
+import { DashboardService } from 'src/app/core/services/dashboard.service';
+NoDataToDisplay(Highcharts);
 declare var require: any;
 const More = require('highcharts/highcharts-more');
 More(Highcharts);
@@ -23,26 +25,24 @@ Wordcloud(Highcharts);
 })
 
 export class NubePalabrasComponent implements AfterViewInit {
-
     generalWordCloud!: GeneralWordCloud;
     options: Highcharts.Options = {};
     municipios: Municipio[] = [];
 
     constructor(
-        private visitasService: VisitasService,
+        private dashboardService: DashboardService,
         private municipiosService: MunicipiosService
     ) {
-        this.setSettingsWordCloud();
         this.getWordCloud();
         this.getMunicipios();
     }
 
     ngAfterViewInit() {
-        Highcharts.chart('container', this.options);
+        this.setSettingsWordCloud();
     }
 
     onClear() {
-        this.visitasService.updateWordCloud(this.generalWordCloud.generalWordCloud);
+        this.dashboardService.updateWordCloud(this.generalWordCloud.generalWordCloud);
     }
 
     getMunicipios() {
@@ -52,19 +52,19 @@ export class NubePalabrasComponent implements AfterViewInit {
     }
 
     getWordCloud() {
-        this.visitasService.getWordCloud().subscribe({
+        this.dashboardService.getWordCloud().subscribe({
             next: (dataFromAPI) => {
                 this.generalWordCloud = dataFromAPI;
-                this.visitasService.updateWordCloud(dataFromAPI.generalWordCloud);
+                this.dashboardService.updateWordCloud(dataFromAPI.generalWordCloud);
             },
             error: (error) => {
-                console.error('error', error);
+                console.error(error);
             }
         })
     }
 
     setSettingsWordCloud() {
-        this.visitasService.dataWordCloud$.subscribe((newData) => {
+        this.dashboardService.dataWordCloud$.subscribe((newData) => {
             this.options = {
                 series: [{
                     rotation: {
@@ -79,6 +79,9 @@ export class NubePalabrasComponent implements AfterViewInit {
                 title: {
                     text: ''
                 },
+                lang: {
+                    noData: '<h2 class="page-title">Sin datos</h2>'
+                },
                 tooltip: {
                     useHTML: true,
                     padding: 0,
@@ -91,19 +94,45 @@ export class NubePalabrasComponent implements AfterViewInit {
                     followPointer: false,
                     stickOnContact: true,
                     shared: false,
-                    pointFormat:
-                        `<div style="width: 220px; height: 70px; background: #ffffff; box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.40); border-radius: 10px; opacity: 25;">
-                                  <div style="width: 5px; height: 100%; box-sizing: border-box; float: left; background-color: {point.color}; border-radius: 10px 0px 0px 10px;"></div>
-                                  <div style="padding: 5px; float: left;box-sizing: border-box; width: 200px; height: 60px; background: #ffffff; border-radius: 0px 0px 10px 0px;">
-                                    <div class="d-flex flex-row">
-                                      <span class="px14 text-muted" style="font-size: 17px;">Número de repeticiones</span>
-                                    </div>
-                                    <span class="px15 align-self-center" style="width: 60%; font-size: 19px; font-weight:  bolder;">{point.weight}</span>
-                                    <br><br>
-                                  </div>
+                    pointFormat: `
+                        <div
+                        style="
+                            width: 220px;
+                            height: 70px;
+                            background: #ffffff;
+                            box-shadow: 0px 0px 12px 2px rgba(0, 0, 0, 0.4);
+                            border-radius: 10px;
+                            opacity: 25;
+                        "
+                        >
+                            <div
+                                style="width: 5px; height: 100%; box-sizing: border-box; float: left; background-color: {point.color}; border-radius: 10px 0px 0px 10px;"
+                            ></div>
+                            <div
+                                style="
+                                padding: 5px;
+                                float: left;
+                                box-sizing: border-box;
+                                width: 200px;
+                                height: 60px;
+                                background: #ffffff;
+                                border-radius: 0px 0px 10px 0px;
+                                "
+                            >
+                                <div class="d-flex flex-row">
+                                <span class="px14 text-muted" style="font-size: 17px"
+                                    >Número de repeticiones</span
+                                >
                                 </div>
-                              </div>`
-
+                                <span
+                                class="px15 align-self-center"
+                                style="width: 60%; font-size: 19px; font-weight: bolder"
+                                >{point.weight}</span
+                                >
+                                <br /><br />
+                            </div>
+                        </div>
+                    `
                 },
                 subtitle: {
                     text: ''
@@ -120,7 +149,7 @@ export class NubePalabrasComponent implements AfterViewInit {
         if (id) {
             const wordCountByMunicipio = this.generalWordCloud.wordCloudPorMunicipios.find(i => i.id === id);
             if (wordCountByMunicipio) {
-                this.visitasService.updateWordCloud(wordCountByMunicipio.wordCloud);
+                this.dashboardService.updateWordCloud(wordCountByMunicipio.wordCloud);
                 this.setSettingsWordCloud();
             }
         }

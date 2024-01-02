@@ -161,24 +161,24 @@ export class BeneficiariosComponent implements OnInit {
       });
     }
     console.log('reset', this.beneficiarioForm.value);
-      console.log('si llega')
-      // Obtén los valores de latitud y longitud del formulario
-      const selectedLat = this.beneficiarioForm.value.latitud;
-      const selectedLng = this.beneficiarioForm.value.longitud;
+    console.log('si llega')
+    // Obtén los valores de latitud y longitud del formulario
+    const selectedLat = this.beneficiarioForm.value.latitud;
+    const selectedLng = this.beneficiarioForm.value.longitud;
 
-      this.canvas.setAttribute("data-lat", selectedLat.toString());
-      this.canvas.setAttribute("data-lng", selectedLng.toString());
+    this.canvas.setAttribute("data-lat", selectedLat.toString());
+    this.canvas.setAttribute("data-lng", selectedLng.toString());
 
-      const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
-      this.maps.setCenter(newLatLng);
-      this.maps.setZoom(15);
+    const newLatLng = new google.maps.LatLng(selectedLat, selectedLng);
+    this.maps.setCenter(newLatLng);
+    this.maps.setZoom(15);
 
-      const marker = new google.maps.Marker({
-        position: newLatLng,
-        map: this.maps,
-        animation: google.maps.Animation.DROP,
-        title: this.beneficiarioForm.value.nombres, // Usa un campo relevante como título
-      });
+    const marker = new google.maps.Marker({
+      position: newLatLng,
+      map: this.maps,
+      animation: google.maps.Animation.DROP,
+      title: this.beneficiarioForm.value.nombres, // Usa un campo relevante como título
+    });
     const contentString = `
         <!-- Contenido de la ventana de información (infowindow) -->
         <!-- ... -->
@@ -292,7 +292,7 @@ export class BeneficiariosComponent implements OnInit {
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
       fechaNacimiento: ['', Validators.required],
       sexo: [null, Validators.required],
-      curp:  ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
+      curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
       estatus: [this.estatusBtn],
       programaSocialId: [null, Validators.required],
       municipioId: [null, Validators.required],
@@ -368,11 +368,11 @@ export class BeneficiariosComponent implements OnInit {
       programaSocialId: priogramaId
     });
 
-      console.log(beneficiario);
-      console.log(this.beneficiarioForm.value);
-   }
+    console.log(beneficiario);
+    console.log(this.beneficiarioForm.value);
+  }
 
-   actualizar() {
+  actualizar() {
     this.beneficiario = this.beneficiarioForm.value as Beneficiario;
 
     const programaSocialId = this.beneficiarioForm.get('programaSocialId')?.value;
@@ -485,9 +485,9 @@ export class BeneficiariosComponent implements OnInit {
         'Id': beneficiarios.id,
         'ApellidoPaterno': beneficiarios.apellidoPaterno,
         'Apellido Materno': beneficiarios.apellidoMaterno,
-        'FechaNacimiento': beneficiarios.fechaNacimiento,
+        'FechaNacimiento': beneficiarios.strFechaNacimiento,
         'Curp': beneficiarios.curp,
-        'Sexo': beneficiarios.sexo,
+        'Sexo': beneficiarios.sexo === 1 ? 'Masculino' : 'Femenino',
         'Domicilio': beneficiarios.domicilio,
         'Estatus': estatus,
       };

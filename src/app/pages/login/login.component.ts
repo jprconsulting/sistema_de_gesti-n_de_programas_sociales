@@ -30,14 +30,14 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
+    localStorage.removeItem('dataObject');
+    localStorage.removeItem('bearerToken');
     this.user = this.formUserLogin.value as AppUser;
     this.spinnerService.show();
     this.securityService.login(this.user).subscribe({
       next: () => {
-        setTimeout(() => {
-          this.spinnerService.hide();
-          this.router.navigateByUrl(this.returnUrl);
-        }, 500);
+        this.spinnerService.hide();
+        this.router.navigateByUrl(this.returnUrl);
       },
       error: (error: string) => {
         this.mensajeService.mensajeError(error);

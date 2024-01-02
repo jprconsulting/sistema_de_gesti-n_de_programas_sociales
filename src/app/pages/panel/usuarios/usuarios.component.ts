@@ -126,8 +126,14 @@ export class UsuariosComponent implements OnInit {
 
   handleChangeSearch(event: any) {
     const inputValue = event.target.value;
-    this.usuariosFilter = this.usuarios.filter(i => i.nombreCompleto
-      .toLowerCase().includes(inputValue.toLowerCase())
+    const valueSearch = inputValue.toLowerCase();
+    this.usuariosFilter = this.usuarios.filter(usuario =>
+      usuario.nombreCompleto.toLowerCase().includes(valueSearch) ||
+      usuario.apellidoPaterno.toLowerCase().includes(valueSearch) ||
+      usuario.rol.nombreRol.toLowerCase().includes(valueSearch) ||
+      usuario.areaAdscripcion?.nombre.toLowerCase().includes(valueSearch) ||
+      usuario.correo.toLowerCase().includes(valueSearch) ||
+      usuario.id.toString().includes(valueSearch)
     );
     this.configPaginator.currentPage = 1;
   }
@@ -151,7 +157,6 @@ export class UsuariosComponent implements OnInit {
   }
 
   editarUsuario() {
-    const usuarioFormValue = { ...this.usuarioForm.value };
     this.usuario = this.usuarioForm.value as Usuario;
 
     const rolId = this.usuarioForm.get('rolId')?.value;
@@ -221,7 +226,6 @@ export class UsuariosComponent implements OnInit {
 
   submit() {
     if (this.isModalAdd === false) {
-
       this.editarUsuario();
     } else {
       this.agregar();
@@ -240,57 +244,41 @@ export class UsuariosComponent implements OnInit {
     }
   }
 
-    exportarDatosAExcel() {
-      if (this.usuarios.length === 0) {
-        console.warn('La lista de usuarios está vacía. No se puede exportar.');
-        return;
-      }
-
-      const datosParaExportar = this.usuarios.map(usuario => {
-        const estatus = usuario.estatus ? 'Activo' : 'Inactivo';
-        return {
-          'Id': usuario.id,
-          'Nombre': usuario.nombre,
-          'Apellido Paterno': usuario.apellidoPaterno,
-          'Apellido Materno': usuario.apellidoMaterno,
-          'Correo': usuario.correo,
-          'Estatus': estatus,
-        };
-      });
-
-      const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
-      const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-      const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-
-      this.guardarArchivoExcel(excelBuffer, 'usuarios.xlsx');
+  exportarDatosAExcel() {
+    if (this.usuarios.length === 0) {
+      console.warn('La lista de usuarios está vacía. No se puede exportar.');
+      return;
     }
 
-    guardarArchivoExcel(buffer: any, nombreArchivo: string) {
-      const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      const url: string = window.URL.createObjectURL(data);
-      const a: HTMLAnchorElement = document.createElement('a');
-      a.href = url;
-      a.download = nombreArchivo;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    }
+    const datosParaExportar = this.usuarios.map(usuario => {
+      const estatus = usuario.estatus ? 'Activo' : 'Inactivo';
+      return {
+        'Id': usuario.id,
+        'Nombre': usuario.nombre,
+        'Apellido Paterno': usuario.apellidoPaterno,
+        'Apellido Materno': usuario.apellidoMaterno,
+        'Correo': usuario.correo,
+        'Estatus': estatus,
+      };
+    });
 
-  buscar: string = '';
-  usuarioFiltrado: any[] = [];
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosParaExportar);
+    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
-  filtrarUsuarios(): any {
-    return this.usuarios.filter(usuario =>
-      usuario.nombre.toLowerCase().includes(this.buscar.toLowerCase(),) ||
-      usuario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),) ||
-      usuario.apellidoMaterno.toLowerCase().includes(this.buscar.toLowerCase(),) ||
-      usuario.correo.toLowerCase().includes(this.buscar.toLowerCase(),)
-    );
-
+    this.guardarArchivoExcel(excelBuffer, 'usuarios.xlsx');
   }
-  actualizarFiltro(event: any): void {
-    this.buscar = event.target.value;
-    this.usuarioFiltrado = this.filtrarUsuarios();
+
+  guardarArchivoExcel(buffer: any, nombreArchivo: string) {
+    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url: string = window.URL.createObjectURL(data);
+    const a: HTMLAnchorElement = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
+  
 }
 
 

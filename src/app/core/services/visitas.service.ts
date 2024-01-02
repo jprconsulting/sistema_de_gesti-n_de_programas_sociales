@@ -13,18 +13,11 @@ import { GeneralWordCloud, WordCloud } from 'src/app/models/word-cloud';
 export class VisitasService {
   route = `${environment.apiUrl}/visitas`;
   private _refreshListVisitas$ = new Subject<Visita | null>();
-  private dataWordCloudSubject = new BehaviorSubject<WordCloud[]>([]);
-  dataWordCloud$ = this.dataWordCloudSubject.asObservable();
-
 
   constructor(
     private http: HttpClient,
     private handleErrorService: HandleErrorService
-  ) { }
-
-  updateWordCloud(newData: WordCloud[]) {
-    this.dataWordCloudSubject.next(newData);
-  }
+  ) { } 
 
   get refreshListVisitas() {
     return this._refreshListVisitas$;
@@ -66,10 +59,6 @@ export class VisitasService {
         }),
         catchError(this.handleErrorService.handleError)
       );
-  }
-
-  getWordCloud() {
-    return this.http.get<GeneralWordCloud>(`${this.route}/obtener-nube-palabras`);
-  }
+  }  
 
 }

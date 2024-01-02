@@ -23,6 +23,6 @@ import { HttpClientModule } from '@angular/common/http';
     { provide: 'CONFIG_PAGINATOR', useValue: ConfigPaginator },
     { provide: 'GENEROS', useValue: Generos }
   ],
-
+  exports: [PanelComponent]
 })
 export class PanelModule { }

@@ -8,6 +8,7 @@ import { PageHeaderComponent } from './components/page-header/page-header.compon
 import { RouterModule } from '@angular/router';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { NoResultsComponent } from './components/no-results/no-results.component';
+import { HasClaimDirective } from './directives/has-claim.directive';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { NoResultsComponent } from './components/no-results/no-results.component
     FooterComponent,
     PageHeaderComponent,
     NotFoundComponent,
-    NoResultsComponent
+    NoResultsComponent,
+    HasClaimDirective
   ],
   exports: [
     SidebarComponent,
@@ -26,7 +28,8 @@ import { NoResultsComponent } from './components/no-results/no-results.component
     FooterComponent,
     PageHeaderComponent,
     NotFoundComponent,
-    NoResultsComponent
+    NoResultsComponent,
+    HasClaimDirective
   ],
   imports: [
     CommonModule,
