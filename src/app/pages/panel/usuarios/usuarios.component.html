@@ -64,10 +64,10 @@
             <thead>
               <tr>
                 <th style="text-transform: none; font-size: inherit;" class="text-center">#</th>
-                <th style="text-transform: none; font-size: inherit;">Nombre Completo</th>
+                <th style="text-transform: none; font-size: inherit;">Nombre completo</th>
                 <th style="text-transform: none; font-size: inherit;">Email</th>
                 <th style="text-transform: none; font-size: inherit;">Rol</th>
-                <th style="text-transform: none; font-size: inherit;">Área Adscripción</th>
+                <th style="text-transform: none; font-size: inherit;">Área adscripción</th>
                 <th style="text-transform: none; font-size: inherit;" class="text-center">Estatus</th>
                 <th style="text-transform: none; font-size: inherit;" class="w-1">Acciones</th>
               </tr>
@@ -172,7 +172,7 @@
           <div class="row">
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">Nombre</label>
+                <label class="form-label">Nombre*:</label>
                 <input
                   type="text"
                   class="form-control"
@@ -185,12 +185,20 @@
                   <div *ngIf="usuarioForm.get('nombre')?.hasError('required')">
                     <p style="color: red">El nombre es obligatorio</p>
                   </div>
+                    <div *ngIf="
+                      usuarioForm.get('nombre')?.hasError('minlength')
+                    ">
+                       El Nombre debe tener al menos 3 caracteres
+                    </div>
+                    <div *ngIf="usuarioForm.get('nombre')?.hasError('pattern')">
+                      El Nombre no puede tener números ni signos
+                    </div>
                 </div>
               </div>
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">Apellido Paterno</label>
+                <label class="form-label">Apellido paterno*:</label>
                 <input
                   type="text"
                   class="form-control"
@@ -207,12 +215,26 @@
                   >
                     <p style="color: red">El apellido paterno es obligatorio</p>
                   </div>
+                  <div *ngIf="
+                      usuarioForm
+                        .get('apellidoPaterno')
+                        ?.hasError('minlength')
+                    ">
+                                        El apellido paterno debe tener al menos 3 caracteres
+                                    </div>
+                                    <div *ngIf="
+                      usuarioForm
+                        .get('apellidoPaterno')
+                        ?.hasError('pattern')
+                    ">
+                                        El apellido paterno no puede tener números ni signos
+                                    </div>
                 </div>
               </div>
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">Apellido Materno</label>
+                <label class="form-label">Apellido materno*:</label>
                 <input
                   type="text"
                   class="form-control"
@@ -229,6 +251,20 @@
                   >
                     <p style="color: red">El apellido materno es obligatorio</p>
                   </div>
+                  <div *ngIf="
+                      usuarioForm
+                        .get('apellidoMaterno')
+                        ?.hasError('minlength')
+                    ">
+                                        El apellido materno debe tener al menos 3 caracteres
+                                    </div>
+                                    <div *ngIf="
+                      usuarioForm
+                        .get('apellidoMaterno')
+                        ?.hasError('pattern')
+                    ">
+                                        El apellido materno no puede tener números ni signos
+                                    </div>
                 </div>
               </div>
             </div>
@@ -236,7 +272,7 @@
           <div class="row">
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">Correo</label>
+                <label class="form-label">Correo*:</label>
                 <input
                   type="text"
                   class="form-control"
@@ -257,7 +293,7 @@
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">Contraseña</label>
+                <label class="form-label">Contraseña*:</label>
                 <input
                   type="password"
                   class="form-control"
@@ -310,7 +346,7 @@
           <div class="row">
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">Rol</label>
+                <label class="form-label">Rol*:</label>
                 <ng-select
                   placeholder="Elegir"
                   [items]="rols"
@@ -336,7 +372,7 @@
             </div>
             <div class="col-lg-4">
               <div class="mb-3">
-                <label class="form-label">Área de Adscripción</label>
+                <label class="form-label">Área de adscripción</label>
                 <ng-select
                   placeholder="Elegir"
                   [items]="areasAdscripcion"

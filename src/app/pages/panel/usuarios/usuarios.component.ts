@@ -64,9 +64,9 @@ export class UsuariosComponent implements OnInit {
   creteForm() {
     this.usuarioForm = this.formBuilder.group({
       id: [null],
-      nombre: ['', Validators.required],
-      apellidoPaterno: ['', Validators.required],
-      apellidoMaterno: ['', Validators.required],
+      nombre: ['', [Validators.required,Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
+      apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
+      apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
       correo: ['', [Validators.required, Validators.email, Validators.pattern('^[a-zA-Z0-9.%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$')]],
       password: [
         '',
@@ -278,7 +278,7 @@ export class UsuariosComponent implements OnInit {
     a.click();
     window.URL.revokeObjectURL(url);
   }
-  
+
 }
 
 
