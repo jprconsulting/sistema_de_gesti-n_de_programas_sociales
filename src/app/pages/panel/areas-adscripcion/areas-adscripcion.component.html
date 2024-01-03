@@ -2,7 +2,7 @@
     <p style="color: white">Guardando...</p>
 </ngx-spinner>
 
-<app-page-header headerTitle="Áreas de Adscripción"></app-page-header>
+<app-page-header headerTitle="Áreas de adscripción"></app-page-header>
 
 <div class="row">
     <div class="col-12">
@@ -121,7 +121,7 @@
                                     <div *ngIf="
                       areaAdscripcionForm.get('nombre')?.hasError('minlength')
                     ">
-                       El Nombre debe tener al menos 3 caracteres
+                       El Nombre debe tener al menos 4 caracteres
                     </div>
                     <div *ngIf="areaAdscripcionForm.get('nombre')?.hasError('pattern')">
                       El Nombre no puede tener números ni signos
@@ -137,7 +137,7 @@
                             <div *ngIf="
                               areaAdscripcionForm.get('descripcion')?.hasError('minlength')
                             " style="color: red">
-                              La descripción debe tener al menos 3 caracteres
+                              La descripción debe tener al menos 4 caracteres
                             </div>
                         </div>
 
