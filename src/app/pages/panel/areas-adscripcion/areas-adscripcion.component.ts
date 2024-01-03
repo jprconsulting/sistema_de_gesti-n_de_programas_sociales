@@ -49,8 +49,8 @@ export class AreasAdscripcionComponent {
   createForm() {
     this.areaAdscripcionForm = this.formBuilder.group({
       id: [null],
-      nombre: ['', Validators.required],
-      descripcion: ['', Validators.required],
+      nombre: ['', [Validators.required, Validators.minLength(4), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
+      descripcion: ['', [Validators.required, Validators.minLength(4), Validators.pattern('^([a-zA-Z]{3})[a-zA-Z ]+$')]],
       estatus: [true],
     });
   }

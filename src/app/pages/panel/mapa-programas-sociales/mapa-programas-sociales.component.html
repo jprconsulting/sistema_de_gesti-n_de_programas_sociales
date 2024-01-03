@@ -1,4 +1,4 @@
-<app-page-header headerTitle="Mapa Total de Beneficiarios por Municipio"></app-page-header>
+<app-page-header headerTitle="Mapa total de beneficiarios por municipio"></app-page-header>
 
 <div class="row row-deck row-cards">
   <div class="col-md-6 col-lg-4">
@@ -28,13 +28,13 @@
         </div>
 
         <div *ngSwitchCase="3" class="table-responsive">
-          <table class="table card-table table-vcenter">
+          <table class="table table-vcenter card-table table-striped">
             <thead>
               <tr>
-                <th class="text-center">#</th>
-                <th>Municipio</th>
-                <th class="text-center">Total</th>
-                <th>Indicador</th>
+                <th style="text-transform: none; font-size: inherit;" class="text-center">#</th>
+                <th style="text-transform: none; font-size: inherit;">Municipio</th>
+                <th style="text-transform: none; font-size: inherit;" class="text-center">Total</th>
+                <th style="text-transform: none; font-size: inherit;">Indicador</th>
               </tr>
             </thead>
             <tbody>
@@ -92,7 +92,7 @@
   <div class="col-lg-8">
     <div class="card">
       <div class="card-body">
-        <h3 class="card-title">Indicadores por Municipio</h3>
+        <h3 class="card-title">Indicadores por municipio</h3>
         <highcharts-chart
           [Highcharts]="Highcharts"
           [constructorType]="'mapChart'"
