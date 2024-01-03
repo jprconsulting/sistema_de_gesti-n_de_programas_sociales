@@ -256,15 +256,15 @@
                         .get('apellidoMaterno')
                         ?.hasError('minlength')
                     ">
-                                        El apellido materno debe tener al menos 3 caracteres
-                                    </div>
-                                    <div *ngIf="
+                     El apellido materno debe tener al menos 3 caracteres
+                  </div>
+                  <div *ngIf="
                       usuarioForm
                         .get('apellidoMaterno')
                         ?.hasError('pattern')
                     ">
-                                        El apellido materno no puede tener números ni signos
-                                    </div>
+                    El apellido materno no puede tener números ni signos
+                  </div>
                 </div>
               </div>
             </div>
@@ -394,7 +394,7 @@
         margin-left: 20px;
         color: red;
         font-weight: bold;
-    ">Todos los campos marcados con * son requeridos</p>
+        ">Todos los campos marcados con * son requeridos</p>
         <div class="modal-footer">
           <button
             type="submit"
