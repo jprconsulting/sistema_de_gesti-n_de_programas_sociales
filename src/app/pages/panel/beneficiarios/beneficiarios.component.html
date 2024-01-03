@@ -134,15 +134,15 @@
                                     <div *ngIf="
                       beneficiarioForm.get('nombres')?.hasError('required')
                     ">
-                                        El Nombre es obligatorio
+                                        El nombre es obligatorio
                                     </div>
                                     <div *ngIf="
                       beneficiarioForm.get('nombres')?.hasError('minlength')
                     ">
-                                        El Nombre debe tener al menos 3 caracteres
+                                        El nombre debe tener al menos 3 caracteres
                                     </div>
                                     <div *ngIf="beneficiarioForm.get('nombres')?.hasError('pattern')">
-                                        El Nombre no puede tener números ni signos
+                                        El nombre no puede tener números ni signos
                                     </div>
                                 </div>
                             </div>
