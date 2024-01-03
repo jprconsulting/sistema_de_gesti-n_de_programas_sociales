@@ -118,7 +118,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    {{ isModalAdd ? "Agregar" : "Actualizar" }} Beneficiario
+                    {{ isModalAdd ? "Agregar" : "Actualizar" }} beneficiario
                 </h5>
                 <button #closebutton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="resetMap()"></button>
             </div>
@@ -149,7 +149,7 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="mb-3">
-                                <label class="form-label">Apellido Paterno*:</label>
+                                <label class="form-label">Apellido paterno*:</label>
                                 <input type="text" class="form-control" formControlName="apellidoPaterno" />
                                 <div *ngIf="beneficiarioForm.get('apellidoPaterno')?.touched" class="error-message">
                                     <div *ngIf="
@@ -178,7 +178,7 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="mb-3">
-                                <label class="form-label">Apellido Materno*:</label>
+                                <label class="form-label">Apellido materno*:</label>
                                 <input type="text" class="form-control" formControlName="apellidoMaterno" />
                                 <div *ngIf="beneficiarioForm.get('apellidoMaterno')?.touched" class="error-message">
                                     <div *ngIf="
@@ -209,7 +209,7 @@
                     <div class="row">
                         <div class="col-lg-4">
                             <div class="mb-3">
-                                <label class="form-label">Fecha Nacimiento*:</label>
+                                <label class="form-label">Fecha nacimiento*:</label>
                                 <input type="date" class="form-control" formControlName="fechaNacimiento" />
                                 <div *ngIf="beneficiarioForm.get('fechaNacimiento')?.touched" class="error-message">
                                     <div *ngIf="
@@ -255,7 +255,7 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <label class="form-label">Programa Social*:</label>
+                                <label class="form-label">Programa social*:</label>
                                 <ng-select formControlName="programaSocialId" #selectProgramaSocial [searchable]="false" [items]="programasSociales" bindLabel="nombre" bindValue="id" placeholder="Elegir" [clearable]="false">
                                     <ng-template ng-header-tmp>
                                         <input class="form-control" type="text" (input)="
