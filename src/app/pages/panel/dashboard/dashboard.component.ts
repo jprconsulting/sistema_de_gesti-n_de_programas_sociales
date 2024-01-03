@@ -96,26 +96,20 @@ export class DashboardComponent implements AfterViewInit {
 }
 
 getTotalVisitasPorProgramaSocial() {
+  const container = document.getElementById('container-visitas-por-programa-social');
+  if (container) {
+    container.style.display = 'none';
+  }
+
   this.dashboardService.getTotalVisitasPorProgramaSocial().subscribe({
     next: (dataFromAPI) => {
-      const langConfig = {
-        viewFullscreen: "Ver en pantalla completa",
-        printChart: "Imprimir gráfica",
-        downloadPNG: 'Descargar imagen PNG',
-        downloadJPEG: 'Descargar imagen JPEG',
-        downloadPDF: 'Descargar en formato PDF',
-        downloadSVG: 'Descargar imagen vectorial en SVG',
-      };
-      Highcharts.setOptions({
-        lang: langConfig
-      });
-
       const hasData = dataFromAPI && dataFromAPI.length > 0;
 
       if (hasData) {
         this.optionsVisitasPorProgramaSocial = {
           chart: {
             type: 'pie',
+            renderTo: 'container-visitas-por-programa-social'
           },
           title: {
             text: 'Visitas por programa social',
@@ -125,7 +119,7 @@ getTotalVisitasPorProgramaSocial() {
             enabled: false
           },
           subtitle: {
-            text: '',
+            text: ''
           },
           plotOptions: {
             pie: {
@@ -137,14 +131,18 @@ getTotalVisitasPorProgramaSocial() {
             type: 'pie',
             name: 'Visitas',
             data: dataFromAPI.map((d) => ([d.nombre, d.total]))
-          }],
+          }]
         };
+
+        if (container) {
+          container.style.display = 'block';
+        }
 
         Highcharts.chart('container-visitas-por-programa-social', this.optionsVisitasPorProgramaSocial);
       } else {
-        const element = document.getElementById('container-visitas-por-programa-social');
-        if (element) {
-          element.innerHTML = '<h2 class="page-title">Sin datos</h2>';
+        if (container) {
+          container.innerHTML = '<h2 class="page-title">Sin datos</h2>';
+          container.style.display = 'block';
         }
       }
     }
