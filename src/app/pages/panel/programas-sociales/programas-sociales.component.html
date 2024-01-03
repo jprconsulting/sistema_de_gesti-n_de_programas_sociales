@@ -2,7 +2,7 @@
     <p style="color: white">Guardando...</p>
 </ngx-spinner>
 
-<app-page-header headerTitle="Programas Sociales"></app-page-header>
+<app-page-header headerTitle="Programas sociales"></app-page-header>
 
 <div class="row">
     <div class="col-12">
@@ -42,7 +42,7 @@
                                 <th style="text-transform: none; font-size: inherit;">Descripción</th>
                                 <th style="text-transform: none; font-size: inherit;">Color</th>
                                 <th style="text-transform: none; font-size: inherit;">Acrónimo</th>
-                                <th style="text-transform: none; font-size: inherit;">Área Adscripción</th>
+                                <th style="text-transform: none; font-size: inherit;">Área adscripción</th>
                                 <th class="text-center" style="text-transform: none; font-size: inherit;">Estatus</th>
                                 <th class="w-1" style="text-transform: none; font-size: inherit;">Acciones</th>
                             </tr>
@@ -127,17 +127,17 @@
                                     <div *ngIf="
                       programaSocialForm.get('nombre')?.hasError('required')
                     ">
-                                        El Nombre es obligatorio
+                                        El nombre es obligatorio
                                     </div>
                                     <div *ngIf="
                       programaSocialForm.get('nombre')?.hasError('minlength')
                     ">
-                                        El Nombre debe tener al menos 3 caracteres
+                                        El nombre debe tener al menos 3 caracteres
                                     </div>
                                     <div *ngIf="
                       programaSocialForm.get('nombre')?.hasError('pattern')
                     ">
-                                        El Nombre no puede tener números mi caracteres especiales
+                                        El nombre no puede tener números mi caracteres especiales
                                     </div>
                                 </div>
                             </div>
