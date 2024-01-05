@@ -278,7 +278,7 @@ export class VisitasComponent {
   }
 
   obtenerRutaImagen(nombreArchivo: string): string {
-    const rutaBaseAPI = 'https://localhost:7224/';
+    const rutaBaseAPI = 'https://beneficiariosdifapi20240104225625.azurewebsites.net/';
     if (nombreArchivo) {
       return `${rutaBaseAPI}images/${nombreArchivo}`;
     }
