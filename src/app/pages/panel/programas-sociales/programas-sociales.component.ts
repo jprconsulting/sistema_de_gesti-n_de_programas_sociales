@@ -62,7 +62,7 @@ export class ProgramasSocialesComponent {
       descripcion: [''],
       color: ['', Validators.required],
       estatus: [true],
-      acronimo: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      acronimo: ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       areaAdscripcionId: [null, Validators.required],
     });
   }
