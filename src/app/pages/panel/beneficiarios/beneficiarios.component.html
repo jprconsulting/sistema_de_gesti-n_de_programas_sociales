@@ -14,7 +14,7 @@
             </button>
                     <div class="ms-auto d-flex align-items-center">
                         <div class="input-icon">
-                                <input #searchItem type="text" class="form-control form-control-rounded" formControlName="busqueda" placeholder="Buscar" (input)="handleChangeSearch($event)" />
+                                <input #searchItem type="text" class="form-control form-control-rounded" placeholder="Buscar" (input)="handleChangeSearch($event)" />
                                 <span class="input-icon-addon">
                         <i class="ti ti-search"></i>
                     </span>
@@ -139,10 +139,10 @@
                                     <div *ngIf="
                       beneficiarioForm.get('nombres')?.hasError('minlength')
                     ">
-                                        El Nombre debe tener al menos 3 caracteres
+                                        El nombre debe tener al menos 3 caracteres
                                     </div>
                                     <div *ngIf="beneficiarioForm.get('nombres')?.hasError('pattern')">
-                                        El Nombre no puede tener números ni signos
+                                        El nombre no puede tener números ni signos
                                     </div>
                                 </div>
                             </div>

@@ -67,7 +67,7 @@ export class VisitasComponent {
   creteForm() {
     this.visitaForm = this.formBuilder.group({
       id: [null],
-      descripcion:  ['', [Validators.required, Validators.minLength(3), Validators.pattern('^([a-zA-Z]{3})[a-zA-Z ]+$')]],
+      descripcion:  [''],
       beneficiarioId: [null, Validators.required],
       imagenBase64: ['']
     });
@@ -278,7 +278,7 @@ export class VisitasComponent {
   }
 
   obtenerRutaImagen(nombreArchivo: string): string {
-    const rutaBaseAPI = 'https://localhost:7224/';
+    const rutaBaseAPI = 'https://beneficiariosdifapi20240104225625.azurewebsites.net/';
     if (nombreArchivo) {
       return `${rutaBaseAPI}images/${nombreArchivo}`;
     }

@@ -176,10 +176,11 @@ export class MapaBeneficiariosComponent implements AfterViewInit {
               ${beneficiario.nombreCompleto}
             </p>
           </p>
+          
           <p style="font-weight:  bolder;" class="">
-            Programa inscrito:
+            Municipio:
             <p class=" text-muted">
-              ${beneficiario.programaSocial.nombre}
+              ${beneficiario.municipio.nombre}
             </p>
           </p>
           <p style="font-weight:  bolder;" class="" >

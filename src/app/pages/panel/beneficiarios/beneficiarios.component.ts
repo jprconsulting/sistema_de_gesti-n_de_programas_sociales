@@ -106,6 +106,12 @@ export class BeneficiariosComponent implements OnInit {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
     }
+
+    if (place.formatted_address) {
+      this.beneficiarioForm.patchValue({
+        domicilio: place.formatted_address
+      });
+    }
     const selectedLat = place.geometry?.location?.lat() || this.latitude;
     const selectedLng = place.geometry?.location?.lng() || this.longitude;
 
@@ -233,9 +239,9 @@ export class BeneficiariosComponent implements OnInit {
   creteForm() {
     this.beneficiarioForm = this.formBuilder.group({
       id: [null],
-      nombres: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
-      apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
-      apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^([a-zA-Z]{2})[a-zA-Z ]+$')]],
+      nombres: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      apellidoPaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
+      apellidoMaterno: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^([a-zA-ZÀ-ÿ\u00C0-\u00FF]{2})[a-zA-ZÀ-ÿ\u00C0-\u00FF ]+$/)]],
       fechaNacimiento: ['', Validators.required],
       sexo: [null, Validators.required],
       curp: ['', [Validators.required, Validators.pattern(/^([a-zA-Z]{4})([0-9]{6})([a-zA-Z]{6})([0-9]{2})$/)]],
@@ -397,7 +403,6 @@ export class BeneficiariosComponent implements OnInit {
 
     const programaSocialId = this.beneficiarioForm.get('programaSocialId')?.value;
     const municipioId = this.beneficiarioForm.get('municipioId')?.value;
-
     this.beneficiario.programaSocial = { id: programaSocialId } as ProgramaSocial;
     this.beneficiario.municipio = { id: municipioId } as Municipio;
 

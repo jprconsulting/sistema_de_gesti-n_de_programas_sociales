@@ -103,6 +103,14 @@ getTotalVisitasPorProgramaSocial() {
 
   this.dashboardService.getTotalVisitasPorProgramaSocial().subscribe({
     next: (dataFromAPI) => {
+      const langConfig = {
+        viewFullscreen: "Ver en pantalla completa",
+        printChart: "Imprimir gráfica",
+        downloadPNG: 'Descargar imagen PNG',
+        downloadJPEG: 'Descargar imagen JPEG',
+        downloadPDF: 'Descargar en formato PDF',
+        downloadSVG: 'Descargar imagen vectorial en SVG',
+    };
       const hasData = dataFromAPI && dataFromAPI.length > 0;
 
       if (hasData) {
@@ -118,6 +126,7 @@ getTotalVisitasPorProgramaSocial() {
           credits: {
             enabled: false
           },
+          lang: langConfig,
           subtitle: {
             text: ''
           },
